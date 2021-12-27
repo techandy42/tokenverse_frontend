@@ -1,12 +1,9 @@
-import { Typography } from '@mui/material'
-import type { NextPage } from 'next'
-import EmotionButton from '../components/EmotionButton'
+import React from 'react'
 
-const Home: NextPage = () => {
+const Home = () => {
   return (
     <div>
-      <Typography>Tokenverse</Typography>
-      <Typography>A revoluntionary way to design and sell your NFTs</Typography>
+      <h1>Home</h1>
     </div>
   )
 }

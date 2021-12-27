@@ -15,6 +15,14 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "src/pages/create.jsx",
+    "src/pages/items.jsx",
+    "hardhat.config.js",
+    "src/components/styles/iosSwitch.txs"
+  ],
   "exclude": ["node_modules"]
 }
