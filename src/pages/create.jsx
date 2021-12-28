@@ -4,22 +4,13 @@ import { create as ipfsHttpClient } from 'ipfs-http-client'
 import { useRouter } from 'next/router'
 import Web3Modal from 'web3modal'
 
-const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
-
 import { nftaddress, nftmarketaddress } from '../../config'
 import NFT from '../../artifacts/contracts/NFT.sol/NFT.json'
 import Market from '../../artifacts/contracts/NFTMarket.sol/NFTMarket.json'
-import FormControl from '@mui/material/FormControl'
-import InputLabel from '@mui/material/InputLabel'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import TextField from '@mui/material/TextField'
-import Input from '@mui/material/Input'
-import Button from '@mui/material/Button'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Box from '@mui/material/Box'
+import CreateOne from '../components/CreateOne'
+import CreateMany from '../components/CreateMany'
 
-import IOSSwitch from '../components/styles/iosSwitch'
+const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
 export default function Create() {
   const [fileUrl, setFileUrl] = useState(null)
@@ -89,77 +80,9 @@ export default function Create() {
   }
 
   return (
-    <form>
-      <FormControl fullWidth>
-        <InputLabel id='collection'>Collection</InputLabel>
-        <Select
-          labelId='collection'
-          // value={age}
-          // onChange={handleChange}
-        >
-          <MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
-        </Select>
-      </FormControl>
-      <TextField
-        label='Name'
-        onChange={(e) =>
-          updateFormTextField({ ...formTextField, name: e.target.value })
-        }
-        defaultValue=''
-      />
-      <TextField
-        label='Description'
-        onChange={(e) =>
-          updateFormTextField({
-            ...formTextField,
-            description: e.target.value,
-          })
-        }
-        defaultValue=''
-      />
-      <TextField
-        label='URL Reference'
-        onChange={(e) =>
-          updateFormTextField({
-            ...formTextField,
-            description: e.target.value,
-          })
-        }
-        defaultValue=''
-      />
-      <FormControl fullWidth>
-        <InputLabel id='price'>Price</InputLabel>
-        <Input labelId='price' type='number' defaultValue={1} />
-      </FormControl>
-      <FormControlLabel
-        control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
-        label='iOS style'
-      />
-      <Input
-        type='file'
-        name='Asset'
-        className='my-4'
-        onChange={onChangeFile}
-      />
-      {fileUrl && <img width='350' src={fileUrl} />}
-      <FormControl fullWidth>
-        <InputLabel id='quantity'>Quantity</InputLabel>
-        <Input labelId='quantity' type='number' defaultValue={1} disabled />
-      </FormControl>
-      <FormControl fullWidth>
-        <InputLabel id='blockchain'>Blockchain</InputLabel>
-        <Select
-          labelId='blockchain'
-          // value={age}
-          // onChange={handleChange}
-          defaultValue='Polygon'
-        >
-          <MenuItem value={10}>Polygon</MenuItem>
-        </Select>
-      </FormControl>
-      <Button onClick={createItem}>Create Digital Asset</Button>
-    </form>
+    <div>
+      <CreateOne />
+      <CreateMany />
+    </div>
   )
 }

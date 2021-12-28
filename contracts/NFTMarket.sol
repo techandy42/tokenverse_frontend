@@ -45,7 +45,7 @@ contract NFTMarket is ReentrancyGuard {
   function getListingPrice() public view returns (uint256) {
     return listingPrice;
   }
- 
+
   /* Places an item for sale on the marketplace */
   function createMarketItem(
     address nftContract,
@@ -117,7 +117,7 @@ contract NFTMarket is ReentrancyGuard {
     return items;
   }
  
-  /* Returns onlyl items that a user has purchased */
+  /* Returns only items that a user has purchased */
   function fetchMyNFTs() public view returns (MarketItem[] memory) {
     uint totalItemCount = _itemIds.current();
     uint itemCount = 0;
