@@ -20,9 +20,10 @@
     "**/*.ts",
     "**/*.tsx",
     "src/pages/create.tsx",
-    "src/pages/items.jsx",
+    "src/pages/items.tsx",
     "hardhat.config.js",
-    "src/components/styles/iosSwitch.txs"
+    "src/components/styles/iosSwitch.txs",
+    "src/components/CreateOne.tsx"
   ],
   "exclude": ["node_modules"]
 }

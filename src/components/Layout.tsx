@@ -1,8 +1,9 @@
 import Nav from './Nav'
 import Meta from './Meta'
+import { ReactElement } from 'react'
 
 interface IProps {
-    children: any,
+  children: ReactElement
 }
 
 const Layout: React.FC<IProps> = ({ children }) => {
@@ -11,12 +12,10 @@ const Layout: React.FC<IProps> = ({ children }) => {
       <Meta />
       <Nav />
       <div>
-        <main>
-          {children}
-        </main>
+        <main>{children}</main>
       </div>
     </>
   )
 }
- 
+
 export default Layout
