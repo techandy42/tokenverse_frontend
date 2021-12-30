@@ -13,6 +13,7 @@ import { styled } from '@mui/material/styles'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
+import Switch from '@mui/material/Switch'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import IOSSwitch from '../components/styles/IOSSwitch'
@@ -23,6 +24,7 @@ import {
   FORM_MARGIN_BOTTOM_VALUE_SMALL,
   FORM,
 } from '../../constants/values'
+import CreateSettings from '../components/CreateSettings'
 
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
@@ -36,49 +38,32 @@ export const collections = [
   'Collection 3',
 ]
 
-export interface Form {
-  name: string
-  description: string
-  isSensitive: boolean
-  topColorOne: string
-  topColorTwo: string
-  topFeatureOne: string
-  topFeatureTwo: string
-  domainName: string
-  accessLocations: [string, string, string][]
-  point: number
-  properties: [string, string][]
-}
+// export interface Form {
+//   name: string
+//   description: string
+//   isSensitive: boolean
+//   topColorOne: string
+//   topFeatureOne: string
+//   topColorTwo: string
+//   topFeatureTwo: string
+//   domainName: string
+//   properties: never[]
+//   accessLocations: never[]
+//   point: number
+//   abilities: never[]
+// }
 
 export default function Create() {
-  // const [fileUrl, setFileUrl] = useState(null)
-  // const [formTextField, updateFormTextField] = useState({
-  //   price: '',
-  //   name: '',
-  //   description: '',
-  // })
+  const [isCreateMultiple, setIsCreateMultiple] = useState(false)
   const [collection, setCollection] = useState(collections[0])
   const [tokenType, setTokenType] = useState(tokenTypes[0])
   const [blockchainType, setBlockchainType] = useState(blockchainTypes[0])
-  const [forms, setForms] = useState<Form[]>([])
+  const [forms, setForms] = useState([])
   const [fileUrls, setFileUrls] = useState([])
   const [formQuantitySetting, setFormQuantitySetting] = useState(SINGLE)
   const [clearCounter, setClearCounter] = useState(0)
 
   const router = useRouter()
-
-  const onChangeFile = async (e) => {
-    const file = e.target.files[0]
-    try {
-      const added = await client.add(file, {
-        progress: (prog) => console.log(`received: ${prog}`),
-      })
-      const url = `https://ipfs.infura.io/ipfs/${added.path}`
-      setFileUrls([...fileUrls, url])
-    } catch (e) {
-      console.log(e)
-    }
-  }
 
   // async function createItem() {
   //   const { name, description, price } = formTextField
@@ -125,7 +110,7 @@ export default function Create() {
   //   router.push('/')
   // }
 
-  const handleClear = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleClear = (e) => {
     setCollection(collections[0])
     setTokenType(tokenTypes[0])
     setBlockchainType(blockchainTypes[0])
@@ -135,7 +120,7 @@ export default function Create() {
     setClearCounter(clearCounter + 1)
   }
 
-  const StyledPageBase = styled('div')(({ theme }) => ({
+  const StyledPageBase = styled('form')(({ theme }) => ({
     marginTop: FORM_MARGIN_BOTTOM_VALUE_LARGE,
     marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE,
     marginLeft: '5%',
@@ -150,48 +135,47 @@ export default function Create() {
     },
   }))
 
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    console.log('form is submitted')
+  }
+
   return (
-    <StyledPageBase>
+    <StyledPageBase onSubmit={handleSubmit}>
       <Box sx={{ display: 'flex' }}>
-        <Stack
-          direction='row'
-          spacing={1}
-          alignItems='center'
-          sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL }}
+        <Box
+          sx={{ display: 'flex', alignItems: 'center' }}
+          onClick={(e) => setIsCreateMultiple(!isCreateMultiple)}
         >
           <Typography>Single</Typography>
-          <IOSSwitch
-            sx={{ m: 1 }}
-            onChange={(e) =>
-              setFormQuantitySetting(
-                formQuantitySetting === SINGLE
-                  ? MULTIPLE
-                  : formQuantitySetting === MULTIPLE
-                  ? SINGLE
-                  : SINGLE,
-              )
-            }
+          <Switch
+            checked={isCreateMultiple}
+            onChange={(e) => setIsCreateMultiple(!isCreateMultiple)}
           />
           <Typography>Multiple</Typography>
-        </Stack>
+        </Box>
         <Box sx={{ flexGrow: 1 }} />
-        <Button onClick={(e) => handleClear()}>Clear All</Button>
+        <Button onClick={handleClear}>Clear All</Button>
       </Box>
-      {formQuantitySetting === SINGLE ? (
+      <CreateSettings
+        isCreateMultiple={isCreateMultiple}
+        collection={collection}
+        setCollection={setCollection}
+        tokenType={tokenType}
+        setTokenType={setTokenType}
+        blockchainType={blockchainType}
+        setBlockchainType={setBlockchainType}
+      />
+      {!isCreateMultiple ? (
         <CreateOne
-          collection={collection}
-          setCollection={setCollection}
           tokenType={tokenType}
-          setTokenType={setTokenType}
-          blockchainType={blockchainType}
-          setBlockchainType={setBlockchainType}
           forms={forms}
           setForms={setForms}
           fileUrls={fileUrls}
           setFileUrls={setFileUrls}
           clearCounter={clearCounter}
         />
-      ) : formQuantitySetting === MULTIPLE ? (
+      ) : (
         <CreateMany
           collection={collection}
           setCollection={setCollection}
@@ -202,7 +186,10 @@ export default function Create() {
           fileUrls={fileUrls}
           setFileUrls={setFileUrls}
         />
-      ) : null}
+      )}
+      <Button variant='outlined' type='submit'>
+        Create Digital Asset
+      </Button>
     </StyledPageBase>
   )
 }

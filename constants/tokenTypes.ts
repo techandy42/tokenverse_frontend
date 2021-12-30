@@ -5,7 +5,7 @@ const tokenTypes = [
   'Photography',
   'Domain Names',
   'Trading Cards',
-  'Virtual Reality - Properties',
+  'Virtual Reality - Real Estates',
   'Virtual Reality - Accessories',
 ]
 export default tokenTypes

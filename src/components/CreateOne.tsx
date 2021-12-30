@@ -28,16 +28,22 @@ import {
   FORM_MARGIN_BOTTOM_VALUE_SMALL,
   FORM,
 } from '../../constants/values'
+import AccessLocationList from './createComponents/AccessLocationList'
+import AbilityList from './createComponents/AbilityList'
+import PropertyList from './createComponents/PropertyList'
+import Point from './createComponents/Point'
+import Level from './createComponents/Level'
+import SensitiveContent from './createComponents/SensitiveContent'
+import KeyFeatures from './createComponents/KeyFeatures'
+import DomainName from './createComponents/DomainName'
+import TokenNameDescription from './createComponents/TokenNameDescription'
+import FlexBox from './styles/FlexBox'
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'
 
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
 const CreateOne = ({
-  collection,
-  setCollection,
   tokenType,
-  setTokenType,
-  blockchainType,
-  setBlockchainType,
   forms,
   setForms,
   fileUrls,
@@ -45,12 +51,6 @@ const CreateOne = ({
   clearCounter,
 }) => {
   const [form, setForm] = useState(FORM)
-
-  const handleIsSensitiveChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setForm({ ...form, isSensitive: !form.isSensitive })
-  }
 
   useEffect(() => {
     setForm(FORM)
@@ -71,189 +71,18 @@ const CreateOne = ({
   }
 
   const handleChange = (e) => {
-    if (e.target.name === 'point') {
-      if (e.target.value < 0 || e.target.value > 1000) return
-    }
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
-  const handleAddProperty = (e) => {
-    setForm({ ...form, properties: [...form.properties, ['', '']] })
-  }
-
-  const handleRemoveProperty = (i) => {
-    setForm({
-      ...form,
-      properties: [
-        ...form.properties.slice(0, i),
-        ...form.properties.slice(i + 1),
-      ],
-    })
-  }
-
-  const handlePropertyChange = (e, i) => {
-    let newProperty = form.properties[i]
-    if (e.target.name === 'propertyName') {
-      newProperty = [e.target.value, form.properties[i][1]]
-    } else if (e.target.name === 'propertyValue') {
-      newProperty = [form.properties[i][0], e.target.value]
-    } else {
-      newProperty = [e.target.value, form.properties[i][1]]
-    }
-    const newProperties = [
-      ...form.properties.slice(0, i),
-      newProperty,
-      ...form.properties.slice(i + 1),
-    ]
-    setForm({ ...form, properties: newProperties })
-  }
-
-  const handleAddAccessLocation = (e) => {
-    setForm({
-      ...form,
-      accessLocations: [...form.accessLocations, ['', '', '']],
-    })
-  }
-
-  const handleRemoveAccessLocation = (i) => {
-    setForm({
-      ...form,
-      accessLocations: [
-        ...form.accessLocations.slice(0, i),
-        ...form.accessLocations.slice(i + 1),
-      ],
-    })
-  }
-
-  const handleAccessLocationChange = (e, i) => {
-    let newAccessLocation = form.accessLocations[i]
-    if (e.target.name === 'accessLocationName') {
-      newAccessLocation = [
-        e.target.value,
-        form.accessLocations[i][1],
-        form.accessLocations[i][2],
-      ]
-    } else if (e.target.name === 'accessLocationDescription') {
-      newAccessLocation = [
-        form.accessLocations[i][0],
-        e.target.value,
-        form.accessLocations[i][2],
-      ]
-    } else if (e.target.name === 'accessLocationUrl') {
-      newAccessLocation = [
-        form.accessLocations[i][0],
-        form.accessLocations[i][1],
-        e.target.value,
-      ]
-    } else {
-      newAccessLocation = [
-        e.target.value,
-        form.accessLocations[i][1],
-        form.accessLocations[i][2],
-      ]
-    }
-    const newAccessLocations = [
-      ...form.accessLocations.slice(0, i),
-      newAccessLocation,
-      ...form.accessLocations.slice(i + 1),
-    ]
-    setForm({ ...form, accessLocations: newAccessLocations })
-  }
-
-  const handleRenameInitialCollection = (e) => {
-    // Rename the initial collection
-  }
-
   return (
-    <form>
-      <Typography
-        variant='h3'
-        sx={{
-          marginTop: FORM_MARGIN_BOTTOM_VALUE_LARGE,
-          marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE,
-        }}
-      >
-        Create Single
-      </Typography>
-      <Typography sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL }}>
-        Collection
-      </Typography>
-      <Select
-        labelId='collection'
-        value={collection}
-        onChange={(e) => setCollection(e.target.value)}
-        fullWidth
-        sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL }}
-      >
-        {collections.map((collection, i) => (
-          <MenuItem value={collection}>{collection}</MenuItem>
-        ))}
-      </Select>
-      {collection === collections[0] ? (
-        <>
-          <Typography sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL }}>
-            Optional
-          </Typography>
-          <Box
-            sx={{
-              display: 'flex',
-              marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE,
-            }}
-          >
-            <TextField
-              // sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE }}
-              fullWidth
-              multiline
-              name='renameInitialCollection'
-              label='Rename Initial Collection'
-              value={form.description}
-              onChange={handleChange}
-            />
-            <IconButton
-              size='large'
-              edge='end'
-              color='inherit'
-              disableRipple
-              onClick={handleRenameInitialCollection}
-            >
-              <AddCircleOutlineIcon color='primary' />
-            </IconButton>
-          </Box>
-        </>
-      ) : null}
-      <Typography sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL }}>
-        Type
-      </Typography>
-      <Select
-        labelId='tokenType'
-        value={tokenType}
-        onChange={(e) => setTokenType(e.target.value)}
-        fullWidth
-        sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE }}
-      >
-        {tokenTypes.map((tokenType) => (
-          <MenuItem value={tokenType}>{tokenType}</MenuItem>
-        ))}
-      </Select>
-      <Typography sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL }}>
-        Blockchain
-      </Typography>
-      <Select
-        labelId='blockchain'
-        value={blockchainType}
-        onChange={(e) => setBlockchainType(e.target.value)}
-        fullWidth
-        sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE }}
-      >
-        {blockchainTypes.map((blockchainType) => (
-          <MenuItem value={blockchainType}>{blockchainType}</MenuItem>
-        ))}
-      </Select>
+    <>
       {!fileUrls[0] ? (
         <Button
           variant='contained'
           component='label'
           sx={{
+            width: '24rem',
+            heigth: '20rem',
             marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE,
           }}
         >
@@ -271,6 +100,27 @@ const CreateOne = ({
           Remove File
         </Button>
       ) : null}
+      {/* <Button
+        sx={{
+          width: '24rem',
+          height: '20rem',
+          borderRadius: '0.5rem',
+          border: '0.2rem dotted black',
+          justifyContent: 'center',
+        }}
+      >
+        <IconButton
+          size='large'
+          edge='end'
+          color='inherit'
+          disableRipple
+          sx={{ width: '10rem', height: '10rem' }}
+          // onClick={(e) => handleRemoveAbility(i)}
+        >
+          <AddAPhotoIcon color='primary' />
+        </IconButton>
+        <input type='file' name='Asset' onChange={onChangeFile} hidden />
+      </Button> */}
       <Box
         sx={{
           marginBottom: fileUrls[0] ? FORM_MARGIN_BOTTOM_VALUE_LARGE : 0,
@@ -278,233 +128,31 @@ const CreateOne = ({
       >
         <img width='350' src={fileUrls[0]} />
       </Box>
-      <TextField
-        sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL }}
-        fullWidth
-        name='name'
-        label='Name'
-        value={form.name}
-        onChange={handleChange}
-        required
-      />
-      <TextField
-        sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE }}
-        fullWidth
-        multiline
-        name='description'
-        label='Description'
-        value={form.description}
-        onChange={handleChange}
-        required
-      />
+      <TokenNameDescription form={form} handleChange={handleChange} />
       <Divider sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE }} />
-      <Typography
-        variant='h5'
-        sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL }}
-      >
-        Optional
-      </Typography>
       {tokenType === 'Domain Names' ? (
-        <TextField
-          sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE }}
-          fullWidth
-          variant='filled'
-          name='domainName'
-          label='Domain Name'
-          value={form.domainName}
-          onChange={handleChange}
-        />
+        <DomainName form={form} handleChange={handleChange} />
       ) : (
-        <>
-          <TextField
-            sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL }}
-            fullWidth
-            variant='filled'
-            name='topColorOne'
-            label='Top Color #1'
-            value={form.topColorOne}
-            onChange={handleChange}
-          />
-          <TextField
-            sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL }}
-            fullWidth
-            variant='filled'
-            name='topColorTwo'
-            label='Top Color #2'
-            value={form.topColorTwo}
-            onChange={handleChange}
-          />
-          <TextField
-            sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL }}
-            fullWidth
-            variant='filled'
-            name='topFeatureOne'
-            label='Top Feature #1'
-            value={form.topFeatureOne}
-            onChange={handleChange}
-          />
-          <TextField
-            sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE }}
-            fullWidth
-            variant='filled'
-            name='topFeatureTwo'
-            label='Top Feature #2'
-            value={form.topFeatureTwo}
-            onChange={handleChange}
-          />
-        </>
+        <KeyFeatures form={form} handleChange={handleChange} />
       )}
       <Divider sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE }} />
-      <Box
-        sx={{
-          marginTop: FORM_MARGIN_BOTTOM_VALUE_LARGE,
-          marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE,
-        }}
-      >
-        <Button
-          variant='contained'
-          sx={{
-            marginBottom:
-              form.accessLocations.length > 0
-                ? FORM_MARGIN_BOTTOM_VALUE_SMALL
-                : 0,
-          }}
-          onClick={handleAddAccessLocation}
-        >
-          Add Access Location
-        </Button>
-        {form.accessLocations.map((accessLocation, i) => (
-          <Box
-            sx={{
-              display: 'flex',
-              marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL,
-            }}
-          >
-            <TextField
-              fullWidth
-              name='accessLocationName'
-              label='Access Location Name'
-              value={accessLocation[0]}
-              onChange={(e) => handleAccessLocationChange(e, i)}
-            />
-            <TextField
-              fullWidth
-              name='accessLocationDescription'
-              label='Access Location Description'
-              value={accessLocation[1]}
-              onChange={(e) => handleAccessLocationChange(e, i)}
-            />
-            <TextField
-              fullWidth
-              name='accessLocationUrl'
-              label='Access Location Url'
-              value={accessLocation[2]}
-              onChange={(e) => handleAccessLocationChange(e, i)}
-            />
-            <IconButton
-              size='large'
-              edge='end'
-              color='inherit'
-              disableRipple
-              onClick={(e) => handleRemoveAccessLocation(i)}
-            >
-              <RemoveCircleOutlineIcon color='primary' />
-            </IconButton>
-          </Box>
-        ))}
-      </Box>
+      <PropertyList form={form} setForm={setForm} />
+      <Divider sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE }} />
+      <AccessLocationList form={form} setForm={setForm} />
       {tokenType === 'Trading Cards' ||
-      tokenType === 'Virtual Reality - Properties' ||
+      tokenType === 'Virtual Reality - Real Estates' ||
       tokenType === 'Virtual Reality - Accessories' ? (
         <>
           <Divider sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE }} />
-          <Typography sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL }}>
-            Point
-          </Typography>
-          <Input
-            type='number'
-            sx={{ marginBottom: '0.1rem' }}
-            fullWidth
-            name='point'
-            value={form.point}
-            onChange={handleChange}
-          />
-          <Typography variant='overline'>0 - 1000</Typography>
-          <Box
-            sx={{
-              marginTop: FORM_MARGIN_BOTTOM_VALUE_LARGE,
-              marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE,
-            }}
-          >
-            <Button
-              variant='contained'
-              sx={{
-                marginBottom:
-                  form.properties.length > 0
-                    ? FORM_MARGIN_BOTTOM_VALUE_SMALL
-                    : 0,
-              }}
-              onClick={handleAddProperty}
-            >
-              Add Property
-            </Button>
-            {form.properties.map((property, i) => (
-              <Box
-                sx={{
-                  display: 'flex',
-                  marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL,
-                }}
-              >
-                <TextField
-                  fullWidth
-                  name='propertyName'
-                  label='Property Name'
-                  value={property[0]}
-                  onChange={(e) => handlePropertyChange(e, i)}
-                />
-                <TextField
-                  fullWidth
-                  name='propertyValue'
-                  label='Property Value'
-                  value={property[i][1]}
-                  onChange={(e) => handlePropertyChange(e, i)}
-                />
-                <IconButton
-                  size='large'
-                  edge='end'
-                  color='inherit'
-                  disableRipple
-                  onClick={(e) => handleRemoveProperty(i)}
-                >
-                  <RemoveCircleOutlineIcon color='primary' />
-                </IconButton>
-              </Box>
-            ))}
-          </Box>
+          <Point form={form} handleChange={handleChange} />
+          <Level form={form} handleChange={handleChange} />
+          <AbilityList form={form} setForm={setForm} />
         </>
       ) : null}
       <Divider />
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          marginTop: FORM_MARGIN_BOTTOM_VALUE_SMALL,
-          marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL,
-        }}
-      >
-        <Switch checked={form.isSensitive} onChange={handleIsSensitiveChange} />
-        <Typography
-          variant='outlined'
-          sx={{ marginLeft: FORM_MARGIN_BOTTOM_VALUE_SMALL }}
-        >
-          Sensitive Content
-        </Typography>
-      </Box>
+      <SensitiveContent form={form} setForm={setForm} />
       <Divider sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE }} />
-      <Button variant='outlined' /*onClick={createItem}*/>
-        Create Digital Asset
-      </Button>
-    </form>
+    </>
   )
 }
 
