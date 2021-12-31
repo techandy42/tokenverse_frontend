@@ -19,6 +19,7 @@ const KeyFeatures = ({ form, handleChange }) => {
       <FlexBox sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL }}>
         <TextField
           fullWidth
+          required
           name='topColorOne'
           label='Top Color #1'
           value={form.topColorOne}
@@ -26,6 +27,7 @@ const KeyFeatures = ({ form, handleChange }) => {
         />
         <TextField
           fullWidth
+          required
           name='topFeatureOne'
           label='Top Feature #1'
           value={form.topFeatureOne}
@@ -36,6 +38,7 @@ const KeyFeatures = ({ form, handleChange }) => {
         <TextField
           sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL }}
           fullWidth
+          required
           name='topColorTwo'
           label='Top Color #2'
           value={form.topColorTwo}
@@ -44,6 +47,7 @@ const KeyFeatures = ({ form, handleChange }) => {
         <TextField
           sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL }}
           fullWidth
+          required
           name='topFeatureTwo'
           label='Top Feature #2'
           value={form.topFeatureTwo}

@@ -22,6 +22,7 @@ import {
   FORM_MARGIN_BOTTOM_VALUE_LARGE,
   FORM_MARGIN_BOTTOM_VALUE_SMALL,
 } from '../../constants/values'
+import FileUploadAndDisplay from './createComponents/FileUploadAndDisplay'
 
 interface IProps {
   isCreateMultiple: boolean
@@ -41,6 +42,8 @@ const CreateSettings: React.FC<IProps> = ({
   setTokenType,
   blockchainType,
   setBlockchainType,
+  fileUrls,
+  setFileUrls,
 }) => {
   const [initialCollectionName, setInitialCollectionName] = useState(
     collections[0],
@@ -139,6 +142,11 @@ const CreateSettings: React.FC<IProps> = ({
           <MenuItem value={blockchainType}>{blockchainType}</MenuItem>
         ))}
       </Select>
+      <FileUploadAndDisplay
+        fileUrls={fileUrls}
+        setFileUrls={setFileUrls}
+        isCreateMultiple={isCreateMultiple}
+      />
     </div>
   )
 }

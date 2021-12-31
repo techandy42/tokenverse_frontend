@@ -165,26 +165,24 @@ export default function Create() {
         setTokenType={setTokenType}
         blockchainType={blockchainType}
         setBlockchainType={setBlockchainType}
+        fileUrls={fileUrls}
+        setFileUrls={setFileUrls}
       />
       {!isCreateMultiple ? (
         <CreateOne
+          isCreateMultiple={isCreateMultiple}
           tokenType={tokenType}
           forms={forms}
           setForms={setForms}
-          fileUrls={fileUrls}
-          setFileUrls={setFileUrls}
           clearCounter={clearCounter}
         />
       ) : (
         <CreateMany
-          collection={collection}
-          setCollection={setCollection}
+          isCreateMultiple={isCreateMultiple}
           tokenType={tokenType}
-          setTokenType={setTokenType}
           forms={forms}
           setForms={setForms}
-          fileUrls={fileUrls}
-          setFileUrls={setFileUrls}
+          clearCounter={clearCounter}
         />
       )}
       <Button variant='outlined' type='submit'>

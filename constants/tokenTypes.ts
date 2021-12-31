@@ -7,5 +7,6 @@ const tokenTypes = [
   'Trading Cards',
   'Virtual Reality - Real Estates',
   'Virtual Reality - Accessories',
+  'Virtual Reality - Avatar',
 ]
 export default tokenTypes

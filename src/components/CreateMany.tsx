@@ -1,12 +1,11 @@
 import React from 'react'
 
 const CreateMany: React.FC<any> = ({
-  collection,
-  setCollection,
+  isCreateMultiple,
+  tokenType,
   forms,
   setForms,
-  fileUrls,
-  setFileUrls,
+  clearCounter,
 }) => {
   return (
     <div>
