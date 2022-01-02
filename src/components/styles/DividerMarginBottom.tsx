@@ -1,7 +1,7 @@
 import Divider from '@mui/material/Divider'
-import { FORM_MARGIN_BOTTOM_VALUE_LARGE } from '../../../constants/values'
+import { MARGIN_LARGE } from '../../../constants'
 
 const DividerMarginBottom = () => {
-  return <Divider sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE }} />
+  return <Divider sx={{ marginBottom: MARGIN_LARGE }} />
 }
 export default DividerMarginBottom

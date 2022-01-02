@@ -23,7 +23,7 @@
     "src/pages/items.tsx",
     "hardhat.config.js",
     "src/components/styles/iosSwitch.txs",
-    "src/components/CreateOne.tsx"
+    "src/components/CreateSingle.tsx"
   ],
   "exclude": ["node_modules"]
 }

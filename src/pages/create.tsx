@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { ethers } from 'ethers'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
 import { useRouter } from 'next/router'
@@ -6,24 +6,24 @@ import Web3Modal from 'web3modal'
 import { nftaddress, nftmarketaddress } from '../../config'
 import NFT from '../../artifacts/contracts/NFT.sol/NFT.json'
 import Market from '../../artifacts/contracts/NFTMarket.sol/NFTMarket.json'
-import CreateOne from '../components/CreateOne'
-import CreateMany from '../components/CreateMany'
 import { styled } from '@mui/material/styles'
 import Button from '@mui/material/Button'
-import tokenTypes from '../../constants/tokenTypes'
-import blockchainTypes from '../../constants/blockchainTypes'
 import {
-  FORM_MARGIN_BOTTOM_VALUE_LARGE,
-  CREATE_ONE,
-  CREATE_MANY,
+  MARGIN_LARGE,
+  CREATE_SINGLE,
+  CREATE_MULTIPLE,
   CREATE_SFT,
-} from '../../constants/values'
-import CreateSettings from '../components/CreateSettings'
+  IMPORT_NFT,
+  IMPORT_SFT,
+} from '../../constants'
 import FlexBox from '../components/styles/FlexBox'
 import FlexSpace from '../components/styles/FlexSpace'
-import { ButtonGroup, ToggleButton, ToggleButtonGroup } from '@mui/material'
-import CreateSFT from '../components/CreateSFT'
-import { FORM } from '../../constants/values'
+import { ToggleButton, ToggleButtonGroup } from '@mui/material'
+import CreateSingle from '../components/createAndImportComponents/CreateSingle'
+import CreateMultiple from '../components/createAndImportComponents/CreateMultiple'
+import CreateSFT from '../components/createAndImportComponents/CreateSFT'
+import ImportNFT from '../components/createAndImportComponents/ImportNFT'
+import ImportSFT from '../components/createAndImportComponents/ImportSFT'
 
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
@@ -38,13 +38,24 @@ export const collections = [
 ]
 
 export default function Create() {
-  const [createType, setCreateType] = useState(CREATE_ONE)
-  const [collection, setCollection] = useState(collections[0])
-  const [tokenType, setTokenType] = useState(tokenTypes[0])
-  const [blockchainType, setBlockchainType] = useState(blockchainTypes[0])
-  const [clearCounter, setClearCounter] = useState(0)
+  const [createType, setCreateType] = useState<string>(CREATE_SINGLE)
+  const [clearCounter, setClearCounter] = useState<number>(0)
 
   const router = useRouter()
+
+  // Use before minting
+
+  // const getFileUrl = async (file) => {
+  //   try {
+  //     const added = await client.add(file, {
+  //       progress: (prog) => console.log(`received: ${prog}`),
+  //     })
+  //     const url = `https://ipfs.infura.io/ipfs/${added.path}`
+  //     return url
+  //   } catch (e) {
+  //     console.log(e)
+  //   }
+  // }
 
   // async function createItem() {
   //   const { name, description, price } = formTextField
@@ -91,16 +102,9 @@ export default function Create() {
   //   router.push('/')
   // }
 
-  const handleClear = (e) => {
-    setCollection(collections[0])
-    setTokenType(tokenTypes[0])
-    setBlockchainType(blockchainTypes[0])
-    setClearCounter(clearCounter + 1)
-  }
-
   const StyledPageBase = styled('div')(({ theme }) => ({
-    marginTop: FORM_MARGIN_BOTTOM_VALUE_LARGE,
-    marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE,
+    marginTop: MARGIN_LARGE,
+    marginBottom: MARGIN_LARGE,
     marginLeft: '5%',
     marginRight: '5%',
     [theme.breakpoints.up('sm')]: {
@@ -117,61 +121,52 @@ export default function Create() {
     <StyledPageBase>
       <FlexBox>
         <ToggleButtonGroup color='primary' value={createType} exclusive>
-          <ToggleButton
-            value={CREATE_ONE}
-            onClick={(e) => setCreateType(CREATE_ONE)}
-          >
+          <ToggleButton onClick={(e) => setCreateType(CREATE_SINGLE)}>
             Create Single
           </ToggleButton>
-          <ToggleButton
-            value={CREATE_MANY}
-            onClick={(e) => setCreateType(CREATE_MANY)}
-          >
+          <ToggleButton onClick={(e) => setCreateType(CREATE_MULTIPLE)}>
             Create Multiple
           </ToggleButton>
-          <ToggleButton
-            value={CREATE_SFT}
-            onClick={(e) => setCreateType(CREATE_SFT)}
-          >
+          <ToggleButton onClick={(e) => setCreateType(CREATE_SFT)}>
             Create SFT
+          </ToggleButton>
+          <ToggleButton onClick={(e) => setCreateType(IMPORT_NFT)}>
+            Import NFT
+          </ToggleButton>
+          <ToggleButton onClick={(e) => setCreateType(IMPORT_SFT)}>
+            Import SFT
           </ToggleButton>
         </ToggleButtonGroup>
         <FlexSpace />
-        <Button onClick={handleClear}>Clear All</Button>
+        <Button onClick={(e) => setClearCounter(clearCounter + 1)}>
+          Clear All
+        </Button>
       </FlexBox>
-      {createType !== CREATE_SFT && (
-        <CreateSettings
-          createType={createType}
-          collection={collection}
-          setCollection={setCollection}
-          tokenType={tokenType}
-          setTokenType={setTokenType}
-          blockchainType={blockchainType}
-          setBlockchainType={setBlockchainType}
-        />
-      )}
-      {createType === CREATE_ONE ? (
-        <CreateOne
-          collection={collection}
-          tokenType={tokenType}
-          blockchainType={blockchainType}
+      {createType === CREATE_SINGLE ? (
+        <CreateSingle
           clearCounter={clearCounter}
-          // form={form}
-          // setForm={setForm}
-          // file={file}
-          // setFile={setFile}
-          // multimediaImageFile={multimediaImageFile}
-          // setMultimediaImageFile={setMultimediaImageFile}
+          setClearCounter={setClearCounter}
         />
-      ) : createType === CREATE_MANY ? (
-        <CreateMany
-          collection={collection}
-          tokenType={tokenType}
-          blockchainType={blockchainType}
+      ) : createType === CREATE_MULTIPLE ? (
+        <CreateMultiple
           clearCounter={clearCounter}
+          setClearCounter={setClearCounter}
         />
       ) : createType === CREATE_SFT ? (
-        <CreateSFT />
+        <CreateSFT
+          clearCounter={clearCounter}
+          setClearCounter={setClearCounter}
+        />
+      ) : createType === IMPORT_NFT ? (
+        <ImportNFT
+          clearCounter={clearCounter}
+          setClearCounter={setClearCounter}
+        />
+      ) : createType === IMPORT_SFT ? (
+        <ImportSFT
+          clearCounter={clearCounter}
+          setClearCounter={setClearCounter}
+        />
       ) : null}
     </StyledPageBase>
   )

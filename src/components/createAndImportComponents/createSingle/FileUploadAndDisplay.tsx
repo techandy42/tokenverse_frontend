@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
-import { FORM_MARGIN_BOTTOM_VALUE_LARGE } from '../../../constants/values'
+import { MARGIN_LARGE } from '../../../../constants'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import Tooltip from '@mui/material/Tooltip'
@@ -9,17 +9,24 @@ import IconButton from '@mui/material/IconButton'
 
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
-const FileUploadAndDisplay = ({
+interface IProps {
+  file: any
+  setFile: React.Dispatch<any>
+  multimediaImageFile: any
+  setMultimediaImageFile: React.Dispatch<any>
+}
+
+const FileUploadAndDisplay: React.FC<IProps> = ({
   file,
   setFile,
   multimediaImageFile,
   setMultimediaImageFile,
 }) => {
-  const displayFile = (file) => {
+  const displayFile = (file: any) => {
     return (
       <>
         {file !== null && (
-          <Box sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE }}>
+          <Box sx={{ marginBottom: MARGIN_LARGE }}>
             {file?.type.split('/')[0] === 'image' ? (
               <img
                 width='400'
@@ -50,7 +57,7 @@ const FileUploadAndDisplay = ({
     )
   }
 
-  const handleMultimediaImageFile = (e) => {
+  const handleMultimediaImageFile = (e: any) => {
     const file = e.target.files[0]
     if (file.type.split('/')[0] === 'image') {
       setMultimediaImageFile(file)
@@ -61,11 +68,10 @@ const FileUploadAndDisplay = ({
 
   const multimediaImageFileHandler = () => {
     return (
-      <Box sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE }}>
+      <Box sx={{ marginBottom: MARGIN_LARGE }}>
         <Box
           sx={{
-            marginBottom:
-              multimediaImageFile !== null ? FORM_MARGIN_BOTTOM_VALUE_LARGE : 0,
+            marginBottom: multimediaImageFile !== null ? MARGIN_LARGE : 0,
           }}
         >
           {multimediaImageFile === null && (
@@ -75,8 +81,9 @@ const FileUploadAndDisplay = ({
                 type='file'
                 onChange={handleMultimediaImageFile}
                 onClick={(e) => {
-                  e.target.value = null
+                  setMultimediaImageFile(e.target.files[0])
                 }}
+                accept='image/*'
                 hidden
               />
             </Button>
@@ -85,7 +92,7 @@ const FileUploadAndDisplay = ({
             <Button
               component='label'
               variant='outlined'
-              onClick={(e) => setMultimediaImageFile(null)}
+              onClick={() => setMultimediaImageFile(null)}
             >
               Remove Image
             </Button>
@@ -112,7 +119,7 @@ const FileUploadAndDisplay = ({
           component='label'
           variant='outlined'
           sx={{
-            marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE,
+            marginBottom: MARGIN_LARGE,
           }}
         >
           Add File
@@ -130,8 +137,8 @@ const FileUploadAndDisplay = ({
         <Button
           component='label'
           variant='outlined'
-          sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE }}
-          onClick={(e) => {
+          sx={{ marginBottom: MARGIN_LARGE }}
+          onClick={() => {
             setFile(null)
             setMultimediaImageFile(null)
           }}

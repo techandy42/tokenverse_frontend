@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
-import { FORM_MARGIN_BOTTOM_VALUE_LARGE } from '../../../constants/values'
+import { MARGIN_LARGE } from '../../../../constants'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
-import FlexSpace from '../styles/FlexSpace'
-import FlexBox from '../styles/FlexSpace'
+import FlexSpace from '../../styles/FlexSpace'
+import FlexBox from '../../styles/FlexSpace'
 import { ButtonGroup, IconButton } from '@mui/material'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
@@ -15,49 +15,63 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
 
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
-const FilesUploadAndDisplay = ({ files, setFiles }) => {
-  const [fileIndex, setFileIndex] = useState(0)
+interface IProps {
+  files: [any, any][]
+  setFiles: React.Dispatch<React.SetStateAction<[any, any][]>>
+  names: string[]
+  setNames: React.Dispatch<React.SetStateAction<string[]>>
+  genericName: string
+}
+
+const FilesUploadAndDisplay: React.FC<IProps> = ({
+  files,
+  setFiles,
+  names,
+  setNames,
+  genericName,
+}) => {
+  const [fileIndex, setFileIndex] = useState<number>(0)
   const [viewMultimediaImageFiles, setViewMultimediaImageFiles] =
-    useState(false)
+    useState<boolean>(true)
 
-  console.log(files)
-
-  const handleAddFiles = (e) => {
-    if (e.target.files.length > 10000) {
-      alert('Please upload 1 - 10000 files')
+  const handleAddFiles = (e: React.ChangeEventHandler<HTMLInputElement>) => {
+    if (e.target.files.length > 100) {
+      alert('Please upload 1 - 100 files')
     } else {
-      // const uploadedFiles = e.target.files
-      // const uploadedFilesAndMultimediaImageFiles = uploadedFiles.map((file) => [
-      //   file,
-      //   null,
-      // ])
-      const uploadedFilesAndMultimediaImageFiles = []
+      const uploadedFiles = []
       for (const file of e.target.files) {
-        uploadedFilesAndMultimediaImageFiles.push([file, null])
+        uploadedFiles.push([file, null])
       }
-      setFiles([...files, ...uploadedFilesAndMultimediaImageFiles])
+      const newNames = []
+      for (let i = 0; i < e.target.files.length; i++) {
+        newNames.push(genericName + ` #${i + 1 + names.length}`)
+      }
+      setNames([...names, ...newNames])
+      setFiles([...files, ...uploadedFiles])
     }
   }
 
-  const handleDeleteFile = (e) => {
+  const handleDeleteFile = (e: React.MouseEventHandler<HTMLLabelElement>) => {
+    setNames([...names.slice(0, fileIndex), ...names.slice(fileIndex + 1)])
     setFiles([...files.slice(0, fileIndex), ...files.slice(fileIndex + 1)])
     if (files.length === fileIndex + 1 && fileIndex !== 0) {
       setFileIndex(fileIndex - 1)
     }
   }
 
-  const handleDeleteFiles = (e) => {
+  const handleDeleteFiles = (e: React.MouseEventHandler<HTMLLabelElement>) => {
+    setNames([])
     setFiles([])
     setFileIndex(0)
   }
 
-  const handleNext = (e) => {
+  const handleNext = () => {
     if (fileIndex < files.length - 1) {
       setFileIndex(fileIndex + 1)
     }
   }
 
-  const handlePrev = (e) => {
+  const handlePrev = () => {
     if (fileIndex > 0) {
       setFileIndex(fileIndex - 1)
     }
@@ -67,7 +81,7 @@ const FilesUploadAndDisplay = ({ files, setFiles }) => {
     return (
       <>
         {files.length > 0 ? (
-          <Box sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE }}>
+          <Box sx={{ marginBottom: MARGIN_LARGE }}>
             {files[fileIndex][0]?.type.split('/')[0] === 'image' ? (
               <img
                 width='400'
@@ -117,7 +131,7 @@ const FilesUploadAndDisplay = ({ files, setFiles }) => {
                   size='large'
                   edge='end'
                   color='inherit'
-                  onClick={handlePrev}
+                  onClick={() => handlePrev()}
                   sx={{ marginRight: '0.1rem' }}
                 >
                   <ArrowBackIosIcon />
@@ -126,7 +140,7 @@ const FilesUploadAndDisplay = ({ files, setFiles }) => {
                   size='large'
                   edge='end'
                   color='inherit'
-                  onClick={handleNext}
+                  onClick={() => handleNext()}
                   sx={{ marginLeft: '0.1rem' }}
                 >
                   <ArrowForwardIosIcon />
@@ -139,7 +153,7 @@ const FilesUploadAndDisplay = ({ files, setFiles }) => {
     )
   }
 
-  const displayFile = (file) => {
+  const displayFile = (file: any) => {
     return (
       <>
         {file !== null && (
@@ -173,25 +187,25 @@ const FilesUploadAndDisplay = ({ files, setFiles }) => {
     )
   }
 
-  const handleAddMultimediaImageFileHandler = (file, i) => {
+  const handleAddMultimediaImageFileHandler = (file: any, i: number) => {
     setFiles([...files.slice(0, i), [files[i][0], file], ...files.slice(i + 1)])
   }
 
-  const handleRemoveMultimediaImageFileHandler = (i) => {
+  const handleRemoveMultimediaImageFileHandler = (i: number) => {
     setFiles([...files.slice(0, i), [files[i][0], null], ...files.slice(i + 1)])
   }
 
-  const multimediaImageFileHandler = (file, i) => {
+  const multimediaImageFileHandler = (file: any, i: number) => {
     return (
       <>
         <Box
           sx={{
-            marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE,
+            marginBottom: MARGIN_LARGE,
           }}
         >
           {file[1] === null && (
             <Button component='label' variant='outlined'>
-              Add Files
+              Add Image (Required)
               <input
                 type='file'
                 multiple
@@ -201,6 +215,7 @@ const FilesUploadAndDisplay = ({ files, setFiles }) => {
                 onClick={(e) => {
                   e.target.value = null
                 }}
+                accept='image/*'
                 hidden
               />
             </Button>
@@ -211,7 +226,7 @@ const FilesUploadAndDisplay = ({ files, setFiles }) => {
               variant='outlined'
               onClick={(e) => handleRemoveMultimediaImageFileHandler(i)}
             >
-              Remove File
+              Remove Image
             </Button>
           )}
           <Tooltip
@@ -224,7 +239,7 @@ const FilesUploadAndDisplay = ({ files, setFiles }) => {
             </IconButton>
           </Tooltip>
         </Box>
-        <FlexBox sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE }}>
+        <FlexBox sx={{ marginBottom: MARGIN_LARGE }}>
           {displayFile(file[0])}
           {displayFile(file[1])}
         </FlexBox>
@@ -235,7 +250,7 @@ const FilesUploadAndDisplay = ({ files, setFiles }) => {
   const multimediaImageFilesViewer = () => {
     return (
       <>
-        <Box sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE }}>
+        <Box sx={{ marginBottom: MARGIN_LARGE }}>
           <Button
             variant='outlined'
             onClick={(e) =>
@@ -267,7 +282,7 @@ const FilesUploadAndDisplay = ({ files, setFiles }) => {
     )
   }
 
-  const hasMultimediaFile = (files) => {
+  const hasMultimediaFile = (files: any) => {
     if (files.length > 0) {
       let multimediaFileExists = false
       for (const file of files) {
@@ -289,7 +304,7 @@ const FilesUploadAndDisplay = ({ files, setFiles }) => {
           component='label'
           variant='outlined'
           sx={{
-            marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE,
+            marginBottom: MARGIN_LARGE,
           }}
         >
           Add Files
@@ -308,7 +323,7 @@ const FilesUploadAndDisplay = ({ files, setFiles }) => {
             <Button
               component='label'
               variant='outlined'
-              sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE }}
+              sx={{ marginBottom: MARGIN_LARGE }}
               onClick={handleDeleteFile}
             >
               Remove File
@@ -316,7 +331,7 @@ const FilesUploadAndDisplay = ({ files, setFiles }) => {
             <Button
               component='label'
               variant='outlined'
-              sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE }}
+              sx={{ marginBottom: MARGIN_LARGE }}
               onClick={handleDeleteFiles}
             >
               Remove Files
