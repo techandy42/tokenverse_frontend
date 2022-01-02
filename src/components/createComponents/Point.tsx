@@ -2,10 +2,11 @@ import React from 'react'
 import Typography from '@mui/material/Typography'
 import Input from '@mui/material/Input'
 import { FORM_MARGIN_BOTTOM_VALUE_SMALL } from '../../../constants/values'
+import Box from '@mui/material/Box'
 
 const Point = ({ form, handleChange }) => {
   return (
-    <div>
+    <Box sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL }}>
       <Typography sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL }}>
         Point
       </Typography>
@@ -17,9 +18,7 @@ const Point = ({ form, handleChange }) => {
         value={form.point}
         onChange={handleChange}
       />
-      {/* Adjust the range */}
-      <Typography variant='overline'>Enter Range Here</Typography>
-    </div>
+    </Box>
   )
 }
 

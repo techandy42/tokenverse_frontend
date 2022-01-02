@@ -8,6 +8,9 @@ import {
   FORM_MARGIN_BOTTOM_VALUE_LARGE,
   FORM_MARGIN_BOTTOM_VALUE_SMALL,
 } from '../../../constants/values'
+import FlexBox from '../styles/FlexBox'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
+import Tooltip from '@mui/material/Tooltip'
 
 const PropertyList = ({ form, setForm }) => {
   const handleAddProperty = (e) => {
@@ -48,20 +51,28 @@ const PropertyList = ({ form, setForm }) => {
         marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE,
       }}
     >
-      <Button
-        variant='contained'
+      <Box
         sx={{
           marginBottom:
             form.properties.length > 0 ? FORM_MARGIN_BOTTOM_VALUE_SMALL : 0,
         }}
-        onClick={handleAddProperty}
       >
-        Add Property
-      </Button>
+        <Button variant='contained' onClick={handleAddProperty}>
+          Add Property
+        </Button>
+        <Tooltip
+          placement='top'
+          title='Characteristics of the NFT (ex: necklace - diamond)'
+          arrow
+        >
+          <IconButton size='large' edge='end' color='inherit' disableRipple>
+            <HelpOutlineIcon color='primary' fontSize='small' />
+          </IconButton>
+        </Tooltip>
+      </Box>
       {form.properties.map((property, i) => (
-        <Box
+        <FlexBox
           sx={{
-            display: 'flex',
             marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL,
           }}
         >
@@ -88,7 +99,7 @@ const PropertyList = ({ form, setForm }) => {
           >
             <RemoveCircleOutlineIcon color='primary' />
           </IconButton>
-        </Box>
+        </FlexBox>
       ))}
     </Box>
   )

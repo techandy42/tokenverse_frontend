@@ -1,12 +1,3 @@
-/**
- * Purpose:
- * Displays the following:
- * Title
- * Collection Field
- * Token Type Field
- * Blockchain Type Field
- */
-
 import React, { useState } from 'react'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
@@ -21,35 +12,25 @@ import blockchainTypes from '../../constants/blockchainTypes'
 import {
   FORM_MARGIN_BOTTOM_VALUE_LARGE,
   FORM_MARGIN_BOTTOM_VALUE_SMALL,
+  CREATE_ONE,
+  CREATE_MANY,
+  CREATE_SFT,
 } from '../../constants/values'
-import FileUploadAndDisplay from './createComponents/FileUploadAndDisplay'
 
-interface IProps {
-  isCreateMultiple: boolean
-  collection: string
-  setCollection(arg: string): string
-  tokenType: string
-  setTokenType(arg: string): string
-  blockchainType: string
-  setBlockchainType(arg: string): string
-}
-
-const CreateSettings: React.FC<IProps> = ({
-  isCreateMultiple,
+const CreateSettings = ({
+  createType,
   collection,
   setCollection,
   tokenType,
   setTokenType,
   blockchainType,
   setBlockchainType,
-  fileUrls,
-  setFileUrls,
 }) => {
   const [initialCollectionName, setInitialCollectionName] = useState(
     collections[0],
   )
 
-  const handleRenameInitialCollection = (e: any) => {
+  const handleRenameInitialCollection = (e) => {
     // Rename the initial collection
   }
 
@@ -62,7 +43,11 @@ const CreateSettings: React.FC<IProps> = ({
           marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE,
         }}
       >
-        {!isCreateMultiple ? 'Create Single' : 'Create Multiple'}
+        {createType === CREATE_ONE
+          ? 'Create Single'
+          : createType === CREATE_MANY
+          ? 'Create Multiple'
+          : 'Create Single'}
       </Typography>
       <Typography sx={{ marginBottom: FORM_MARGIN_BOTTOM_VALUE_SMALL }}>
         Collection
@@ -142,11 +127,6 @@ const CreateSettings: React.FC<IProps> = ({
           <MenuItem value={blockchainType}>{blockchainType}</MenuItem>
         ))}
       </Select>
-      <FileUploadAndDisplay
-        fileUrls={fileUrls}
-        setFileUrls={setFileUrls}
-        isCreateMultiple={isCreateMultiple}
-      />
     </div>
   )
 }

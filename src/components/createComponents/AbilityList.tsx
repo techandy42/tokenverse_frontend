@@ -10,6 +10,8 @@ import {
   FORM_MARGIN_BOTTOM_VALUE_LARGE,
   FORM_MARGIN_BOTTOM_VALUE_SMALL,
 } from '../../../constants/values'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
+import Tooltip from '@mui/material/Tooltip'
 
 const AbilityList = ({ form, setForm }) => {
   const handleAddAbility = (e) => {
@@ -50,16 +52,25 @@ const AbilityList = ({ form, setForm }) => {
         marginBottom: FORM_MARGIN_BOTTOM_VALUE_LARGE,
       }}
     >
-      <Button
-        variant='contained'
+      <Box
         sx={{
           marginBottom:
             form.abilities.length > 0 ? FORM_MARGIN_BOTTOM_VALUE_SMALL : 0,
         }}
-        onClick={handleAddAbility}
       >
-        Add Ability
-      </Button>
+        <Button variant='contained' onClick={handleAddAbility}>
+          Add Ability
+        </Button>
+        <Tooltip
+          placement='top'
+          title='Abilities of the object that the NFT represents (ex: health - 100)'
+          arrow
+        >
+          <IconButton size='large' edge='end' color='inherit' disableRipple>
+            <HelpOutlineIcon color='primary' fontSize='small' />
+          </IconButton>
+        </Tooltip>
+      </Box>
       {form.abilities.map((ability, i) => (
         <Box
           sx={{
