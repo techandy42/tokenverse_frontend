@@ -130,39 +130,19 @@ export default function Create() {
     <StyledPageBase>
       <FlexBox>
         <ToggleButtonGroup value={createType} exclusive onChange={handleChange}>
-          <ToggleButton
-            value={CREATE_SINGLE}
-            aria-label='list'
-            sx={{ fontWeight: 400 }}
-          >
+          <ToggleButton value={CREATE_SINGLE} sx={{ fontWeight: 400 }}>
             Create Single
           </ToggleButton>
-          <ToggleButton
-            value={CREATE_MULTIPLE}
-            aria-label='list'
-            sx={{ fontWeight: 400 }}
-          >
+          <ToggleButton value={CREATE_MULTIPLE} sx={{ fontWeight: 400 }}>
             Create Multiple
           </ToggleButton>
-          <ToggleButton
-            value={CREATE_SFT}
-            aria-label='list'
-            sx={{ fontWeight: 400 }}
-          >
+          <ToggleButton value={CREATE_SFT} sx={{ fontWeight: 400 }}>
             Create SFT
           </ToggleButton>
-          <ToggleButton
-            value={IMPORT_NFT}
-            aria-label='list'
-            sx={{ fontWeight: 400 }}
-          >
+          <ToggleButton value={IMPORT_NFT} sx={{ fontWeight: 400 }}>
             Import NFT
           </ToggleButton>
-          <ToggleButton
-            value={IMPORT_SFT}
-            aria-label='list'
-            sx={{ fontWeight: 400 }}
-          >
+          <ToggleButton value={IMPORT_SFT} sx={{ fontWeight: 400 }}>
             Import SFT
           </ToggleButton>
         </ToggleButtonGroup>

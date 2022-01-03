@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { MARGIN_LARGE } from '../../../../constants'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
-import FlexSpace from '../../styles/FlexSpace'
-import FlexBox from '../../styles/FlexSpace'
-import { ButtonGroup, IconButton } from '@mui/material'
+import IconButton from '@mui/material/IconButton'
+import ButtonGroup from '@mui/material/ButtonGroup'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
-import Typography from '@mui/material/Typography'
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import Tooltip from '@mui/material/Tooltip'
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
+import FlexBox from '../../styles/FlexBox'
 
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
@@ -224,7 +223,7 @@ const FilesUploadAndDisplay: React.FC<IProps> = ({
             <Button
               component='label'
               variant='contained'
-              onClick={(e) => handleRemoveMultimediaImageFileHandler(i)}
+              onClick={() => handleRemoveMultimediaImageFileHandler(i)}
             >
               Remove Image
             </Button>
