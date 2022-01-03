@@ -16,7 +16,7 @@ const Names: React.FC<IProps> = ({ names, setNames, files }) => {
   return (
     <div>
       <Button
-        variant='outlined'
+        variant='contained'
         sx={{ marginBottom: MARGIN_LARGE }}
         onClick={() => setShowNames(!showNames)}
       >
@@ -36,7 +36,7 @@ const Names: React.FC<IProps> = ({ names, setNames, files }) => {
                   marginBottom:
                     i === names.length - 1 ? MARGIN_LARGE : MARGIN_SMALL,
                 }}
-                variant='outlined'
+                variant='contained'
                 label={`Name - #${files[i][0].name}`}
                 value={name}
                 fullWidth

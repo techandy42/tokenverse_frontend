@@ -46,6 +46,14 @@ contract NFTMarket is ReentrancyGuard {
     return listingPrice;
   }
 
+  /* Mints the token */
+  // function createMintItem(
+  //   address nftContract,
+  //   uint256 tokenId,
+  // ) public payable nonReentrant {
+
+  // }
+
   /* Places an item for sale on the marketplace */
   function createMarketItem(
     address nftContract,

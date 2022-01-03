@@ -75,7 +75,7 @@ const FileUploadAndDisplay: React.FC<IProps> = ({
           }}
         >
           {multimediaImageFile === null && (
-            <Button component='label' variant='outlined'>
+            <Button component='label' variant='contained'>
               Add Image (Required)
               <input
                 type='file'
@@ -91,7 +91,7 @@ const FileUploadAndDisplay: React.FC<IProps> = ({
           {multimediaImageFile !== null && (
             <Button
               component='label'
-              variant='outlined'
+              variant='contained'
               onClick={() => setMultimediaImageFile(null)}
             >
               Remove Image
@@ -117,7 +117,7 @@ const FileUploadAndDisplay: React.FC<IProps> = ({
       {file === null && (
         <Button
           component='label'
-          variant='outlined'
+          variant='contained'
           sx={{
             marginBottom: MARGIN_LARGE,
           }}
@@ -136,7 +136,7 @@ const FileUploadAndDisplay: React.FC<IProps> = ({
       {file !== null && (
         <Button
           component='label'
-          variant='outlined'
+          variant='contained'
           sx={{ marginBottom: MARGIN_LARGE }}
           onClick={() => {
             setFile(null)

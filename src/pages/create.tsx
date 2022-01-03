@@ -10,11 +10,13 @@ import { styled } from '@mui/material/styles'
 import Button from '@mui/material/Button'
 import {
   MARGIN_LARGE,
+  MARGIN_SMALL,
   CREATE_SINGLE,
   CREATE_MULTIPLE,
   CREATE_SFT,
   IMPORT_NFT,
   IMPORT_SFT,
+  MARGIN_TOP,
 } from '../../constants'
 import FlexBox from '../components/styles/FlexBox'
 import FlexSpace from '../components/styles/FlexSpace'
@@ -103,7 +105,7 @@ export default function Create() {
   // }
 
   const StyledPageBase = styled('div')(({ theme }) => ({
-    marginTop: MARGIN_LARGE,
+    marginTop: MARGIN_TOP,
     marginBottom: MARGIN_LARGE,
     marginLeft: '5%',
     marginRight: '5%',
@@ -117,23 +119,50 @@ export default function Create() {
     },
   }))
 
+  const handleChange = (
+    event: React.MouseEvent<HTMLElement>,
+    nextCreateType: string,
+  ) => {
+    setCreateType(nextCreateType)
+  }
+
   return (
     <StyledPageBase>
       <FlexBox>
-        <ToggleButtonGroup color='primary' value={createType} exclusive>
-          <ToggleButton onClick={(e) => setCreateType(CREATE_SINGLE)}>
+        <ToggleButtonGroup value={createType} exclusive onChange={handleChange}>
+          <ToggleButton
+            value={CREATE_SINGLE}
+            aria-label='list'
+            sx={{ fontWeight: 400 }}
+          >
             Create Single
           </ToggleButton>
-          <ToggleButton onClick={(e) => setCreateType(CREATE_MULTIPLE)}>
+          <ToggleButton
+            value={CREATE_MULTIPLE}
+            aria-label='list'
+            sx={{ fontWeight: 400 }}
+          >
             Create Multiple
           </ToggleButton>
-          <ToggleButton onClick={(e) => setCreateType(CREATE_SFT)}>
+          <ToggleButton
+            value={CREATE_SFT}
+            aria-label='list'
+            sx={{ fontWeight: 400 }}
+          >
             Create SFT
           </ToggleButton>
-          <ToggleButton onClick={(e) => setCreateType(IMPORT_NFT)}>
+          <ToggleButton
+            value={IMPORT_NFT}
+            aria-label='list'
+            sx={{ fontWeight: 400 }}
+          >
             Import NFT
           </ToggleButton>
-          <ToggleButton onClick={(e) => setCreateType(IMPORT_SFT)}>
+          <ToggleButton
+            value={IMPORT_SFT}
+            aria-label='list'
+            sx={{ fontWeight: 400 }}
+          >
             Import SFT
           </ToggleButton>
         </ToggleButtonGroup>

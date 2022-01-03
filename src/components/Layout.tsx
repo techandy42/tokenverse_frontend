@@ -11,7 +11,7 @@ const Layout: React.FC<IProps> = ({ children }) => {
     <>
       <Meta />
       <Nav />
-      <div>
+      <div style={{ marginTop: '6rem' }}>
         <main>{children}</main>
       </div>
     </>

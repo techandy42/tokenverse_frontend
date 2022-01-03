@@ -1,6 +1,8 @@
 /* This file contains constant values for variables and states */
 export const MARGIN_LARGE = '2.5rem'
 export const MARGIN_SMALL = '1rem'
+export const MARGIN_TOP = '6rem'
+export const MARGIN_NAV_BUTTON = '0.05rem'
 
 export const CREATE_SINGLE = 'CREATE_SINGLE'
 export const CREATE_MULTIPLE = 'CREATE_MULTIPLE'

@@ -204,7 +204,7 @@ const FilesUploadAndDisplay: React.FC<IProps> = ({
           }}
         >
           {file[1] === null && (
-            <Button component='label' variant='outlined'>
+            <Button component='label' variant='contained'>
               Add Image (Required)
               <input
                 type='file'
@@ -223,7 +223,7 @@ const FilesUploadAndDisplay: React.FC<IProps> = ({
           {file[1] !== null && (
             <Button
               component='label'
-              variant='outlined'
+              variant='contained'
               onClick={(e) => handleRemoveMultimediaImageFileHandler(i)}
             >
               Remove Image
@@ -252,7 +252,7 @@ const FilesUploadAndDisplay: React.FC<IProps> = ({
       <>
         <Box sx={{ marginBottom: MARGIN_LARGE }}>
           <Button
-            variant='outlined'
+            variant='contained'
             onClick={(e) =>
               setViewMultimediaImageFiles(!viewMultimediaImageFiles)
             }
@@ -302,7 +302,7 @@ const FilesUploadAndDisplay: React.FC<IProps> = ({
       <ButtonGroup>
         <Button
           component='label'
-          variant='outlined'
+          variant='contained'
           sx={{
             marginBottom: MARGIN_LARGE,
           }}
@@ -322,7 +322,7 @@ const FilesUploadAndDisplay: React.FC<IProps> = ({
           <>
             <Button
               component='label'
-              variant='outlined'
+              variant='contained'
               sx={{ marginBottom: MARGIN_LARGE }}
               onClick={handleDeleteFile}
             >
@@ -330,7 +330,7 @@ const FilesUploadAndDisplay: React.FC<IProps> = ({
             </Button>
             <Button
               component='label'
-              variant='outlined'
+              variant='contained'
               sx={{ marginBottom: MARGIN_LARGE }}
               onClick={handleDeleteFiles}
             >

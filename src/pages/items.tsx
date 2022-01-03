@@ -30,8 +30,9 @@ export default function Home() {
     )
     const data = await marketContract.fetchMarketItems()
 
+    // find the type
     const items = await Promise.all(
-      data.map(async (i) => {
+      data.map(async (i: any) => {
         const tokenUri = await tokenContract.tokenURI(i.tokenId)
         const meta = await axios.get(tokenUri)
         let price = ethers.utils.formatUnits(i.price.toString(), 'ether')
@@ -50,7 +51,9 @@ export default function Home() {
     setNfts(items)
     setLoadingState('loaded')
   }
-  async function buyNft(nft) {
+
+  // find the type
+  async function buyNft(nft: any) {
     const web3Modal = new Web3Modal()
     const connection = await web3Modal.connect()
     const provider = new ethers.providers.Web3Provider(connection)

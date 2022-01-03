@@ -80,7 +80,9 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
         sx={{
           marginTop: MARGIN_LARGE,
           marginBottom: MARGIN_LARGE,
+          fontWeight: 200,
         }}
+        className='font-chakra'
       >
         Create Single Token
       </Typography>
@@ -115,7 +117,7 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
         setBlockchainType={setBlockchainType}
       />
       <DividerMarginBottom />
-      <Button variant='outlined' type='submit'>
+      <Button variant='contained' type='submit'>
         Create Digital Asset
       </Button>
     </form>

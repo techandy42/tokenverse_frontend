@@ -85,7 +85,9 @@ const CreateMultiple: React.FC<IProps> = ({
         sx={{
           marginTop: MARGIN_LARGE,
           marginBottom: MARGIN_LARGE,
+          fontWeight: 200,
         }}
+        className='font-chakra'
       >
         Create Multiple Tokens
       </Typography>
@@ -126,7 +128,7 @@ const CreateMultiple: React.FC<IProps> = ({
       <Names names={names} setNames={setNames} files={files} />
       <DividerMarginBottom />
       <Button
-        variant='outlined'
+        variant='contained'
         sx={{ marginBottom: MARGIN_LARGE }}
         type='submit'
       >

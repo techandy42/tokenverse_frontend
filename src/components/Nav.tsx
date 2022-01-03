@@ -1,21 +1,31 @@
+/**
+ * Things to work on:
+ * 1) Categories navbar dropdown
+ * 2) Wallet slide open from right-side
+ * 3) Possibly add more items to account pop-up
+ */
+
 import * as React from 'react'
 import { styled, alpha } from '@mui/material/styles'
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
-import AccountCircle from '@mui/icons-material/AccountCircle'
+import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined'
+import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined'
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
+import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined'
+import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined'
+import ListAltOutlinedIcon from '@mui/icons-material/ListAltOutlined'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import InputBase from '@mui/material/InputBase'
-import Badge from '@mui/material/Badge'
 import MenuItem from '@mui/material/MenuItem'
 import Menu from '@mui/material/Menu'
-import MenuIcon from '@mui/icons-material/Menu'
 import SearchIcon from '@mui/icons-material/Search'
-import MailIcon from '@mui/icons-material/Mail'
-import NotificationsIcon from '@mui/icons-material/Notifications'
-import LiveHelpIcon from '@mui/icons-material/LiveHelp'
+import Button from '@mui/material/Button'
+import Tooltip from '@mui/material/Tooltip'
+import TokenIcon from '@mui/icons-material/Token'
+import { MARGIN_NAV_BUTTON } from '../../constants'
 
 import Link from 'next/link'
 
@@ -33,6 +43,7 @@ const Search = styled('div')(({ theme }) => ({
     marginLeft: theme.spacing(3),
     width: 'auto',
   },
+  border: '1px solid lightGrey',
 }))
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
@@ -54,7 +65,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('md')]: {
-      width: '20ch',
+      width: '30ch',
+    },
+    [theme.breakpoints.up('lg')]: {
+      width: '45ch',
+    },
+    [theme.breakpoints.up('lg')]: {
+      width: '60ch',
     },
   },
 }))
@@ -98,81 +115,49 @@ export default function PrimarySearchAppBar() {
         vertical: 'top',
         horizontal: 'right',
       }}
+      sx={{ marginTop: '2.5rem' }}
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
-  )
-
-  const mobileMenuId = 'primary-search-account-menu-mobile'
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-    >
-      <MenuItem>
-        <IconButton size='large' aria-label='show 4 new mails' color='inherit'>
-          <Badge badgeContent={4} color='error'>
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton
-          size='large'
-          aria-label='show 17 new notifications'
-          color='inherit'
-        >
-          <Badge badgeContent={17} color='error'>
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size='large'
-          aria-label='account of current user'
-          aria-controls='primary-search-account-menu'
-          aria-haspopup='true'
-          color='inherit'
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
+      <MenuItem onClick={handleMenuClose}>Collections</MenuItem>
+      <MenuItem onClick={handleMenuClose}>Log Out</MenuItem>
     </Menu>
   )
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position='static'>
+      <AppBar
+        sx={{
+          backgroundColor: 'white',
+          color: 'black',
+          boxShadow: '0px 0px 2.5px 0px grey',
+          top: 0,
+        }}
+        position='fixed'
+      >
         <Toolbar>
           <Link href='/'>
-            <Typography
-              variant='h6'
-              noWrap
-              component='div'
-              sx={{ display: { xs: 'none', sm: 'block' } }}
+            <Button
+              sx={{ color: 'inherit', textTransform: 'none' }}
+              className='no-hover'
+              disableRipple
             >
-              Tokenverse
-            </Typography>
+              <TokenIcon sx={{ marginRight: '0.1rem' }} />
+              <Typography
+                variant='h6'
+                noWrap
+                component='div'
+                sx={{
+                  display: { xs: 'none', sm: 'block' },
+                  fontWeight: 600,
+                }}
+                className='font-chakra'
+              >
+                Tokenverse
+              </Typography>
+            </Button>
           </Link>
-          <Box sx={{ flexGrow: 1 }} />
+          <Box sx={{ flexGrow: 5 }} />
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -183,63 +168,103 @@ export default function PrimarySearchAppBar() {
             />
           </Search>
           <Box sx={{ flexGrow: 1 }} />
-          <Link href='/items'>
-            <Typography
-              variant='h6'
-              noWrap
-              component='div'
-              sx={{ display: { xs: 'none', sm: 'block' } }}
-            >
-              Items
-            </Typography>
-          </Link>
-          <Link href='/design'>
-            <Typography
-              variant='h6'
-              noWrap
-              component='div'
-              sx={{ display: { xs: 'none', sm: 'block' } }}
-            >
-              Design
-            </Typography>
-          </Link>
-          <Link href='/create'>
-            <Typography
-              variant='h6'
-              noWrap
-              component='div'
-              sx={{ display: { xs: 'none', sm: 'block' } }}
-            >
-              Create
-            </Typography>
-          </Link>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <Link href='/account'>
+            <Button className='nav-button' sx={{ color: 'inherit' }}>
+              Categories
+            </Button>
+            <Link href='/design'>
+              <Button className='nav-button' sx={{ color: 'inherit' }}>
+                Design
+              </Button>
+            </Link>
+            <Link href='/create'>
+              <Button className='nav-button' sx={{ color: 'inherit' }}>
+                Create
+              </Button>
+            </Link>
+          </Box>
+          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+            <Tooltip title='Categories'>
               <IconButton
                 size='large'
                 edge='end'
-                aria-label='account of current user'
+                aria-label='categories'
                 aria-controls={menuId}
                 aria-haspopup='true'
-                onClick={handleProfileMenuOpen}
                 color='inherit'
+                disableRipple
               >
-                <AccountCircle />
+                <ListAltOutlinedIcon />
               </IconButton>
+            </Tooltip>
+            <Link href='/design'>
+              <Tooltip title='Design'>
+                <IconButton
+                  size='large'
+                  edge='end'
+                  aria-label='design'
+                  aria-controls={menuId}
+                  aria-haspopup='true'
+                  color='inherit'
+                  disableRipple
+                >
+                  <AddPhotoAlternateOutlinedIcon />
+                </IconButton>
+              </Tooltip>
             </Link>
+            <Link href='/create'>
+              <Tooltip title='Create'>
+                <IconButton
+                  size='large'
+                  edge='end'
+                  aria-label='create'
+                  aria-controls={menuId}
+                  aria-haspopup='true'
+                  color='inherit'
+                  disableRipple
+                >
+                  <AddBoxOutlinedIcon />
+                </IconButton>
+              </Tooltip>
+            </Link>
+          </Box>
+          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <Link href='/help'>
+              <Tooltip title='Help'>
+                <IconButton
+                  size='large'
+                  edge='end'
+                  aria-label='help'
+                  aria-controls={menuId}
+                  aria-haspopup='true'
+                  color='inherit'
+                  sx={{
+                    marginLeft: MARGIN_NAV_BUTTON,
+                    marginRight: MARGIN_NAV_BUTTON,
+                  }}
+                  className='nav-button'
+                >
+                  <HelpOutlineOutlinedIcon size='large' />
+                </IconButton>
+              </Tooltip>
+            </Link>
+            <Tooltip title='Wallet'>
               <IconButton
                 size='large'
                 edge='end'
-                aria-label='account of current user'
+                aria-label='wallet'
                 aria-controls={menuId}
                 aria-haspopup='true'
-                onClick={handleProfileMenuOpen}
                 color='inherit'
+                sx={{
+                  marginLeft: MARGIN_NAV_BUTTON,
+                  marginRight: MARGIN_NAV_BUTTON,
+                }}
+                className='nav-button'
               >
-                <LiveHelpIcon />
+                <AccountBalanceWalletOutlinedIcon />
               </IconButton>
-            </Link>
+            </Tooltip>
             <IconButton
               size='large'
               edge='end'
@@ -248,25 +273,71 @@ export default function PrimarySearchAppBar() {
               aria-haspopup='true'
               onClick={handleProfileMenuOpen}
               color='inherit'
+              sx={{
+                marginLeft: MARGIN_NAV_BUTTON,
+                marginRight: MARGIN_NAV_BUTTON,
+              }}
+              className='nav-button'
             >
-              <AccountBalanceWalletIcon />
+              <AccountCircleOutlinedIcon />
             </IconButton>
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+            <Link href='/help'>
+              <Tooltip title='Help'>
+                <IconButton
+                  size='large'
+                  edge='end'
+                  aria-label='help'
+                  aria-controls={menuId}
+                  aria-haspopup='true'
+                  color='inherit'
+                  sx={{
+                    marginLeft: 'none',
+                    marginRight: 'none',
+                  }}
+                  disableRipple
+                >
+                  <HelpOutlineOutlinedIcon size='large' />
+                </IconButton>
+              </Tooltip>
+            </Link>
+            <Tooltip title='Wallet'>
+              <IconButton
+                size='large'
+                edge='end'
+                aria-label='wallet'
+                aria-controls={menuId}
+                aria-haspopup='true'
+                color='inherit'
+                sx={{
+                  marginLeft: 'none',
+                  marginRight: 'none',
+                }}
+                disableRipple
+              >
+                <AccountBalanceWalletOutlinedIcon />
+              </IconButton>
+            </Tooltip>
             <IconButton
               size='large'
-              aria-label='show more'
-              aria-controls={mobileMenuId}
+              edge='end'
+              aria-label='account of current user'
+              aria-controls={menuId}
               aria-haspopup='true'
-              onClick={handleMobileMenuOpen}
+              onClick={handleProfileMenuOpen}
               color='inherit'
+              sx={{
+                marginLeft: { xs: 'none', md: MARGIN_NAV_BUTTON },
+                marginRight: { xs: 'none', md: MARGIN_NAV_BUTTON },
+              }}
+              disableRipple
             >
-              <MenuIcon />
+              <AccountCircleOutlinedIcon />
             </IconButton>
           </Box>
         </Toolbar>
       </AppBar>
-      {renderMobileMenu}
       {renderMenu}
     </Box>
   )
