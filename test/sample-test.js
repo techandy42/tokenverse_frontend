@@ -118,6 +118,8 @@ describe('NFTMarket', function () {
     )
     console.log('items (user purchased): ', items)
 
+    // Issue: if items is empty, Promise.all(...) will throw an error
+
     // Fetching User Not Sale Items
     items = await market.fetchUserCreatedNotSaleItems()
     console.log('items (user not sale): ', items)
