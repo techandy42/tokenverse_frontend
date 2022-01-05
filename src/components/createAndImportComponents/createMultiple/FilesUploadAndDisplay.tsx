@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { MARGIN_LARGE } from '../../../../constants'
-import { create as ipfsHttpClient } from 'ipfs-http-client'
 import IconButton from '@mui/material/IconButton'
 import ButtonGroup from '@mui/material/ButtonGroup'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
@@ -11,8 +10,6 @@ import Tooltip from '@mui/material/Tooltip'
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import FlexBox from '../../styles/FlexBox'
-
-const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
 interface IProps {
   files: [any, any][]
@@ -37,13 +34,14 @@ const FilesUploadAndDisplay: React.FC<IProps> = ({
     if (e.target.files.length > 100) {
       alert('Please upload 1 - 100 files')
     } else {
-      const uploadedFiles = []
+      const uploadedFiles: [any, any][] = []
       for (const file of e.target.files) {
         uploadedFiles.push([file, null])
       }
       const newNames = []
       for (let i = 0; i < e.target.files.length; i++) {
-        newNames.push(genericName + ` #${i + 1 + names.length}`)
+        const listNumHeader = genericName === '' ? '#' : ' #'
+        newNames.push(genericName + listNumHeader + `${i + 1 + names.length}`)
       }
       setNames([...names, ...newNames])
       setFiles([...files, ...uploadedFiles])

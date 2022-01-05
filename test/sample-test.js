@@ -21,35 +21,41 @@ describe('NFTMarket', function () {
     await nft.createToken('https://www.mytokenlocation.com')
     await nft.createToken('https://www.mytokenlocation2.com')
 
-    await market.createMarketItem(nftContractAddress, 1, auctionPrice, {
+    await market.createMintItem(nftContractAddress, 1)
+    await market.createMintItem(nftContractAddress, 2)
+
+    const item1 = await market.createMarketItem(1, 1, auctionPrice, {
       value: listingPrice,
     })
-    await market.createMarketItem(nftContractAddress, 2, auctionPrice, {
+    const item2 = await market.createMarketItem(2, 2, auctionPrice, {
       value: listingPrice,
     })
 
-    const [_, buyerAddress] = await ethers.getSigners()
+    console.log(item1)
+    console.log(item2)
 
-    await market
-      .connect(buyerAddress)
-      .createMarketSale(nftContractAddress, 1, { value: auctionPrice })
+    // const [_, buyerAddress] = await ethers.getSigners()
 
-    let items = await market.fetchMarketItems()
+    // await market.connect(buyerAddress).createMarketSale(nftContractAddress, 1, {
+    //   value: auctionPrice,
+    // })
 
-    items = await Promise.all(
-      items.map(async (i) => {
-        const tokenUri = await nft.tokenURI(i.tokenId)
-        let item = {
-          price: i.price.toString(),
-          tokenId: i.tokenId.toString(),
-          seller: i.seller,
-          owner: i.owner,
-          tokenUri,
-        }
-        return item
-      }),
-    )
+    // let items = await market.fetchMarketItems()
 
-    console.log('items: ', items)
+    // items = await Promise.all(
+    //   items.map(async (i) => {
+    //     const tokenUri = await nft.tokenURI(i.tokenId)
+    //     let item = {
+    //       price: i.price.toString(),
+    //       tokenId: i.tokenId.toString(),
+    //       seller: i.seller,
+    //       owner: i.owner,
+    //       tokenUri,
+    //     }
+    //     return item
+    //   }),
+    // )
+
+    // console.log('items: ', items)
   })
 })

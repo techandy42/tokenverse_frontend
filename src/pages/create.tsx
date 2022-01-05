@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { ethers } from 'ethers'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
-import { useRouter } from 'next/router'
 import Web3Modal from 'web3modal'
 import { nftaddress, nftmarketaddress } from '../../config'
 import NFT from '../../artifacts/contracts/NFT.sol/NFT.json'
@@ -10,7 +9,6 @@ import { styled } from '@mui/material/styles'
 import Button from '@mui/material/Button'
 import {
   MARGIN_LARGE,
-  MARGIN_SMALL,
   CREATE_SINGLE,
   CREATE_MULTIPLE,
   CREATE_SFT,
@@ -26,6 +24,7 @@ import CreateMultiple from '../components/createAndImportComponents/CreateMultip
 import CreateSFT from '../components/createAndImportComponents/CreateSFT'
 import ImportNFT from '../components/createAndImportComponents/ImportNFT'
 import ImportSFT from '../components/createAndImportComponents/ImportSFT'
+import { NextRouter } from 'next/router'
 
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
@@ -39,25 +38,66 @@ export const collections = [
   'Collection 3',
 ]
 
+export const getFileUrl = async (file: any) => {
+  try {
+    const added = await client.add(file, {
+      progress: (prog) => console.log(`received: ${prog}`),
+    })
+    const url = `https://ipfs.infura.io/ipfs/${added.path}`
+    return url
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+export const createItem = async (
+  name: string,
+  collection: string,
+  blockchainType: string,
+  fileUrl: string,
+  multimediaFile: any,
+) => {
+  if (!name || !collection || !blockchainType || !fileUrl) return
+  const data = JSON.stringify({
+    name,
+    collection,
+    blockchainType,
+    image: fileUrl,
+    multimedia: multimediaFile,
+  })
+
+  try {
+    const added = await client.add(data)
+    const url = `https://ipfs.infura.io/ipfs/${added.path}`
+    console.log(url)
+    // createSale(url)
+  } catch (error) {
+    console.log(`Error uploading file: `, error)
+  }
+}
+
+const createSale = async (url: string) => {
+  const web3Modal = new Web3Modal()
+  const connection = await web3Modal.connect()
+  const provider = new ethers.providers.Web3Provider(connection)
+  const signer = provider.getSigner()
+
+  let contract = new ethers.Contract(nftaddress, NFT.abi, signer)
+  let transaction = await contract.createToken(url)
+  let tx = await transaction.wait()
+  let event = tx.events[0]
+  let value = event.args[2]
+  let tokenId = value.toNumber()
+  contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
+  transaction = await contract.createMintItem(nftaddress, tokenId)
+  await transaction.wait()
+}
+
 export default function Create() {
   const [createType, setCreateType] = useState<string>(CREATE_SINGLE)
   const [clearCounter, setClearCounter] = useState<number>(0)
 
-  const router = useRouter()
-
   // Use before minting
-
-  // const getFileUrl = async (file) => {
-  //   try {
-  //     const added = await client.add(file, {
-  //       progress: (prog) => console.log(`received: ${prog}`),
-  //     })
-  //     const url = `https://ipfs.infura.io/ipfs/${added.path}`
-  //     return url
-  //   } catch (e) {
-  //     console.log(e)
-  //   }
-  // }
 
   // async function createItem() {
   //   const { name, description, price } = formTextField
@@ -123,7 +163,7 @@ export default function Create() {
     event: React.MouseEvent<HTMLElement>,
     nextCreateType: string,
   ) => {
-    setCreateType(nextCreateType)
+    if (nextCreateType !== null) setCreateType(nextCreateType)
   }
 
   return (

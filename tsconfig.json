@@ -23,7 +23,8 @@
     "src/pages/reference.tsx",
     "hardhat.config.js",
     "src/components/styles/iosSwitch.txs",
-    "src/components/CreateSingle.tsx"
+    "src/components/CreateSingle.tsx",
+    "src/components/createAndImportComponents/createMultiple/FilesUploadAndDisplay.jsx"
   ],
   "exclude": ["node_modules"]
 }

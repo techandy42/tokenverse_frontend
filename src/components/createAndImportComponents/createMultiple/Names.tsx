@@ -36,7 +36,7 @@ const Names: React.FC<IProps> = ({ names, setNames, files }) => {
                   marginBottom:
                     i === names.length - 1 ? MARGIN_LARGE : MARGIN_SMALL,
                 }}
-                variant='contained'
+                variant='outlined'
                 label={`Name - #${files[i][0].name}`}
                 value={name}
                 fullWidth

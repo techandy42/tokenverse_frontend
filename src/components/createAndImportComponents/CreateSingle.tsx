@@ -9,6 +9,8 @@ import { MARGIN_LARGE, MARGIN_SMALL } from '../../../constants'
 import CollectionAndBlockchainTypeInputs from './createShared/CollectionAndBlockchainTypeInputs'
 import Alert from '@mui/material/Alert'
 import blockchainTypes from '../../../constants/blockchainTypes'
+import { getFileUrl, createItem } from '../../pages/create'
+import { useRouter } from 'next/router'
 
 interface IProps {
   clearCounter: number
@@ -29,6 +31,8 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
   const [isMultimediaImageFileErrorOpen, setIsMultimediaImageFileErrorOpen] =
     useState<boolean>(false)
 
+  const router = useRouter()
+
   useEffect(() => {
     if (file !== null) setIsFileErrorOpen(false)
     if (multimediaImageFile !== null) setIsMultimediaImageFileErrorOpen(false)
@@ -40,6 +44,8 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
     setName('')
     setFile(null)
     setMultimediaImageFile(null)
+    setIsFileErrorOpen(false)
+    setIsMultimediaImageFileErrorOpen(false)
     setIsFileErrorOpen(false)
     setIsMultimediaImageFileErrorOpen(false)
   }, [clearCounter])
@@ -65,12 +71,16 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
     const validedMultimediaImageFile = validMultimediaImageFile()
     if (validedImageFile && validedMultimediaImageFile) {
       // Format Token and mint
-      setClearCounter(clearCounter + 1)
+      const imageFile =
+        file.type.split('/')[0] === 'image' ? file : multimediaImageFile
+      const fileUrl = getFileUrl(imageFile)
+      const multimediaFile = file.type.split('/')[0] === 'image' ? null : file
+      createItem(name, collection, blockchainType, fileUrl, multimediaFile)
+      const route = '/account'
+      router.push(route)
     }
-    if (validedImageFile) setIsFileErrorOpen(false)
-    else setIsFileErrorOpen(true)
-    if (validedMultimediaImageFile) setIsMultimediaImageFileErrorOpen(false)
-    else setIsMultimediaImageFileErrorOpen(true)
+    if (!validedImageFile) setIsFileErrorOpen(true)
+    if (!validedMultimediaImageFile) setIsMultimediaImageFileErrorOpen(true)
   }
 
   return (

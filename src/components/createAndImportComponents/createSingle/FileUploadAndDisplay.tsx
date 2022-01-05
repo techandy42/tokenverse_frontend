@@ -81,7 +81,7 @@ const FileUploadAndDisplay: React.FC<IProps> = ({
                 type='file'
                 onChange={handleMultimediaImageFile}
                 onClick={(e) => {
-                  setMultimediaImageFile(e.target.files[0])
+                  e.target.value = null
                 }}
                 accept='image/*'
                 hidden

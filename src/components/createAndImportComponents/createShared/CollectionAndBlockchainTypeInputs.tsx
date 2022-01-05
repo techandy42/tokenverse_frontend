@@ -5,6 +5,7 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
+import Autocomplete from '@mui/material/Autocomplete'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import { collections } from '../../../pages/create'
 import blockchainTypes from '../../../../constants/blockchainTypes'
@@ -34,19 +35,28 @@ const CollectionAndBlockchainTypeInputs: React.FC<IProps> = ({
   return (
     <div>
       <Typography sx={{ marginBottom: MARGIN_SMALL }}>Collection</Typography>
-      <Select
-        value={collection}
-        onChange={(e) => setCollection(e.target.value)}
+      <Autocomplete
         fullWidth
+        value={collection}
+        onChange={(e, newValue) => {
+          newValue !== null
+            ? setCollection(newValue)
+            : setCollection(collections[0])
+        }}
+        onInputChange={(e, newInputValue) => {
+          collections.includes(newInputValue)
+            ? setCollection(newInputValue)
+            : null
+        }}
+        options={collections}
+        renderInput={(params) => (
+          <TextField required {...params} label='Collection' />
+        )}
         sx={{
           marginBottom:
             collection === collections[0] ? MARGIN_SMALL : MARGIN_LARGE,
         }}
-      >
-        {collections.map((collection) => (
-          <MenuItem value={collection}>{collection}</MenuItem>
-        ))}
-      </Select>
+      />
       {collection === collections[0] ? (
         <>
           <Typography sx={{ marginBottom: MARGIN_SMALL }}>Optional</Typography>
