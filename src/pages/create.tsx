@@ -24,7 +24,6 @@ import CreateMultiple from '../components/createAndImportComponents/CreateMultip
 import CreateSFT from '../components/createAndImportComponents/CreateSFT'
 import ImportNFT from '../components/createAndImportComponents/ImportNFT'
 import ImportSFT from '../components/createAndImportComponents/ImportSFT'
-import { NextRouter } from 'next/router'
 
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
@@ -69,8 +68,7 @@ export const createItem = async (
   try {
     const added = await client.add(data)
     const url = `https://ipfs.infura.io/ipfs/${added.path}`
-    console.log(url)
-    // createSale(url)
+    createSale(url)
   } catch (error) {
     console.log(`Error uploading file: `, error)
   }
@@ -89,60 +87,13 @@ const createSale = async (url: string) => {
   let value = event.args[2]
   let tokenId = value.toNumber()
   contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
-  transaction = await contract.createMintItem(nftaddress, tokenId)
+  transaction = await contract.createMintMarketItem(nftaddress, tokenId)
   await transaction.wait()
 }
 
 export default function Create() {
   const [createType, setCreateType] = useState<string>(CREATE_SINGLE)
   const [clearCounter, setClearCounter] = useState<number>(0)
-
-  // Use before minting
-
-  // async function createItem() {
-  //   const { name, description, price } = formTextField
-  //   if (!name || !description || !price || !fileUrl) return
-  //   const data = JSON.stringify({
-  //     name,
-  //     description,
-  //     image: fileUrl,
-  //   })
-
-  //   try {
-  //     const added = await client.add(data)
-  //     const url = `https://ipfs.infura.io/ipfs/${added.path}`
-  //     createSale(url)
-  //   } catch (error) {
-  //     console.log(`Error uploading file: `, error)
-  //   }
-  // }
-
-  // async function createSale(url) {
-  //   const web3Modal = new Web3Modal()
-  //   const connection = await web3Modal.connect()
-  //   const provider = new ethers.providers.Web3Provider(connection)
-  //   const signer = provider.getSigner()
-
-  //   let contract = new ethers.Contract(nftaddress, NFT.abi, signer)
-  //   let transaction = await contract.createToken(url)
-  //   let tx = await transaction.wait()
-
-  //   let event = tx.events[0]
-  //   let value = event.args[2]
-  //   let tokenId = value.toNumber()
-
-  //   const price = ethers.utils.parseUnits(formTextField.price, 'ether')
-
-  //   contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
-  //   let listingPrice = await contract.getListingPrice()
-  //   listingPrice = listingPrice.toString()
-
-  //   transaction = await contract.createMarketItem(nftaddress, tokenId, price, {
-  //     value: listingPrice,
-  //   })
-  //   await transaction.wait()
-  //   router.push('/')
-  // }
 
   const StyledPageBase = styled('div')(({ theme }) => ({
     marginTop: MARGIN_TOP,

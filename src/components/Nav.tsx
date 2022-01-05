@@ -13,6 +13,7 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined'
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined'
 import ListAltOutlinedIcon from '@mui/icons-material/ListAltOutlined'
+import SensorDoorOutlinedIcon from '@mui/icons-material/SensorDoorOutlined'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
@@ -157,7 +158,7 @@ export default function PrimarySearchAppBar() {
               </Typography>
             </Button>
           </Link>
-          <Box sx={{ flexGrow: 5 }} />
+          <Box sx={{ flexGrow: 1 }} />
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -167,11 +168,15 @@ export default function PrimarySearchAppBar() {
               inputProps={{ 'aria-label': 'search' }}
             />
           </Search>
-          <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <Button className='nav-button' sx={{ color: 'inherit' }}>
               Categories
             </Button>
+            <Link href='/entrance'>
+              <Button className='nav-button' sx={{ color: 'inherit' }}>
+                Entrance
+              </Button>
+            </Link>
             <Link href='/design'>
               <Button className='nav-button' sx={{ color: 'inherit' }}>
                 Design
@@ -197,6 +202,21 @@ export default function PrimarySearchAppBar() {
                 <ListAltOutlinedIcon />
               </IconButton>
             </Tooltip>
+            <Link href='/entrance'>
+              <Tooltip title='Entrance'>
+                <IconButton
+                  size='large'
+                  edge='end'
+                  aria-label='categories'
+                  aria-controls={menuId}
+                  aria-haspopup='true'
+                  color='inherit'
+                  disableRipple
+                >
+                  <SensorDoorOutlinedIcon />
+                </IconButton>
+              </Tooltip>
+            </Link>
             <Link href='/design'>
               <Tooltip title='Design'>
                 <IconButton
