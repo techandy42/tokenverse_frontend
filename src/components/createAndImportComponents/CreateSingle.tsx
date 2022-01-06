@@ -9,7 +9,7 @@ import { MARGIN_LARGE, MARGIN_SMALL } from '../../../constants'
 import CollectionAndBlockchainTypeInputs from './createShared/CollectionAndBlockchainTypeInputs'
 import Alert from '@mui/material/Alert'
 import blockchainTypes from '../../../constants/blockchainTypes'
-import { getFileUrl, createItem } from '../../pages/create'
+import { getFileUrl, createItem } from '../../../tokenFunctions/createFunctions'
 import { useRouter } from 'next/router'
 
 interface IProps {

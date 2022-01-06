@@ -122,14 +122,53 @@ describe('NFTMarket', function () {
 
     // Fetching User Not Sale Items
     items = await market.fetchUserCreatedNotSaleItems()
+    items = await Promise.all(
+      items.map(async (i) => {
+        const tokenUri = await nft.tokenURI(i.tokenId)
+        let item = {
+          price: i.price.toString(),
+          tokenId: i.tokenId.toString(),
+          seller: i.seller,
+          owner: i.owner,
+          tokenUri,
+        }
+        return item
+      }),
+    )
     console.log('items (user not sale): ', items)
 
     // Fetching User Sale Items
     items = await market.fetchUserCreatedSaleItems()
+    items = await Promise.all(
+      items.map(async (i) => {
+        const tokenUri = await nft.tokenURI(i.tokenId)
+        let item = {
+          price: i.price.toString(),
+          tokenId: i.tokenId.toString(),
+          seller: i.seller,
+          owner: i.owner,
+          tokenUri,
+        }
+        return item
+      }),
+    )
     console.log('items (user sale): ', items)
 
     // // Fetching User Sold Items
     items = await market.fetchUserCreatedSoldItems()
+    items = await Promise.all(
+      items.map(async (i) => {
+        const tokenUri = await nft.tokenURI(i.tokenId)
+        let item = {
+          price: i.price.toString(),
+          tokenId: i.tokenId.toString(),
+          seller: i.seller,
+          owner: i.owner,
+          tokenUri,
+        }
+        return item
+      }),
+    )
     console.log('items (user sold): ', items)
   })
 })
