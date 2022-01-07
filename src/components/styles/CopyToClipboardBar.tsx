@@ -18,14 +18,12 @@ const CopyToClipboardBar: React.FC<IProps> = ({ label, value }) => {
       <button
         className='font-chakra'
         style={{
-          color: '#242424',
-          backgroundColor: 'lightGrey',
-          border: 0,
+          color: '#080808',
+          backgroundColor: '#A0A0A0',
+          border: '1px solid grey',
           height: '1.5rem',
           borderRadius: '2px 0 0 2px',
-          borderTop: '1px solid grey',
-          borderLeft: '1px solid grey',
-          borderBottom: '1px solid grey',
+          width: '4rem',
         }}
       >
         {label}
@@ -45,17 +43,14 @@ const CopyToClipboardBar: React.FC<IProps> = ({ label, value }) => {
       />
       <Button
         sx={{
-          backgroundColor: 'lightGrey',
-          color: '#646464',
-          border: 0,
+          backgroundColor: '#A0A0A0',
+          color: '#484848',
+          border: '1px solid grey',
           height: '1.5rem',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           borderRadius: '0 2px 2px 0',
-          borderTop: '1px solid grey',
-          borderRight: '1px solid grey',
-          borderBottom: '1px solid grey',
         }}
         onClick={() => {
           navigator.clipboard.writeText(value)
