@@ -120,8 +120,12 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Collections</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Log Out</MenuItem>
+      <Link href='/account'>
+        <MenuItem onClick={handleMenuClose}>Account</MenuItem>
+      </Link>
+      <Link href='/'>
+        <MenuItem onClick={handleMenuClose}>Log Out</MenuItem>
+      </Link>
     </Menu>
   )
 
@@ -143,7 +147,7 @@ export default function PrimarySearchAppBar() {
               className='no-hover'
               disableRipple
             >
-              <TokenIcon sx={{ marginRight: '0.1rem' }} />
+              <TokenIcon sx={{ marginRight: '0.1rem', fontSize: 40 }} />
               <Typography
                 variant='h6'
                 noWrap

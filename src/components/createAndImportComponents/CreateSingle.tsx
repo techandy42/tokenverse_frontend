@@ -10,7 +10,6 @@ import CollectionAndBlockchainTypeInputs from './createShared/CollectionAndBlock
 import Alert from '@mui/material/Alert'
 import blockchainTypes from '../../../constants/blockchainTypes'
 import { getFileUrl, createItem } from '../../../tokenFunctions/createFunctions'
-import { useRouter } from 'next/router'
 
 interface IProps {
   clearCounter: number
@@ -30,8 +29,6 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
   const [isFileErrorOpen, setIsFileErrorOpen] = useState<boolean>(false)
   const [isMultimediaImageFileErrorOpen, setIsMultimediaImageFileErrorOpen] =
     useState<boolean>(false)
-
-  const router = useRouter()
 
   useEffect(() => {
     if (file !== null) setIsFileErrorOpen(false)
@@ -65,7 +62,7 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
     else return true
   }
 
-  const handleSubmit = (e: React.FormEventHandler<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEventHandler<HTMLFormElement>) => {
     e.preventDefault()
     const validedImageFile = validImageFile()
     const validedMultimediaImageFile = validMultimediaImageFile()
@@ -73,11 +70,16 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
       // Format Token and mint
       const imageFile =
         file.type.split('/')[0] === 'image' ? file : multimediaImageFile
-      const fileUrl = getFileUrl(imageFile)
+      const fileUrl = await getFileUrl(imageFile)
       const multimediaFile = file.type.split('/')[0] === 'image' ? null : file
-      createItem(name, collection, blockchainType, fileUrl, multimediaFile)
-      const route = '/account'
-      router.push(route)
+      await createItem(
+        name,
+        collection,
+        blockchainType,
+        fileUrl,
+        multimediaFile,
+      )
+      setClearCounter(clearCounter + 1)
     }
     if (!validedImageFile) setIsFileErrorOpen(true)
     if (!validedMultimediaImageFile) setIsMultimediaImageFileErrorOpen(true)

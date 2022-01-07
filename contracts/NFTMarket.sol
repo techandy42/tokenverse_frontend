@@ -85,7 +85,7 @@ contract NFTMarket is ReentrancyGuard {
             itemId,
             nftContract,
             tokenId,
-            msg.sender,
+            payable(msg.sender),
             payable(msg.sender),
             payable(address(0)),
             0,
@@ -195,95 +195,26 @@ contract NFTMarket is ReentrancyGuard {
         }
         return items;
     }
-   
-    function fetchUserCreatedNotSaleItems() public view returns (MarketItem[] memory) {
-        uint totalItemCount = _itemIds.current();
-        uint itemCount = 0;
-        uint currentIndex = 0;
-   
-        for (uint i = 0; i < totalItemCount; i++) {
-            if (idToMarketItem[i + 1].creator == msg.sender && idToMarketItem[i + 1].onSale == false) {
-                itemCount += 1;
-            }
-        }
-   
-        MarketItem[] memory items = new MarketItem[](itemCount);
-        for (uint i = 0; i < totalItemCount; i++) {
-            if (idToMarketItem[i + 1].creator == msg.sender && idToMarketItem[i + 1].onSale == false) {
-                uint currentId = i + 1;
-                MarketItem storage currentItem = idToMarketItem[currentId];
-                items[currentIndex] = currentItem;
-                currentIndex += 1;
-            }
-        }
-        return items;
-    }
-   
-    function fetchUserCreatedSaleItems() public view returns (MarketItem[] memory) {
-        uint totalItemCount = _itemIds.current();
-        uint itemCount = 0;
-        uint currentIndex = 0;
-   
-        for (uint i = 0; i < totalItemCount; i++) {
-            if (idToMarketItem[i + 1].creator == msg.sender && idToMarketItem[i + 1].onSale == true && idToMarketItem[i + 1].owner == address(0)) {
-                itemCount += 1;
-            }
-        }
-   
-        MarketItem[] memory items = new MarketItem[](itemCount);
-        for (uint i = 0; i < totalItemCount; i++) {
-            if (idToMarketItem[i + 1].creator == msg.sender && idToMarketItem[i + 1].onSale == true && idToMarketItem[i + 1].owner == address(0)) {
-                uint currentId = i + 1;
-                MarketItem storage currentItem = idToMarketItem[currentId];
-                items[currentIndex] = currentItem;
-                currentIndex += 1;
-            }
-        }
-        return items;
-    }
-   
-    function fetchUserCreatedSoldItems() public view returns (MarketItem[] memory) {
-        uint totalItemCount = _itemIds.current();
-        uint itemCount = 0;
-        uint currentIndex = 0;
-   
-        for (uint i = 0; i < totalItemCount; i++) {
-            if (idToMarketItem[i + 1].creator == msg.sender && idToMarketItem[i + 1].owner != address(0)) {
-                itemCount += 1;
-            }
-        }
-   
-        MarketItem[] memory items = new MarketItem[](itemCount);
-        for (uint i = 0; i < totalItemCount; i++) {
-            if (idToMarketItem[i + 1].creator == msg.sender && idToMarketItem[i + 1].owner != address(0)) {
-                uint currentId = i + 1;
-                MarketItem storage currentItem = idToMarketItem[currentId];
-                items[currentIndex] = currentItem;
-                currentIndex += 1;
-            }
-        }
-        return items;
-    }
 
-    /* Helper Functions */
-
-    /* Returns the item for the given itemId */
-    function fetchMarketItemByItemId(
-        uint256 itemId
-    ) public view returns (MarketItem memory) {
-        MarketItem storage item = idToMarketItem[itemId];
-        return item;
-    }
- 
-    /* Returns the items for the given array of itemIds */
-    function fetchMarketItemsByItemIds(
-        uint256[] memory itemIds
-    ) public view returns (MarketItem[] memory){
-        uint itemsLength = itemIds.length;
-        MarketItem[] memory items = new MarketItem[](itemsLength);
-        for (uint i = 0; i < itemsLength; i++) {
-            uint itemId = itemIds[i];
-            items[i] = idToMarketItem[itemId];
+    function fetchUserCreatedItems() public view returns (MarketItem[] memory) {
+        uint totalItemCount = _itemIds.current();
+        uint itemCount = 0;
+        uint currentIndex = 0;
+   
+        for (uint i = 0; i < totalItemCount; i++) {
+            if (idToMarketItem[i + 1].creator == msg.sender) {
+                itemCount += 1;
+            }
+        }
+   
+        MarketItem[] memory items = new MarketItem[](itemCount);
+        for (uint i = 0; i < totalItemCount; i++) {
+            if (idToMarketItem[i + 1].creator == msg.sender) {
+                uint currentId = i + 1;
+                MarketItem storage currentItem = idToMarketItem[currentId];
+                items[currentIndex] = currentItem;
+                currentIndex += 1;
+            }
         }
         return items;
     }

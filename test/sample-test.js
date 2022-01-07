@@ -70,36 +70,36 @@ describe('NFTMarket', function () {
     )
     console.log('items: ', items)
 
-    // Fetching Item on Market using itemId
-    const itemId = 1
-    item = await market.fetchMarketItemByItemId(itemId)
-    const itemTokenUri = await nft.tokenURI(item.tokenId)
-    item = {
-      price: item.price.toString(),
-      tokenId: item.tokenId.toString(),
-      seller: item.seller,
-      owner: item.owner,
-      itemTokenUri,
-    }
-    console.log('item (fetched using itemId): ', item)
+    // // Fetching Item on Market using itemId
+    // const itemId = 1
+    // item = await market.fetchMarketItemByItemId(itemId)
+    // const itemTokenUri = await nft.tokenURI(item.tokenId)
+    // item = {
+    //   price: item.price.toString(),
+    //   tokenId: item.tokenId.toString(),
+    //   seller: item.seller,
+    //   owner: item.owner,
+    //   itemTokenUri,
+    // }
+    // console.log('item (fetched using itemId): ', item)
 
-    // Fetching Items on Market using itemIds
-    const itemIds = [1]
-    items = await market.fetchMarketItemsByItemIds(itemIds)
-    items = await Promise.all(
-      items.map(async (i) => {
-        const tokenUri = await nft.tokenURI(i.tokenId)
-        let item = {
-          price: i.price.toString(),
-          tokenId: i.tokenId.toString(),
-          seller: i.seller,
-          owner: i.owner,
-          tokenUri,
-        }
-        return item
-      }),
-    )
-    console.log('items (fetched using itemIds): ', items)
+    // // Fetching Items on Market using itemIds
+    // const itemIds = [1]
+    // items = await market.fetchMarketItemsByItemIds(itemIds)
+    // items = await Promise.all(
+    //   items.map(async (i) => {
+    //     const tokenUri = await nft.tokenURI(i.tokenId)
+    //     let item = {
+    //       price: i.price.toString(),
+    //       tokenId: i.tokenId.toString(),
+    //       seller: i.seller,
+    //       owner: i.owner,
+    //       tokenUri,
+    //     }
+    //     return item
+    //   }),
+    // )
+    // console.log('items (fetched using itemIds): ', items)
 
     // Fetching User Puchased Items
     items = await market.fetchUserPurchasedItems()
@@ -118,10 +118,8 @@ describe('NFTMarket', function () {
     )
     console.log('items (user purchased): ', items)
 
-    // Issue: if items is empty, Promise.all(...) will throw an error
-
     // Fetching User Not Sale Items
-    items = await market.fetchUserCreatedNotSaleItems()
+    items = await market.fetchUserCreatedItems()
     items = await Promise.all(
       items.map(async (i) => {
         const tokenUri = await nft.tokenURI(i.tokenId)
@@ -136,39 +134,5 @@ describe('NFTMarket', function () {
       }),
     )
     console.log('items (user not sale): ', items)
-
-    // Fetching User Sale Items
-    items = await market.fetchUserCreatedSaleItems()
-    items = await Promise.all(
-      items.map(async (i) => {
-        const tokenUri = await nft.tokenURI(i.tokenId)
-        let item = {
-          price: i.price.toString(),
-          tokenId: i.tokenId.toString(),
-          seller: i.seller,
-          owner: i.owner,
-          tokenUri,
-        }
-        return item
-      }),
-    )
-    console.log('items (user sale): ', items)
-
-    // // Fetching User Sold Items
-    items = await market.fetchUserCreatedSoldItems()
-    items = await Promise.all(
-      items.map(async (i) => {
-        const tokenUri = await nft.tokenURI(i.tokenId)
-        let item = {
-          price: i.price.toString(),
-          tokenId: i.tokenId.toString(),
-          seller: i.seller,
-          owner: i.owner,
-          tokenUri,
-        }
-        return item
-      }),
-    )
-    console.log('items (user sold): ', items)
   })
 })

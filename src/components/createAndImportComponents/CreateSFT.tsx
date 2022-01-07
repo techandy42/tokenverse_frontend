@@ -1,6 +1,11 @@
 import React from 'react'
 
-const CreateSFT = () => {
+interface IProps {
+  clearCounter: number
+  setClearCounter: React.Dispatch<SetStateAction<number>>
+}
+
+const CreateSFT: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
   return (
     <div>
       <h1>Create SFT</h1>
