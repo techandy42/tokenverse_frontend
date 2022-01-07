@@ -16,12 +16,13 @@ const CopyToClipboardBar: React.FC<IProps> = ({ label, value }) => {
       }}
     >
       <button
+        className='font-chakra'
         style={{
-          color: 'grey',
+          color: '#242424',
           backgroundColor: 'lightGrey',
           border: 0,
           height: '1.5rem',
-          borderRadius: '4px 0 0 4px',
+          borderRadius: '2px 0 0 2px',
           borderTop: '1px solid grey',
           borderLeft: '1px solid grey',
           borderBottom: '1px solid grey',
@@ -33,7 +34,7 @@ const CopyToClipboardBar: React.FC<IProps> = ({ label, value }) => {
         type='text'
         value={value}
         style={{
-          color: 'grey',
+          color: '#323232',
           border: 0,
           height: '1.5rem',
           width: '12.5rem',
@@ -45,13 +46,13 @@ const CopyToClipboardBar: React.FC<IProps> = ({ label, value }) => {
       <Button
         sx={{
           backgroundColor: 'lightGrey',
-          color: 'grey',
+          color: '#646464',
           border: 0,
           height: '1.5rem',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          borderRadius: '0 4px 4px 0',
+          borderRadius: '0 2px 2px 0',
           borderTop: '1px solid grey',
           borderRight: '1px solid grey',
           borderBottom: '1px solid grey',
