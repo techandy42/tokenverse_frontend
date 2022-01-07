@@ -71,14 +71,16 @@ const AccountInfo = () => {
       } else {
         return (
           <>
-            <Typography>{accountInfo.errorMessage}</Typography>
+            <Typography sx={{ fontWeight: 200 }}>
+              {accountInfo.errorMessage}
+            </Typography>
           </>
         )
       }
     } else {
       return (
         <>
-          <Typography>No account info</Typography>
+          <Typography sx={{ fontWeight: 200 }}>No account info</Typography>
         </>
       )
     }
