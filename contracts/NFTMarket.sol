@@ -46,7 +46,7 @@ contract NFTMarket is ReentrancyGuard {
         uint itemId;
         address nftContract;
         uint256 tokenId;
-        address creator;
+        address payable creator;
         address payable seller;
         address payable owner;
         uint256 price;

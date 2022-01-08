@@ -8,7 +8,6 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn'
-import DividerMarginBottom from '../styles/DividerMarginBottom'
 import CopyToClipboardBar from '../styles/CopyToClipboardBar'
 
 // Fetch the personal information of the back-end
@@ -25,14 +24,15 @@ interface IPersonalInfo {
 }
 
 const personalInfo: IPersonalInfo = {
-  image: null,
-  // 'https://www.minuteschool.com/wp-content/uploads/2017/01/programming-technology-1080x630.jpg',
+  /*null,*/
+  image:
+    'https://www.minuteschool.com/wp-content/uploads/2017/01/programming-technology-1080x630.jpg',
   name: 'Govanni Georgio',
   description:
     'But everyone calls me Georgio. This is a meme description that is supposed to be funny, but it is actually only used for testing the front-end',
   link: 'https://google.com',
   verified: true,
-  verifiedUserName: 'GOvanni Georgio',
+  verifiedUserName: 'Govanni Georgio',
   verificationDate: new Date(),
   verificationInfo: 'This person has been ',
   verificationFile: { info: 'Every product looks valid' },
@@ -50,8 +50,6 @@ const AccountInfo = () => {
     }
     callAccount()
   }, [])
-
-  console.log(accountInfo)
 
   const displayAccountInfo = () => {
     if (accountInfo !== null) {
@@ -190,7 +188,6 @@ const AccountInfo = () => {
         </Box>
         <Box sx={{ flexGrow: 4 }} />
       </FlexBox>
-      <DividerMarginBottom />
     </>
   )
 }

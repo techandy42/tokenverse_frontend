@@ -118,17 +118,21 @@ describe('NFTMarket', function () {
     )
     console.log('items (user purchased): ', items)
 
-    // Fetching User Not Sale Items
+    // Fetching User Created Items
     items = await market.fetchUserCreatedItems()
     items = await Promise.all(
       items.map(async (i) => {
         const tokenUri = await nft.tokenURI(i.tokenId)
         let item = {
-          price: i.price.toString(),
-          tokenId: i.tokenId.toString(),
+          tokenUri,
+          itemId: i.itemId.toNumber(),
+          tokenId: i.tokenId.toNumber(),
+          creator: i.creator,
           seller: i.seller,
           owner: i.owner,
-          tokenUri,
+          price: i.price.toString(),
+          onSale: i.onSale,
+          frozen: i.frozen,
         }
         return item
       }),

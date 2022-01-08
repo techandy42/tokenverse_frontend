@@ -11,6 +11,8 @@ export const collections = [
   'Collection 1',
   'Collection 2',
   'Collection 3',
+  'Collection 4',
+  'Collection 5',
 ]
 
 export default function Create() {

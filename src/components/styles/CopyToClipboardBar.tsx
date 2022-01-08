@@ -2,6 +2,8 @@ import React from 'react'
 import FlexBox from './FlexBox'
 import Button from '@mui/material/Button'
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn'
+import Tooltip from '@mui/material/Tooltip'
+import Input from '@mui/material/Input'
 
 interface IProps {
   label: string
@@ -10,55 +12,42 @@ interface IProps {
 
 const CopyToClipboardBar: React.FC<IProps> = ({ label, value }) => {
   return (
-    <FlexBox
-      sx={{
-        marginBottom: '0.5rem',
-      }}
-    >
-      <button
-        className='font-chakra'
-        style={{
-          color: '#080808',
-          backgroundColor: '#A0A0A0',
-          border: '1px solid grey',
-          height: '1.5rem',
-          borderRadius: '2px 0 0 2px',
-          width: '4rem',
-        }}
-      >
-        {label}
-      </button>
-      <input
-        type='text'
-        value={value}
-        style={{
-          color: '#323232',
-          border: 0,
-          height: '1.5rem',
-          width: '12.5rem',
-          outline: 'none',
-          borderTop: '1px solid grey',
-          borderBottom: '1px solid grey',
-        }}
-      />
-      <Button
+    <Tooltip placement='left' title={label}>
+      <FlexBox
         sx={{
-          backgroundColor: '#A0A0A0',
-          color: '#484848',
-          border: '1px solid grey',
-          height: '1.5rem',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: '0 2px 2px 0',
-        }}
-        onClick={() => {
-          navigator.clipboard.writeText(value)
+          marginBottom: '0.5rem',
         }}
       >
-        <AssignmentTurnedInIcon sx={{ fontSize: 15 }} />
-      </Button>
-    </FlexBox>
+        <Input
+          type='text'
+          value={value}
+          style={{
+            color: '#323232',
+            height: '2rem',
+            width: '12.5rem',
+            outline: 'none',
+            paddingLeft: '0.1rem',
+          }}
+        />
+        <Button
+          sx={{
+            backgroundColor: 'white',
+            color: '#484848',
+            border: '1px solid grey',
+            height: '2rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '0 2px 2px 0',
+          }}
+          onClick={() => {
+            navigator.clipboard.writeText(value)
+          }}
+        >
+          <AssignmentTurnedInIcon sx={{ fontSize: 17.5 }} />
+        </Button>
+      </FlexBox>
+    </Tooltip>
   )
 }
 
