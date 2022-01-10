@@ -10,6 +10,8 @@ import blockchainTypes from '../../../constants/blockchainTypes'
 import { collections } from '../../pages/create'
 import CollectionAndBlockchainTypeInputs from './createShared/CollectionAndBlockchainTypeInputs'
 import Names from './createMultiple/Names'
+import { getFileUrl, createItem } from '../../../tokenFunctions/createFunctions'
+import multimediaFileToMultimedia from '../../../functions/multimediaFileToMultimedia'
 
 interface IProps {
   clearCounter: number
@@ -55,18 +57,28 @@ const CreateMultiple: React.FC<IProps> = ({
     return valid
   }
 
-  const handleSubmit = (e: React.FormEventHandler<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEventHandler<HTMLFormElement>) => {
     e.preventDefault()
     const validedImageFile = validImageFile()
     const validedMultimediaImageFile = validMultimediaImageFile()
     if (validedImageFile && validedMultimediaImageFile) {
       // Format Token and mint
+      // [imageFile, null] or [multimediaFile, imageFile]
+      for (let i = 0; i < files.length; i++) {
+        const name = names[i]
+        const imageFile = files[i][1] === null ? files[i][0] : files[i][1]
+        const fileUrl = await getFileUrl(imageFile)
+        const multimediaFile = files[i][1] === null ? null : files[i][0]
+        const multimedia =
+          multimediaFile === null
+            ? null
+            : multimediaFileToMultimedia(multimediaFile)
+        await createItem(name, collection, blockchainType, fileUrl, multimedia)
+      }
       setClearCounter(clearCounter + 1)
     }
-    if (validedImageFile) setIsFileErrorOpen(false)
-    else setIsFileErrorOpen(true)
-    if (validedMultimediaImageFile) setIsMultimediaImageFileErrorOpen(false)
-    else setIsMultimediaImageFileErrorOpen(true)
+    if (!validedImageFile) setIsFileErrorOpen(true)
+    if (!validedMultimediaImageFile) setIsMultimediaImageFileErrorOpen(true)
   }
 
   const handleGenericNameChange = (e: any) => {

@@ -27,3 +27,7 @@ a {
 .font-chakra {
   font-family: 'Chakra Petch', sans-serif;
 }
+
+.btn {
+  text-transform: none;
+}

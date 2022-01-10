@@ -123,6 +123,21 @@ export default function PrimarySearchAppBar() {
       <Link href='/account'>
         <MenuItem onClick={handleMenuClose}>Account</MenuItem>
       </Link>
+      <Link href='/account/created'>
+        <MenuItem onClick={handleMenuClose}>Created</MenuItem>
+      </Link>
+      <Link href='/account/purchased'>
+        <MenuItem onClick={handleMenuClose}>Purchased</MenuItem>
+      </Link>
+      <Link href='/account/shopping-cart'>
+        <MenuItem onClick={handleMenuClose}>Cart</MenuItem>
+      </Link>
+      <Link href='/account/favorite'>
+        <MenuItem onClick={handleMenuClose}>Favorite</MenuItem>
+      </Link>
+      <Link href='/account/edit'>
+        <MenuItem onClick={handleMenuClose}>Edit</MenuItem>
+      </Link>
       <Link href='/'>
         <MenuItem onClick={handleMenuClose}>Log Out</MenuItem>
       </Link>
@@ -173,21 +188,49 @@ export default function PrimarySearchAppBar() {
             />
           </Search>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <Button className='nav-button' sx={{ color: 'inherit' }}>
+            <Button
+              className='nav-button'
+              sx={{
+                color: 'inherit',
+                textTransform: 'none',
+                fontSize: 16,
+              }}
+            >
               Categories
             </Button>
             <Link href='/entrance'>
-              <Button className='nav-button' sx={{ color: 'inherit' }}>
+              <Button
+                className='nav-button'
+                sx={{
+                  color: 'inherit',
+                  textTransform: 'none',
+                  fontSize: 16,
+                }}
+              >
                 Entrance
               </Button>
             </Link>
             <Link href='/design'>
-              <Button className='nav-button' sx={{ color: 'inherit' }}>
+              <Button
+                className='nav-button'
+                sx={{
+                  color: 'inherit',
+                  textTransform: 'none',
+                  fontSize: 16,
+                }}
+              >
                 Design
               </Button>
             </Link>
             <Link href='/create'>
-              <Button className='nav-button' sx={{ color: 'inherit' }}>
+              <Button
+                className='nav-button'
+                sx={{
+                  color: 'inherit',
+                  textTransform: 'none',
+                  fontSize: 16,
+                }}
+              >
                 Create
               </Button>
             </Link>

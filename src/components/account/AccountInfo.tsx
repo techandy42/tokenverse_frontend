@@ -11,6 +11,7 @@ import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn'
 import CopyToClipboardBar from '../styles/CopyToClipboardBar'
 import { styled } from '@mui/material/styles'
 import { BREAKPOINT_SMALL, BREAKPOINT_LARGE } from '../../../constants'
+import Link from 'next/link'
 
 // Fetch the personal information of the back-end
 interface IPersonalInfo {
@@ -127,11 +128,25 @@ const AccountInfo = () => {
             sx={{ fontSize: 30 }}
           />
         </IconButton>
-        <Button variant='contained' size='small' sx={{ textTransform: 'none' }}>
-          Edit
-        </Button>
+        <Link href='/account/edit'>
+          <Button
+            variant='contained'
+            size='small'
+            sx={{ textTransform: 'none' }}
+          >
+            Edit
+          </Button>
+        </Link>
       </>
     )
+  }
+
+  const formatPersonalInfoDescription = (personalInfoDescription: string) => {
+    if (personalInfoDescription.length > 280) {
+      return personalInfoDescription.slice(0, 278) + '..'
+    } else {
+      return personalInfoDescription
+    }
   }
 
   const handleImageFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -201,7 +216,7 @@ const AccountInfo = () => {
               display: { xs: 'none', sm: 'block' },
             }}
           >
-            {personalInfo.description}
+            {formatPersonalInfoDescription(personalInfo.description)}
           </Typography>
           <Typography
             color='primary'

@@ -24,7 +24,7 @@ export const createItem = async (
   collection: string,
   blockchainType: string,
   fileUrl: string,
-  multimediaFile: any,
+  multimedia: any,
 ) => {
   if (!name || !collection || !blockchainType || !fileUrl) return
   const data = JSON.stringify({
@@ -32,9 +32,8 @@ export const createItem = async (
     collection,
     blockchainType,
     image: fileUrl,
-    multimedia: multimediaFile,
+    multimedia,
   })
-
   try {
     const added = await client.add(data)
     const url = `https://ipfs.infura.io/ipfs/${added.path}`

@@ -10,6 +10,7 @@ import CollectionAndBlockchainTypeInputs from './createShared/CollectionAndBlock
 import Alert from '@mui/material/Alert'
 import blockchainTypes from '../../../constants/blockchainTypes'
 import { getFileUrl, createItem } from '../../../tokenFunctions/createFunctions'
+import multimediaFileToMultimedia from '../../../functions/multimediaFileToMultimedia'
 
 interface IProps {
   clearCounter: number
@@ -72,13 +73,11 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
         file.type.split('/')[0] === 'image' ? file : multimediaImageFile
       const fileUrl = await getFileUrl(imageFile)
       const multimediaFile = file.type.split('/')[0] === 'image' ? null : file
-      await createItem(
-        name,
-        collection,
-        blockchainType,
-        fileUrl,
-        multimediaFile,
-      )
+      const multimedia =
+        multimediaFile === null
+          ? null
+          : multimediaFileToMultimedia(multimediaFile)
+      await createItem(name, collection, blockchainType, fileUrl, multimedia)
       setClearCounter(clearCounter + 1)
     }
     if (!validedImageFile) setIsFileErrorOpen(true)

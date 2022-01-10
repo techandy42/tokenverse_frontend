@@ -28,8 +28,12 @@ const CollectionAndBlockchainTypeInputs: React.FC<IProps> = ({
     collections[0],
   )
 
-  const handleRenameInitialCollection = (e: any) => {
-    // Rename the initial collection
+  const handleRenameInitialCollection = () => {
+    if (collections.slice(1).includes(initialCollectionName)) {
+      alert(`Error: "${initialCollectionName}" already exists`)
+    } else {
+      // Sent the collection to the back-end
+    }
   }
 
   return (
@@ -79,7 +83,7 @@ const CollectionAndBlockchainTypeInputs: React.FC<IProps> = ({
               edge='end'
               color='inherit'
               disableRipple
-              onClick={handleRenameInitialCollection}
+              onClick={() => handleRenameInitialCollection()}
               sx={{ marginRight: 0 }}
             >
               <AddCircleOutlineIcon color='primary' />

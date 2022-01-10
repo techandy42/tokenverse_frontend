@@ -25,7 +25,7 @@ const AccountDisplayCollection: React.FC<IProps> = ({
   }
 
   return (
-    <Link href='https://google.com'>
+    <Link href={`/collection/${collectionName}`}>
       <Card sx={{ cursor: 'pointer' }}>
         <CardMedia
           component='img'
