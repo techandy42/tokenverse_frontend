@@ -23,43 +23,53 @@ const CreateFormNav: React.FC<IProps> = ({
         <ButtonGroup sx={{ marginBottom: { xs: MARGIN_SMALL, sm: 0 } }}>
           <Link href='/create'>
             {formType === 'single' ? (
-              <Button variant='contained'>Create Single</Button>
+              <Button variant='contained' sx={{ textTransform: 'none' }}>
+                Create Single
+              </Button>
             ) : (
-              <Button>Create Single</Button>
+              <Button sx={{ textTransform: 'none' }}>Create Single</Button>
             )}
           </Link>
           <Link href='/create/multiple'>
             {formType === 'multiple' ? (
-              <Button variant='contained'>Create Multiple</Button>
+              <Button sx={{ textTransform: 'none' }} variant='contained'>
+                Create Multiple
+              </Button>
             ) : (
-              <Button>Create Multiple</Button>
+              <Button sx={{ textTransform: 'none' }}>Create Multiple</Button>
             )}
           </Link>
           <Link href='/create/sft'>
             {formType === 'sft' ? (
-              <Button variant='contained'>Create SFT</Button>
+              <Button sx={{ textTransform: 'none' }} variant='contained'>
+                Create SFT
+              </Button>
             ) : (
-              <Button>Create SFT</Button>
+              <Button sx={{ textTransform: 'none' }}>Create SFT</Button>
             )}
           </Link>
           <Link href='/create/import-nft'>
             {formType === 'import-nft' ? (
-              <Button variant='contained'>Import NFT</Button>
+              <Button sx={{ textTransform: 'none' }} variant='contained'>
+                Import NFT
+              </Button>
             ) : (
-              <Button>Import NFT</Button>
+              <Button sx={{ textTransform: 'none' }}>Import NFT</Button>
             )}
           </Link>
           <Link href='/create/import-sft'>
             {formType === 'import-sft' ? (
-              <Button variant='contained'>Import SFT</Button>
+              <Button sx={{ textTransform: 'none' }} variant='contained'>
+                Import SFT
+              </Button>
             ) : (
-              <Button>Import SFT</Button>
+              <Button sx={{ textTransform: 'none' }}>Import SFT</Button>
             )}
           </Link>
         </ButtonGroup>
         <FlexSpace />
         <Button
-          sx={{ display: { xs: 'none', sm: 'block' } }}
+          sx={{ display: { xs: 'none', sm: 'block' }, textTransform: 'none' }}
           onClick={() => setClearCounter(clearCounter + 1)}
         >
           Clear

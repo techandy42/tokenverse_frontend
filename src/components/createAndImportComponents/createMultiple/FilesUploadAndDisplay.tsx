@@ -201,7 +201,11 @@ const FilesUploadAndDisplay: React.FC<IProps> = ({
           }}
         >
           {file[1] === null && (
-            <Button component='label' variant='contained'>
+            <Button
+              component='label'
+              variant='contained'
+              sx={{ textTransform: 'none' }}
+            >
               Add Image (Required)
               <input
                 type='file'
@@ -221,6 +225,7 @@ const FilesUploadAndDisplay: React.FC<IProps> = ({
             <Button
               component='label'
               variant='contained'
+              sx={{ textTransform: 'none' }}
               onClick={() => handleRemoveMultimediaImageFileHandler(i)}
             >
               Remove Image
@@ -250,6 +255,7 @@ const FilesUploadAndDisplay: React.FC<IProps> = ({
         <Box sx={{ marginBottom: MARGIN_LARGE }}>
           <Button
             variant='contained'
+            sx={{ textTransform: 'none' }}
             onClick={(e) =>
               setViewMultimediaImageFiles(!viewMultimediaImageFiles)
             }
@@ -302,6 +308,7 @@ const FilesUploadAndDisplay: React.FC<IProps> = ({
           variant='contained'
           sx={{
             marginBottom: MARGIN_LARGE,
+            textTransform: 'none',
           }}
         >
           Add Files
@@ -320,7 +327,7 @@ const FilesUploadAndDisplay: React.FC<IProps> = ({
             <Button
               component='label'
               variant='contained'
-              sx={{ marginBottom: MARGIN_LARGE }}
+              sx={{ marginBottom: MARGIN_LARGE, textTransform: 'none' }}
               onClick={handleDeleteFile}
             >
               Remove File
@@ -328,7 +335,7 @@ const FilesUploadAndDisplay: React.FC<IProps> = ({
             <Button
               component='label'
               variant='contained'
-              sx={{ marginBottom: MARGIN_LARGE }}
+              sx={{ marginBottom: MARGIN_LARGE, textTransform: 'none' }}
               onClick={handleDeleteFiles}
             >
               Remove Files

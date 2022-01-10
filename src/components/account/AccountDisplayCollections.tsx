@@ -1,9 +1,8 @@
 import React from 'react'
 import ICollectionNFTs from '../../../interfaces/ICollectionNFTs'
 import AccountDisplayCollection from './AccountDisplayCollection'
-import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
-import { BREAKPOINT_SMALL, BREAKPOINT_LARGE } from '../../../constants'
+import { BREAKPOINT_SMALL } from '../../../constants'
 
 interface IProps {
   collectionNFTs: ICollectionNFTs
@@ -11,7 +10,7 @@ interface IProps {
 
 const DisplayCollections = styled('div')(({ theme }) => ({
   display: 'grid',
-  gridTemplateColumns: 'auto auto auto',
+  gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
   gridGap: '4px',
   marginTop: '4px',
   [theme.breakpoints.up(BREAKPOINT_SMALL)]: {

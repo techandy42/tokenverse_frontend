@@ -129,7 +129,7 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
         setBlockchainType={setBlockchainType}
       />
       <DividerMarginBottom />
-      <Button variant='contained' type='submit'>
+      <Button variant='contained' type='submit' sx={{ textTransform: 'none' }}>
         Create Digital Asset
       </Button>
     </form>

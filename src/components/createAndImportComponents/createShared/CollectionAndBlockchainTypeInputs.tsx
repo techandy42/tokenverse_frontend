@@ -10,7 +10,6 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import { collections } from '../../../pages/create'
 import blockchainTypes from '../../../../constants/blockchainTypes'
 import { MARGIN_LARGE, MARGIN_SMALL } from '../../../../constants'
-import Button from '@mui/material/Button'
 
 interface IProps {
   collection: string

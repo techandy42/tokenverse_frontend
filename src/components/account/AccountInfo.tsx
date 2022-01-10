@@ -127,7 +127,7 @@ const AccountInfo = () => {
             sx={{ fontSize: 30 }}
           />
         </IconButton>
-        <Button variant='contained' size='small'>
+        <Button variant='contained' size='small' sx={{ textTransform: 'none' }}>
           Edit
         </Button>
       </>
@@ -156,6 +156,7 @@ const AccountInfo = () => {
                   borderRadius: '50%',
                   width: '10rem',
                   height: '10rem',
+                  cursor: 'pointer',
                 }}
                 alt='No Image Found'
               />
@@ -202,7 +203,10 @@ const AccountInfo = () => {
           >
             {personalInfo.description}
           </Typography>
-          <Typography color='primary' sx={{ marginBottom: '0.25rem' }}>
+          <Typography
+            color='primary'
+            sx={{ marginBottom: '0.25rem', cursor: 'pointer' }}
+          >
             More Information
           </Typography>
           <a

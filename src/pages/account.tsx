@@ -27,14 +27,14 @@ import IToken from '../../interfaces/IToken'
 import ICollectionNFTs from '../../interfaces/ICollectionNFTs'
 
 const account = () => {
-  const [collectionNFTs, setCollectionNFTs] = useState<any[]>([])
+  const [collectionNFTs, setCollectionNFTs] = useState<ICollectionNFTs[]>([])
   const [loadingState, setLoadingState] = useState('not-loaded')
 
   useEffect(() => {
     const getNFTs = async () => {
-      let items: IToken[] = await loadNFTs()
-      items = groupNFTsIntoCollections(items)
-      setCollectionNFTs(items)
+      const items: IToken[] = await loadNFTs()
+      const groupedItems: ICollectionNFTs = groupNFTsIntoCollections(items)
+      setCollectionNFTs(groupedItems)
       setLoadingState('loaded')
     }
     getNFTs()

@@ -129,7 +129,7 @@ const CreateMultiple: React.FC<IProps> = ({
       <DividerMarginBottom />
       <Button
         variant='contained'
-        sx={{ marginBottom: MARGIN_LARGE }}
+        sx={{ marginBottom: MARGIN_LARGE, textTransform: 'none' }}
         type='submit'
       >
         Create Digital Assets

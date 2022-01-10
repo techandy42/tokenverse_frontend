@@ -17,7 +17,7 @@ const Names: React.FC<IProps> = ({ names, setNames, files }) => {
     <div>
       <Button
         variant='contained'
-        sx={{ marginBottom: MARGIN_LARGE }}
+        sx={{ marginBottom: MARGIN_LARGE, textTransform: 'none' }}
         onClick={() => setShowNames(!showNames)}
       >
         {showNames ? 'Hide Names' : 'Show Names'}
