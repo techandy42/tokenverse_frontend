@@ -9,6 +9,8 @@ import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn'
 import CopyToClipboardBar from '../styles/CopyToClipboardBar'
+import { styled } from '@mui/material/styles'
+import { BREAKPOINT_SMALL, BREAKPOINT_LARGE } from '../../../constants'
 
 // Fetch the personal information of the back-end
 interface IPersonalInfo {
@@ -24,7 +26,6 @@ interface IPersonalInfo {
 }
 
 const personalInfo: IPersonalInfo = {
-  /*null,*/
   image:
     'https://www.minuteschool.com/wp-content/uploads/2017/01/programming-technology-1080x630.jpg',
   name: 'Govanni Georgio',
@@ -37,6 +38,33 @@ const personalInfo: IPersonalInfo = {
   verificationInfo: 'This person has been ',
   verificationFile: { info: 'Every product looks valid' },
 }
+
+const VerificationBoxUp750 = styled('div')(({ theme }) => ({
+  display: 'none',
+  [theme.breakpoints.up(BREAKPOINT_SMALL)]: {
+    display: 'block',
+  },
+}))
+
+const VerificationBoxDown750 = styled('div')(({ theme }) => ({
+  display: 'block',
+  [theme.breakpoints.up(BREAKPOINT_SMALL)]: {
+    display: 'none',
+  },
+}))
+
+const DisplayPicture = styled('div')(({ theme }) => ({
+  marginLeft: '24px',
+  marginRight: '32px',
+  [theme.breakpoints.up(BREAKPOINT_SMALL)]: {
+    marginLeft: '32px',
+    marginRight: '48px',
+  },
+  [theme.breakpoints.up(BREAKPOINT_LARGE)]: {
+    marginLeft: '48px',
+    marginRight: '64px',
+  },
+}))
 
 const AccountInfo = () => {
   const [accountInfo, setAccountInfo] = useState<IAccountInfo | null>(null)
@@ -114,12 +142,8 @@ const AccountInfo = () => {
     <>
       <FlexBox sx={{ alignItems: 'normal', marginBottom: '4rem' }}>
         <FlexSpace />
-        <Box
-          sx={{
-            marginRight: { xs: '2rem', sm: '3rem', md: '4rem' },
-            marginLeft: { xs: '1.5rem', sm: 0 },
-          }}
-        >
+        {/* Displaying picture */}
+        <DisplayPicture>
           <div>
             <label for='file-input'>
               <img
@@ -146,7 +170,8 @@ const AccountInfo = () => {
               />
             ) : null}
           </div>
-        </Box>
+        </DisplayPicture>
+        {/* Displaying information about the user */}
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <FlexBox
             sx={{
@@ -161,21 +186,24 @@ const AccountInfo = () => {
             >
               {personalInfo.name}
             </Typography>
-            <Box sx={{ display: { xs: 'none', lg: 'block' } }}>
+            <VerificationBoxUp750>
               {displayVerficationAndEditButtons()}
-            </Box>
+            </VerificationBoxUp750>
           </FlexBox>
-          <Box sx={{ display: { xs: 'block', lg: 'none' } }}>
+          <VerificationBoxDown750>
             {displayVerficationAndEditButtons()}
-          </Box>
+          </VerificationBoxDown750>
           <Typography
             sx={{
-              marginBottom: '0.1rem',
+              marginBottom: '0.25rem',
               fontWeight: 300,
               display: { xs: 'none', sm: 'block' },
             }}
           >
             {personalInfo.description}
+          </Typography>
+          <Typography color='primary' sx={{ marginBottom: '0.25rem' }}>
+            More Information
           </Typography>
           <a
             href={personalInfo.link}

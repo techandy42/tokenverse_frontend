@@ -1,18 +1,24 @@
 import { styled } from '@mui/material/styles'
-import { MARGIN_TOP, MARGIN_LARGE } from '../../../constants'
+import {
+  MARGIN_TOP,
+  MARGIN_LARGE,
+  BREAKPOINT_LARGE,
+  BREAKPOINT_SMALL,
+} from '../../../constants'
 
 const StyledPageBase = styled('div')(({ theme }) => ({
   marginTop: MARGIN_TOP,
   marginBottom: MARGIN_LARGE,
-  marginLeft: '0%',
-  marginRight: '0%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: '6%',
-    marginRight: '6%',
+  marginLeft: 0,
+  marginRight: 0,
+  [theme.breakpoints.up(BREAKPOINT_SMALL)]: {
+    marginLeft: '20px',
+    marginRight: '20px',
   },
-  [theme.breakpoints.up('md')]: {
-    marginLeft: '18%',
-    marginRight: '18%',
+  [theme.breakpoints.up(BREAKPOINT_LARGE)]: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    width: '960px',
   },
 }))
 

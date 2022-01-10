@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
@@ -17,26 +17,26 @@ const AccountDisplayCollection: React.FC<IProps> = ({
   NFTs,
 }) => {
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card>
       <CardMedia
         component='img'
-        height='280'
         image={NFTs[0].image}
         alt='Image not found'
+        sx={{ height: { xs: 120, sm: 160, md: 240 } }}
       />
       <CardContent>
-        <Typography gutterBottom variant='h5' component='div'>
-          {collectionName.slice(0, 10)}
+        <Typography
+          gutterBottom
+          variant='h6'
+          component='div'
+          sx={{ fontWeight: 300, fontSize: { xs: 16, sm: 20, md: 24 } }}
+        >
+          {collectionName}
         </Typography>
         <Typography variant='body2' color='text.secondary'>
-          {NFTs.length}
+          {NFTs.length} items
         </Typography>
       </CardContent>
-      {/* 
-      <CardActions>
-        <Button size='small'>Share</Button>
-        <Button size='small'>Learn More</Button>
-      </CardActions> */}
     </Card>
   )
 }

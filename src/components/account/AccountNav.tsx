@@ -17,7 +17,7 @@ const AccountNav: React.FC<IProps> = ({ index }) => {
   }
 
   return (
-    <Box sx={{ width: '100%', marginBottom: '1rem' }}>
+    <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={tabIndex} onChange={handleChange}>
           <Link href='/account'>
