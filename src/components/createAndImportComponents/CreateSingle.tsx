@@ -14,7 +14,7 @@ import multimediaFileToMultimedia from '../../../functions/multimediaFileToMulti
 
 interface IProps {
   clearCounter: number
-  setClearCounter: Dispatch<SetStateAction<number>>
+  setClearCounter: React.Dispatch<SetStateAction<number>>
 }
 
 const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
@@ -23,8 +23,8 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
     blockchainTypes[0],
   )
   const [name, setName] = useState<string>('')
-  const [file, setFile] = useState<null | any>(null)
-  const [multimediaImageFile, setMultimediaImageFile] = useState<null | any>(
+  const [file, setFile] = useState<File | null>(null)
+  const [multimediaImageFile, setMultimediaImageFile] = useState<File | null>(
     null,
   )
   const [isFileErrorOpen, setIsFileErrorOpen] = useState<boolean>(false)

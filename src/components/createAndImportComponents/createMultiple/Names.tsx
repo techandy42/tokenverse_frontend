@@ -7,7 +7,7 @@ import { MARGIN_SMALL, MARGIN_LARGE } from '../../../../constants'
 interface IProps {
   names: string[]
   setNames: React.Dispatch<React.SetStateAction<string[]>>
-  files: [any, any][]
+  files: [File, File | null][]
 }
 
 const Names: React.FC<IProps> = ({ names, setNames, files }) => {

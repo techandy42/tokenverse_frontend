@@ -12,8 +12,8 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import FlexBox from '../../styles/FlexBox'
 
 interface IProps {
-  files: [any, any][]
-  setFiles: React.Dispatch<React.SetStateAction<[any, any][]>>
+  files: [File, File | null][]
+  setFiles: React.Dispatch<React.SetStateAction<[File, File | null][]>>
   names: string[]
   setNames: React.Dispatch<React.SetStateAction<string[]>>
   genericName: string
@@ -34,7 +34,7 @@ const FilesUploadAndDisplay: React.FC<IProps> = ({
     if (e.target.files.length > 100) {
       alert('Please upload 1 - 100 files')
     } else {
-      const uploadedFiles: [any, any][] = []
+      const uploadedFiles: [File, File | null][] = []
       for (const file of e.target.files) {
         uploadedFiles.push([file, null])
       }
@@ -150,7 +150,7 @@ const FilesUploadAndDisplay: React.FC<IProps> = ({
     )
   }
 
-  const displayFile = (file: any) => {
+  const displayFile = (file: File) => {
     return (
       <>
         {file !== null && (
@@ -184,7 +184,7 @@ const FilesUploadAndDisplay: React.FC<IProps> = ({
     )
   }
 
-  const handleAddMultimediaImageFileHandler = (file: any, i: number) => {
+  const handleAddMultimediaImageFileHandler = (file: File, i: number) => {
     setFiles([...files.slice(0, i), [files[i][0], file], ...files.slice(i + 1)])
   }
 
@@ -192,7 +192,7 @@ const FilesUploadAndDisplay: React.FC<IProps> = ({
     setFiles([...files.slice(0, i), [files[i][0], null], ...files.slice(i + 1)])
   }
 
-  const multimediaImageFileHandler = (file: any, i: number) => {
+  const multimediaImageFileHandler = (file: File, i: number) => {
     return (
       <>
         <Box
@@ -285,7 +285,7 @@ const FilesUploadAndDisplay: React.FC<IProps> = ({
     )
   }
 
-  const hasMultimediaFile = (files: any) => {
+  const hasMultimediaFile = (files: [File, File | null][]) => {
     if (files.length > 0) {
       let multimediaFileExists = false
       for (const file of files) {

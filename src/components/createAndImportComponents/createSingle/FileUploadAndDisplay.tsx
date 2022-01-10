@@ -10,9 +10,9 @@ import IconButton from '@mui/material/IconButton'
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
 interface IProps {
-  file: any
+  file: File | null
   setFile: React.Dispatch<any>
-  multimediaImageFile: any
+  multimediaImageFile: File | null
   setMultimediaImageFile: React.Dispatch<any>
 }
 
@@ -22,7 +22,7 @@ const FileUploadAndDisplay: React.FC<IProps> = ({
   multimediaImageFile,
   setMultimediaImageFile,
 }) => {
-  const displayFile = (file: any) => {
+  const displayFile = (file: File) => {
     return (
       <>
         {file !== null && (
@@ -57,7 +57,9 @@ const FileUploadAndDisplay: React.FC<IProps> = ({
     )
   }
 
-  const handleMultimediaImageFile = (e: any) => {
+  const handleMultimediaImageFile = (
+    e: React.ChangeEventHandler<HTMLInputElement>,
+  ) => {
     const file = e.target.files[0]
     if (file.type.split('/')[0] === 'image') {
       setMultimediaImageFile(file)

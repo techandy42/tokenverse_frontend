@@ -28,7 +28,7 @@ const CreateMultiple: React.FC<IProps> = ({
   )
   const [genericName, setGenericName] = useState<string>('')
   const [names, setNames] = useState<string[]>([])
-  const [files, setFiles] = useState<[any, any][]>([])
+  const [files, setFiles] = useState<[File, File | null][]>([])
   const [isFileErrorOpen, setIsFileErrorOpen] = useState<boolean>(false)
   const [isMultimediaImageFileErrorOpen, setIsMultimediaImageFileErrorOpen] =
     useState<boolean>(false)

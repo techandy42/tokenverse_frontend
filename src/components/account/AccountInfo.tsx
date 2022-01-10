@@ -12,32 +12,35 @@ import CopyToClipboardBar from '../styles/CopyToClipboardBar'
 import { styled } from '@mui/material/styles'
 import { BREAKPOINT_SMALL, BREAKPOINT_LARGE } from '../../../constants'
 import Link from 'next/link'
+import WebsiteLink from './AccountInfo/WebsiteLink'
+import WebAssetIcon from '@mui/icons-material/WebAsset'
+import FacebookIcon from '@mui/icons-material/Facebook'
+import InstagramIcon from '@mui/icons-material/Instagram'
+import TwitterIcon from '@mui/icons-material/Twitter'
+import LinkedInIcon from '@mui/icons-material/LinkedIn'
+import IPersonalInfo from '../../../interfaces/IPersonalInfo'
 
 // Fetch the personal information of the back-end
-interface IPersonalInfo {
-  image: any
-  name: string | null
-  description: string | null
-  link: string | null
-  verified: boolean
-  verifiedUserName: string
-  verificationDate: Date
-  verificationInfo: string | null
-  verificationFile: any
-}
-
-const personalInfo: IPersonalInfo = {
+const fetchedPersonalInfo: IPersonalInfo = {
+  joinedDate: new Date(),
   image:
     'https://www.minuteschool.com/wp-content/uploads/2017/01/programming-technology-1080x630.jpg',
-  name: 'Govanni Georgio',
+  userName: 'Andy Lee',
+  companyName: 'Tokenverse',
   description:
-    'But everyone calls me Georgio. This is a meme description that is supposed to be funny, but it is actually only used for testing the front-end',
-  link: 'https://google.com',
+    'I am the founder of Tokenverse, which is an NFT and SFT trading platform for all virtual reality platforms and games.',
+  email: 'techandy42@email.com',
+
+  mainLink: 'https://google.com',
+  facebookLink: 'https://facebook.com',
+  instagramLink: 'https://instagram.com',
+  twitterLink: 'https://twitter.com',
+  linkedInLink: 'https://linkedin.com',
+
   verified: true,
-  verifiedUserName: 'Govanni Georgio',
   verificationDate: new Date(),
-  verificationInfo: 'This person has been ',
-  verificationFile: { info: 'Every product looks valid' },
+  // place a file here for testing
+  verificationFile: null,
 }
 
 const VerificationBoxUp750 = styled('div')(({ theme }) => ({
@@ -124,7 +127,7 @@ const AccountInfo = () => {
           sx={{ marginRight: '0.5rem' }}
         >
           <AssignmentTurnedInIcon
-            color={personalInfo.verified ? 'primary' : 'disabled'}
+            color={fetchedPersonalInfo.verified ? 'primary' : 'disabled'}
             sx={{ fontSize: 30 }}
           />
         </IconButton>
@@ -141,11 +144,13 @@ const AccountInfo = () => {
     )
   }
 
-  const formatPersonalInfoDescription = (personalInfoDescription: string) => {
-    if (personalInfoDescription.length > 280) {
-      return personalInfoDescription.slice(0, 278) + '..'
+  const formatPersonalInfoDescription = (
+    fetchedPersonalInfoDescription: string,
+  ) => {
+    if (fetchedPersonalInfoDescription.length > 280) {
+      return fetchedPersonalInfoDescription.slice(0, 278) + '..'
     } else {
-      return personalInfoDescription
+      return fetchedPersonalInfoDescription
     }
   }
 
@@ -161,11 +166,12 @@ const AccountInfo = () => {
         <DisplayPicture>
           <div>
             <label for='file-input'>
+              {/* Modify the code so it is compatible with image files */}
               <img
                 src={
-                  personalInfo.image === null
+                  fetchedPersonalInfo.image === null
                     ? default_account_image.src
-                    : personalInfo.image
+                    : fetchedPersonalInfo.image
                 }
                 style={{
                   borderRadius: '50%',
@@ -176,7 +182,7 @@ const AccountInfo = () => {
                 alt='No Image Found'
               />
             </label>
-            {personalInfo.image === null ? (
+            {fetchedPersonalInfo.image === null ? (
               <input
                 id='file-input'
                 type='file'
@@ -200,7 +206,7 @@ const AccountInfo = () => {
               variant='h4'
               sx={{ marginRight: '0.75rem' }}
             >
-              {personalInfo.name}
+              {fetchedPersonalInfo.userName}
             </Typography>
             <VerificationBoxUp750>
               {displayVerficationAndEditButtons()}
@@ -211,26 +217,79 @@ const AccountInfo = () => {
           </VerificationBoxDown750>
           <Typography
             sx={{
-              marginBottom: '0.25rem',
+              marginBottom: '1rem',
               fontWeight: 300,
               display: { xs: 'none', sm: 'block' },
             }}
           >
-            {formatPersonalInfoDescription(personalInfo.description)}
+            {fetchedPersonalInfo.description === null
+              ? null
+              : formatPersonalInfoDescription(fetchedPersonalInfo.description)}
           </Typography>
           <Typography
             color='primary'
-            sx={{ marginBottom: '0.25rem', cursor: 'pointer' }}
+            sx={{ marginBottom: '0.5rem', cursor: 'pointer' }}
           >
             More Information
           </Typography>
-          <a
-            href={personalInfo.link}
-            target='_blank'
-            style={{ marginBottom: '1.5rem' }}
-          >
-            <Typography color='primary'>{personalInfo.link}</Typography>
-          </a>
+          {fetchedPersonalInfo.mainLink !== null && (
+            <WebsiteLink
+              link={fetchedPersonalInfo.mainLink}
+              title={
+                <FlexBox>
+                  <WebAssetIcon sx={{ fontSize: 20, marginRight: '0.25rem' }} />
+                  <span>{fetchedPersonalInfo.mainLink}</span>
+                </FlexBox>
+              }
+            />
+          )}
+          {fetchedPersonalInfo.facebookLink !== null && (
+            <WebsiteLink
+              link={fetchedPersonalInfo.facebookLink}
+              title={
+                <FlexBox>
+                  <FacebookIcon sx={{ fontSize: 20, marginRight: '0.25rem' }} />
+                  <span>Facebook Account</span>
+                </FlexBox>
+              }
+            />
+          )}
+          {fetchedPersonalInfo.instagramLink !== null && (
+            <WebsiteLink
+              link={fetchedPersonalInfo.instagramLink}
+              title={
+                <FlexBox>
+                  <InstagramIcon
+                    sx={{ fontSize: 20, marginRight: '0.25rem' }}
+                  />
+                  <span>Instagram Account</span>
+                </FlexBox>
+              }
+            />
+          )}
+          {fetchedPersonalInfo.twitterLink !== null && (
+            <WebsiteLink
+              link={fetchedPersonalInfo.twitterLink}
+              title={
+                <FlexBox>
+                  <TwitterIcon sx={{ fontSize: 20, marginRight: '0.25rem' }} />
+                  <span>Twitter Account</span>
+                </FlexBox>
+              }
+            />
+          )}
+          {fetchedPersonalInfo.linkedInLink !== null && (
+            <WebsiteLink
+              link={fetchedPersonalInfo.linkedInLink}
+              title={
+                <FlexBox>
+                  <LinkedInIcon sx={{ fontSize: 20, marginRight: '0.25rem' }} />
+                  <span>LinkedIn Account</span>
+                </FlexBox>
+              }
+              lastItem={true}
+            />
+          )}
           {displayAccountInfo()}
         </Box>
         <Box sx={{ flexGrow: 4 }} />

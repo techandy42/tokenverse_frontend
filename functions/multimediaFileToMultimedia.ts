@@ -1,4 +1,4 @@
-const multimediaFileToMultimedia = (multimediaFile: any) => {
+const multimediaFileToMultimedia = (multimediaFile: File) => {
   const multimedia = {
     lastModified: multimediaFile.lastModified,
     lastModifiedDate: multimediaFile.lastModifiedDate,
