@@ -23,8 +23,7 @@ import IPersonalInfo from '../../../interfaces/IPersonalInfo'
 // Fetch the personal information of the back-end
 const fetchedPersonalInfo: IPersonalInfo = {
   joinedDate: new Date(),
-  image:
-    'https://www.minuteschool.com/wp-content/uploads/2017/01/programming-technology-1080x630.jpg',
+  image: null,
   userName: 'Andy Lee',
   companyName: 'Tokenverse',
   description:
@@ -166,31 +165,34 @@ const AccountInfo = () => {
         <DisplayPicture>
           <div>
             <label for='file-input'>
-              {/* Modify the code so it is compatible with image files */}
               <img
                 src={
                   fetchedPersonalInfo.image === null
                     ? default_account_image.src
-                    : fetchedPersonalInfo.image
+                    : URL.createObjectURL(fetchedPersonalInfo.image)
                 }
                 style={{
                   borderRadius: '50%',
                   width: '10rem',
                   height: '10rem',
+                  objectFit: 'cover',
                   cursor: 'pointer',
                 }}
                 alt='No Image Found'
               />
             </label>
-            {fetchedPersonalInfo.image === null ? (
+            {fetchedPersonalInfo.image === null && (
               <input
                 id='file-input'
                 type='file'
                 accept='image/*'
                 hidden
                 onChange={handleImageFile}
+                onClick={(e) => {
+                  e.target.value = null
+                }}
               />
-            ) : null}
+            )}
           </div>
         </DisplayPicture>
         {/* Displaying information about the user */}

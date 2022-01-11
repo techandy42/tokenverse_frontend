@@ -4,15 +4,19 @@ import StyledPageBase from '../../components/styles/StyledPageBase'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
 import Alert from '@mui/material/Alert'
-import { MARGIN_LARGE } from '../../../constants'
+import { MARGIN_LARGE, MARGIN_SMALL } from '../../../constants'
 import DividerMarginBottom from '../../components/styles/DividerMarginBottom'
+import { BREAKPOINT_SMALL, BREAKPOINT_LARGE } from '../../../constants'
+import default_account_image from '../../../images/default_account_image.jpg'
+import FlexBox from '../../components/styles/FlexBox'
+import FlexSpace from '../../components/styles/FlexSpace'
 
 // Fetch the personal information of the back-end
 const fetchedPersonalInfo: IPersonalInfo = {
   joinedDate: new Date(),
-  image:
-    'https://www.minuteschool.com/wp-content/uploads/2017/01/programming-technology-1080x630.jpg',
+  image: null,
   userName: 'Andy Lee',
   companyName: 'Tokenverse',
   description:
@@ -32,6 +36,7 @@ const fetchedPersonalInfo: IPersonalInfo = {
 }
 
 interface IAlertEmailLinkFields {
+  userName: boolean
   email: boolean
   mainLink: boolean
   facebookLink: boolean
@@ -41,6 +46,7 @@ interface IAlertEmailLinkFields {
 }
 
 const initialAlertEmailLinkFields: IAlertEmailLinkFields = {
+  userName: false,
   email: false,
   mainLink: false,
   facebookLink: false,
@@ -52,7 +58,7 @@ const initialAlertEmailLinkFields: IAlertEmailLinkFields = {
 const edit = () => {
   const [personalInfo, setPersonalInfo] =
     useState<IPersonalInfo>(fetchedPersonalInfo)
-  const [alertEmailLinkFields, setAlertEmailLinkFields] =
+  const [alertUserNameEmailLinkFields, setAlertUserNameEmailLinkFields] =
     useState<IAlertEmailLinkFields>(initialAlertEmailLinkFields)
 
   const handlePersonalInfoChanges = (
@@ -61,15 +67,59 @@ const edit = () => {
     setPersonalInfo({ ...personalInfo, [e.target.name]: e.target.value })
   }
 
+  const isUserNameValid = (userName: string) => {
+    // check if the userName is valid with the userNames in the database
+    // the userName must be unique and not empty
+    if (userName === '') return false
+    return true
+  }
+
+  const handleUserNameChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => {
+    setPersonalInfo({ ...personalInfo, userName: e.target.value })
+    if (!isUserNameValid(e.target.value)) {
+      setAlertUserNameEmailLinkFields({
+        ...alertUserNameEmailLinkFields,
+        userName: true,
+      })
+    } else if (alertUserNameEmailLinkFields.userName) {
+      setAlertUserNameEmailLinkFields({
+        ...alertUserNameEmailLinkFields,
+        userName: false,
+      })
+    }
+  }
+
   const handleSubmit = (e: React.FormEventHandler<HTMLFormElement>) => {
-    // check for email and links validity
     e.preventDefault()
-    // send the personalInfo data to the back-end
+    // check for name, email and links validity
+    let isInputsInvalid = false
+    if (!isUserNameValid(personalInfo.userName)) {
+      isInputsInvalid = true
+      setAlertUserNameEmailLinkFields({
+        ...alertUserNameEmailLinkFields,
+        userName: true,
+      })
+    } else {
+      if (alertUserNameEmailLinkFields.userName) {
+        setAlertUserNameEmailLinkFields({
+          ...alertUserNameEmailLinkFields,
+          userName: false,
+        })
+      }
+    }
+    // Check for email and links
+    if (!isInputsInvalid) {
+      // send the personalInfo data to the back-end
+      // fetch user account for submitting to the back-end
+      setAlertUserNameEmailLinkFields(initialAlertEmailLinkFields)
+    }
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <StyledPageBase>
+    <StyledPageBase>
+      <form onSubmit={handleSubmit}>
         <Typography
           variant='h4'
           sx={{
@@ -81,17 +131,73 @@ const edit = () => {
         >
           Edit Profile
         </Typography>
+        {/* Display Picture and Remove Button */}
+        <Box sx={{ marginBottom: MARGIN_LARGE }}>
+          <Box sx={{ marginLeft: '2.5rem', marginBottom: MARGIN_SMALL }}>
+            <div>
+              <label for='file-input'>
+                <img
+                  src={
+                    personalInfo.image === null
+                      ? default_account_image.src
+                      : URL.createObjectURL(personalInfo.image)
+                  }
+                  style={{
+                    borderRadius: '50%',
+                    width: '10rem',
+                    height: '10rem',
+                    objectFit: 'cover',
+                    cursor: 'pointer',
+                  }}
+                  alt='No Image Found'
+                />
+              </label>
+              <input
+                id='file-input'
+                type='file'
+                accept='image/*'
+                hidden
+                onChange={(e) =>
+                  setPersonalInfo({ ...personalInfo, image: e.target.files[0] })
+                }
+                onClick={(e) => {
+                  e.target.value = null
+                }}
+              />
+            </div>
+          </Box>
+          <Box sx={{ marginLeft: '7.5rem' }}>
+            {personalInfo.image !== null && (
+              <Button
+                className='btn'
+                sx={{ position: 'relative', transform: 'translateX(-50%)' }}
+                onClick={() =>
+                  setPersonalInfo({ ...personalInfo, image: null })
+                }
+              >
+                Remove Image
+              </Button>
+            )}
+          </Box>
+        </Box>
         <DividerMarginBottom />
         <Typography variant='h5' sx={{ marginBottom: MARGIN_LARGE }}>
           Personal Information
         </Typography>
+        {alertUserNameEmailLinkFields.userName && (
+          <Alert severity='error' sx={{ marginBottom: MARGIN_LARGE }}>
+            {personalInfo.userName === ''
+              ? 'The Username cannot be empty'
+              : 'The Username Already Exists'}
+          </Alert>
+        )}
         <TextField
           sx={{ marginBottom: MARGIN_LARGE }}
           fullWidth
           label='Username'
           name='userName'
           value={personalInfo.userName}
-          onChange={handlePersonalInfoChanges}
+          onChange={(e) => handleUserNameChange(e)}
           required
         />
         <TextField
@@ -111,7 +217,7 @@ const edit = () => {
           onChange={handlePersonalInfoChanges}
           multiline
         />
-        {alertEmailLinkFields.email && (
+        {alertUserNameEmailLinkFields.email && (
           <Alert severity='error' sx={{ marginBottom: MARGIN_LARGE }}>
             Invalid Email (Personal / Company Email)
           </Alert>
@@ -129,7 +235,7 @@ const edit = () => {
         <Typography variant='h5' sx={{ marginBottom: MARGIN_LARGE }}>
           Website Links
         </Typography>
-        {alertEmailLinkFields.mainLink && (
+        {alertUserNameEmailLinkFields.mainLink && (
           <Alert severity='error' sx={{ marginBottom: MARGIN_LARGE }}>
             Invalid Link (Main Link)
           </Alert>
@@ -143,7 +249,7 @@ const edit = () => {
           onChange={handlePersonalInfoChanges}
           multiline
         />
-        {alertEmailLinkFields.facebookLink && (
+        {alertUserNameEmailLinkFields.facebookLink && (
           <Alert severity='error' sx={{ marginBottom: MARGIN_LARGE }}>
             Invalid Link (Facebook Link)
           </Alert>
@@ -157,7 +263,7 @@ const edit = () => {
           onChange={handlePersonalInfoChanges}
           multiline
         />
-        {alertEmailLinkFields.instagramLink && (
+        {alertUserNameEmailLinkFields.instagramLink && (
           <Alert severity='error' sx={{ marginBottom: MARGIN_LARGE }}>
             Invalid Link (Instagram Link)
           </Alert>
@@ -171,7 +277,7 @@ const edit = () => {
           onChange={handlePersonalInfoChanges}
           multiline
         />
-        {alertEmailLinkFields.twitterLink && (
+        {alertUserNameEmailLinkFields.twitterLink && (
           <Alert severity='error' sx={{ marginBottom: MARGIN_LARGE }}>
             Invalid Link (Twitter Link)
           </Alert>
@@ -185,7 +291,7 @@ const edit = () => {
           onChange={handlePersonalInfoChanges}
           multiline
         />
-        {alertEmailLinkFields.linkedInLink && (
+        {alertUserNameEmailLinkFields.linkedInLink && (
           <Alert severity='error' sx={{ marginBottom: MARGIN_LARGE }}>
             Invalid Link (LinkedIn Link)
           </Alert>
@@ -203,8 +309,8 @@ const edit = () => {
         <Button className='btn' type='submit'>
           Submit
         </Button>
-      </StyledPageBase>
-    </form>
+      </form>
+    </StyledPageBase>
   )
 }
 
