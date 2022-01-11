@@ -8,10 +8,12 @@ import Box from '@mui/material/Box'
 import Alert from '@mui/material/Alert'
 import { MARGIN_LARGE, MARGIN_SMALL } from '../../../constants'
 import DividerMarginBottom from '../../components/styles/DividerMarginBottom'
-import { BREAKPOINT_SMALL, BREAKPOINT_LARGE } from '../../../constants'
 import default_account_image from '../../../images/default_account_image.jpg'
+import isEmailValid from '../../../functions/isEmailValid'
+import isUrlValid from '../../../functions/isUrlValid'
 import FlexBox from '../../components/styles/FlexBox'
 import FlexSpace from '../../components/styles/FlexSpace'
+import Link from 'next/link'
 
 // Fetch the personal information of the back-end
 const fetchedPersonalInfo: IPersonalInfo = {
@@ -31,40 +33,27 @@ const fetchedPersonalInfo: IPersonalInfo = {
 
   verified: true,
   verificationDate: new Date(),
-  // place a file here for testing
   verificationFile: null,
-}
-
-interface IAlertEmailLinkFields {
-  userName: boolean
-  email: boolean
-  mainLink: boolean
-  facebookLink: boolean
-  instagramLink: boolean
-  twitterLink: boolean
-  linkedInLink: boolean
-}
-
-const initialAlertEmailLinkFields: IAlertEmailLinkFields = {
-  userName: false,
-  email: false,
-  mainLink: false,
-  facebookLink: false,
-  instagramLink: false,
-  twitterLink: false,
-  linkedInLink: false,
 }
 
 const edit = () => {
   const [personalInfo, setPersonalInfo] =
     useState<IPersonalInfo>(fetchedPersonalInfo)
-  const [alertUserNameEmailLinkFields, setAlertUserNameEmailLinkFields] =
-    useState<IAlertEmailLinkFields>(initialAlertEmailLinkFields)
+  const [userNameValid, setUserNameValid] = useState<boolean>(true)
+  const [emailValid, setEmailValid] = useState<boolean>(true)
+  const [mainLinkValid, setMainLinkValid] = useState<boolean>(true)
+  const [facebookLinkValid, setFacebookLinkValid] = useState<boolean>(true)
+  const [instagramLinkValid, setInstagramLinkValid] = useState<boolean>(true)
+  const [twitterLinkValid, setTwitterLinkValid] = useState<boolean>(true)
+  const [linkedInLinkValid, setLinkedInLinkValid] = useState<boolean>(true)
 
   const handlePersonalInfoChanges = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
-    setPersonalInfo({ ...personalInfo, [e.target.name]: e.target.value })
+    setPersonalInfo({
+      ...personalInfo,
+      [e.target.name]: e.target.value,
+    })
   }
 
   const isUserNameValid = (userName: string) => {
@@ -79,88 +68,113 @@ const edit = () => {
   ) => {
     setPersonalInfo({ ...personalInfo, userName: e.target.value })
     if (!isUserNameValid(e.target.value)) {
-      setAlertUserNameEmailLinkFields({
-        ...alertUserNameEmailLinkFields,
-        userName: true,
-      })
-    } else if (alertUserNameEmailLinkFields.userName) {
-      setAlertUserNameEmailLinkFields({
-        ...alertUserNameEmailLinkFields,
-        userName: false,
-      })
+      setUserNameValid(false)
+    } else {
+      if (userNameValid === false) setUserNameValid(true)
     }
   }
 
   const handleSubmit = (e: React.FormEventHandler<HTMLFormElement>) => {
     e.preventDefault()
-    // check for name, email and links validity
-    let isInputsInvalid = false
+    // validates userName, email, and the links
+    let isFieldsValid = true
     if (!isUserNameValid(personalInfo.userName)) {
-      isInputsInvalid = true
-      setAlertUserNameEmailLinkFields({
-        ...alertUserNameEmailLinkFields,
-        userName: true,
-      })
+      isFieldsValid = false
+      setUserNameValid(false)
     } else {
-      if (alertUserNameEmailLinkFields.userName) {
-        setAlertUserNameEmailLinkFields({
-          ...alertUserNameEmailLinkFields,
-          userName: false,
-        })
-      }
+      if (userNameValid === false) setUserNameValid(true)
     }
-    // Check for email and links
-    if (!isInputsInvalid) {
-      // send the personalInfo data to the back-end
-      // fetch user account for submitting to the back-end
-      setAlertUserNameEmailLinkFields(initialAlertEmailLinkFields)
+    if (!isEmailValid(personalInfo.email)) {
+      isFieldsValid = false
+      setEmailValid(false)
+    } else {
+      if (emailValid === false) setEmailValid(true)
+    }
+    if (!isUrlValid(personalInfo.mainLink)) {
+      isFieldsValid = false
+      setMainLinkValid(false)
+    } else {
+      if (mainLinkValid === false) setMainLinkValid(true)
+    }
+    if (!isUrlValid(personalInfo.facebookLink)) {
+      isFieldsValid = false
+      setFacebookLinkValid(false)
+    } else {
+      if (facebookLinkValid === false) setFacebookLinkValid(true)
+    }
+    if (!isUrlValid(personalInfo.instagramLink)) {
+      isFieldsValid = false
+      setInstagramLinkValid(false)
+    } else {
+      if (instagramLinkValid === false) setInstagramLinkValid(true)
+    }
+    if (!isUrlValid(personalInfo.twitterLink)) {
+      isFieldsValid = false
+      setTwitterLinkValid(false)
+    } else {
+      if (twitterLinkValid === false) setTwitterLinkValid(true)
+    }
+    if (!isUrlValid(personalInfo.linkedInLink)) {
+      isFieldsValid = false
+      setLinkedInLinkValid(false)
+    } else {
+      if (linkedInLinkValid === false) setLinkedInLinkValid(true)
+    }
+    if (isFieldsValid) {
+      // Send the data to the back-end
+    } else {
+      alert('Some of the input fields are invalid')
     }
   }
 
   return (
     <StyledPageBase>
       <form onSubmit={handleSubmit}>
-        <Typography
-          variant='h4'
-          sx={{
-            marginTop: MARGIN_LARGE,
-            marginBottom: MARGIN_LARGE,
-            fontWeight: 200,
-          }}
-          className='font-chakra'
-        >
-          Edit Profile
-        </Typography>
+        <FlexBox>
+          <Typography
+            variant='h4'
+            sx={{
+              marginTop: MARGIN_LARGE,
+              marginBottom: MARGIN_LARGE,
+              fontWeight: 200,
+            }}
+            className='font-chakra'
+          >
+            Edit Profile
+          </Typography>
+          <FlexSpace />
+          <Link href='/account'>
+            <Button>Back</Button>
+          </Link>
+        </FlexBox>
         {/* Display Picture and Remove Button */}
         <Box sx={{ marginBottom: MARGIN_LARGE }}>
           <Box sx={{ marginLeft: '2.5rem', marginBottom: MARGIN_SMALL }}>
             <div>
-              <label for='file-input'>
-                <img
-                  src={
-                    personalInfo.image === null
-                      ? default_account_image.src
-                      : URL.createObjectURL(personalInfo.image)
-                  }
-                  style={{
-                    borderRadius: '50%',
-                    width: '10rem',
-                    height: '10rem',
-                    objectFit: 'cover',
-                    cursor: 'pointer',
-                  }}
-                  alt='No Image Found'
-                />
-              </label>
+              <img
+                src={
+                  personalInfo.image === null
+                    ? default_account_image.src
+                    : URL.createObjectURL(personalInfo.image)
+                }
+                style={{
+                  borderRadius: '50%',
+                  width: '10rem',
+                  height: '10rem',
+                  objectFit: 'cover',
+                  cursor: 'pointer',
+                }}
+                alt='No Image Found'
+              />
               <input
                 id='file-input'
                 type='file'
                 accept='image/*'
                 hidden
-                onChange={(e) =>
+                onChange={(e: any) =>
                   setPersonalInfo({ ...personalInfo, image: e.target.files[0] })
                 }
-                onClick={(e) => {
+                onClick={(e: any) => {
                   e.target.value = null
                 }}
               />
@@ -184,7 +198,7 @@ const edit = () => {
         <Typography variant='h5' sx={{ marginBottom: MARGIN_LARGE }}>
           Personal Information
         </Typography>
-        {alertUserNameEmailLinkFields.userName && (
+        {!userNameValid && (
           <Alert severity='error' sx={{ marginBottom: MARGIN_LARGE }}>
             {personalInfo.userName === ''
               ? 'The Username cannot be empty'
@@ -217,7 +231,7 @@ const edit = () => {
           onChange={handlePersonalInfoChanges}
           multiline
         />
-        {alertUserNameEmailLinkFields.email && (
+        {!emailValid && (
           <Alert severity='error' sx={{ marginBottom: MARGIN_LARGE }}>
             Invalid Email (Personal / Company Email)
           </Alert>
@@ -235,7 +249,7 @@ const edit = () => {
         <Typography variant='h5' sx={{ marginBottom: MARGIN_LARGE }}>
           Website Links
         </Typography>
-        {alertUserNameEmailLinkFields.mainLink && (
+        {!mainLinkValid && (
           <Alert severity='error' sx={{ marginBottom: MARGIN_LARGE }}>
             Invalid Link (Main Link)
           </Alert>
@@ -249,7 +263,7 @@ const edit = () => {
           onChange={handlePersonalInfoChanges}
           multiline
         />
-        {alertUserNameEmailLinkFields.facebookLink && (
+        {!facebookLinkValid && (
           <Alert severity='error' sx={{ marginBottom: MARGIN_LARGE }}>
             Invalid Link (Facebook Link)
           </Alert>
@@ -263,7 +277,7 @@ const edit = () => {
           onChange={handlePersonalInfoChanges}
           multiline
         />
-        {alertUserNameEmailLinkFields.instagramLink && (
+        {!instagramLinkValid && (
           <Alert severity='error' sx={{ marginBottom: MARGIN_LARGE }}>
             Invalid Link (Instagram Link)
           </Alert>
@@ -277,7 +291,7 @@ const edit = () => {
           onChange={handlePersonalInfoChanges}
           multiline
         />
-        {alertUserNameEmailLinkFields.twitterLink && (
+        {!twitterLinkValid && (
           <Alert severity='error' sx={{ marginBottom: MARGIN_LARGE }}>
             Invalid Link (Twitter Link)
           </Alert>
@@ -291,7 +305,7 @@ const edit = () => {
           onChange={handlePersonalInfoChanges}
           multiline
         />
-        {alertUserNameEmailLinkFields.linkedInLink && (
+        {!linkedInLinkValid && (
           <Alert severity='error' sx={{ marginBottom: MARGIN_LARGE }}>
             Invalid Link (LinkedIn Link)
           </Alert>

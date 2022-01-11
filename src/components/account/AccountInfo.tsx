@@ -164,23 +164,21 @@ const AccountInfo = () => {
         {/* Displaying picture */}
         <DisplayPicture>
           <div>
-            <label for='file-input'>
-              <img
-                src={
-                  fetchedPersonalInfo.image === null
-                    ? default_account_image.src
-                    : URL.createObjectURL(fetchedPersonalInfo.image)
-                }
-                style={{
-                  borderRadius: '50%',
-                  width: '10rem',
-                  height: '10rem',
-                  objectFit: 'cover',
-                  cursor: 'pointer',
-                }}
-                alt='No Image Found'
-              />
-            </label>
+            <img
+              src={
+                fetchedPersonalInfo.image === null
+                  ? default_account_image.src
+                  : URL.createObjectURL(fetchedPersonalInfo.image)
+              }
+              style={{
+                borderRadius: '50%',
+                width: '10rem',
+                height: '10rem',
+                objectFit: 'cover',
+                cursor: 'pointer',
+              }}
+              alt='No Image Found'
+            />
             {fetchedPersonalInfo.image === null && (
               <input
                 id='file-input'
@@ -224,9 +222,8 @@ const AccountInfo = () => {
               display: { xs: 'none', sm: 'block' },
             }}
           >
-            {fetchedPersonalInfo.description === null
-              ? null
-              : formatPersonalInfoDescription(fetchedPersonalInfo.description)}
+            {fetchedPersonalInfo.description === '' &&
+              formatPersonalInfoDescription(fetchedPersonalInfo.description)}
           </Typography>
           <Typography
             color='primary'
@@ -234,7 +231,7 @@ const AccountInfo = () => {
           >
             More Information
           </Typography>
-          {fetchedPersonalInfo.mainLink !== null && (
+          {fetchedPersonalInfo.mainLink !== '' && (
             <WebsiteLink
               link={fetchedPersonalInfo.mainLink}
               title={
@@ -245,7 +242,7 @@ const AccountInfo = () => {
               }
             />
           )}
-          {fetchedPersonalInfo.facebookLink !== null && (
+          {fetchedPersonalInfo.facebookLink !== '' && (
             <WebsiteLink
               link={fetchedPersonalInfo.facebookLink}
               title={
@@ -256,7 +253,7 @@ const AccountInfo = () => {
               }
             />
           )}
-          {fetchedPersonalInfo.instagramLink !== null && (
+          {fetchedPersonalInfo.instagramLink !== '' && (
             <WebsiteLink
               link={fetchedPersonalInfo.instagramLink}
               title={
@@ -269,7 +266,7 @@ const AccountInfo = () => {
               }
             />
           )}
-          {fetchedPersonalInfo.twitterLink !== null && (
+          {fetchedPersonalInfo.twitterLink !== '' && (
             <WebsiteLink
               link={fetchedPersonalInfo.twitterLink}
               title={
@@ -280,7 +277,7 @@ const AccountInfo = () => {
               }
             />
           )}
-          {fetchedPersonalInfo.linkedInLink !== null && (
+          {fetchedPersonalInfo.linkedInLink !== '' && (
             <WebsiteLink
               link={fetchedPersonalInfo.linkedInLink}
               title={

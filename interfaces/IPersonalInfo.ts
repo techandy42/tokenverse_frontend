@@ -2,15 +2,15 @@ export default interface IPersonalInfo {
   joinedDate: Date
   image: File | null
   userName: string
-  companyName: string | null
-  description: string | null
+  companyName: string
+  description: string
 
-  email: string | null
-  mainLink: string | null
-  facebookLink: string | null
-  instagramLink: string | null
-  twitterLink: string | null
-  linkedInLink: string | null
+  email: string
+  mainLink: string
+  facebookLink: string
+  instagramLink: string
+  twitterLink: string
+  linkedInLink: string
 
   verified: boolean
   verificationDate: Date | null
