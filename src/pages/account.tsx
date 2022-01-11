@@ -25,6 +25,18 @@ import AccountDisplayCollections from '../components/account/AccountDisplayColle
 import loadNFTs from '../../tokenFunctions/loadNFTs'
 import IToken from '../../interfaces/IToken'
 import ICollectionNFTs from '../../interfaces/ICollectionNFTs'
+import { styled } from '@mui/material/styles'
+import { BREAKPOINT_SMALL } from '../../constants'
+
+const TextLoading = styled('p')(({ theme }) => ({
+  fontWeight: 200,
+  fontSize: 18,
+  marginTop: '4px',
+  [theme.breakpoints.up(BREAKPOINT_SMALL)]: {
+    fontSize: 22,
+    marginTop: '28px',
+  },
+}))
 
 const account = () => {
   const [collectionNFTs, setCollectionNFTs] = useState<ICollectionNFTs>({})
@@ -61,9 +73,7 @@ const account = () => {
         <AccountInfo />
         <Divider sx={{ marginBottom: '1rem' }} />
         <AccountNav index={0} />
-        <Typography variant='h5' sx={{ fontWeight: 200 }}>
-          Loading...
-        </Typography>
+        <TextLoading>Loading...</TextLoading>
       </StyledPageBase>
     )
 
