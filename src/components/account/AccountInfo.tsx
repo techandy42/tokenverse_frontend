@@ -19,6 +19,7 @@ import InstagramIcon from '@mui/icons-material/Instagram'
 import TwitterIcon from '@mui/icons-material/Twitter'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import IPersonalInfo from '../../../interfaces/IPersonalInfo'
+import AccountVerificationPopup from './AccountVerificationPopup'
 
 // Fetch the personal information of the back-end
 const fetchedPersonalInfo: IPersonalInfo = {
@@ -38,8 +39,9 @@ const fetchedPersonalInfo: IPersonalInfo = {
 
   verified: true,
   verificationDate: new Date(),
-  // place a file here for testing
-  verificationFile: null,
+  verificationLink: 'https://google.com',
+  verificationDescription:
+    'This user is verified as a trustworthy seller on Tokenverse',
 }
 
 const VerificationBoxUp750 = styled('div')(({ theme }) => ({
@@ -57,6 +59,8 @@ const VerificationBoxDown750 = styled('div')(({ theme }) => ({
 }))
 
 const DisplayPicture = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
   marginLeft: '24px',
   marginRight: '32px',
   [theme.breakpoints.up(BREAKPOINT_SMALL)]: {
@@ -71,6 +75,8 @@ const DisplayPicture = styled('div')(({ theme }) => ({
 
 const AccountInfo = () => {
   const [accountInfo, setAccountInfo] = useState<IAccountInfo | null>(null)
+  const [isAccountVerificationPopupOpen, setIsAccountVerificationPopupOpen] =
+    useState<boolean>(false)
 
   useEffect(() => {
     const callAccount = async () => {
@@ -128,6 +134,7 @@ const AccountInfo = () => {
           <AssignmentTurnedInIcon
             color={fetchedPersonalInfo.verified ? 'primary' : 'disabled'}
             sx={{ fontSize: 30 }}
+            onClick={toggleAccountVerificationPopup}
           />
         </IconButton>
         <Link href='/account/edit'>
@@ -157,13 +164,18 @@ const AccountInfo = () => {
     // Set the image file in the back-end
   }
 
+  const toggleAccountVerificationPopup = () => {
+    if (!fetchedPersonalInfo.verified) return
+    setIsAccountVerificationPopupOpen(!isAccountVerificationPopupOpen)
+  }
+
   return (
     <>
       <FlexBox sx={{ alignItems: 'normal', marginBottom: '4rem' }}>
         <FlexSpace />
         {/* Displaying picture */}
         <DisplayPicture>
-          <div>
+          <label htmlFor='file-input'>
             <img
               src={
                 fetchedPersonalInfo.image === null
@@ -179,19 +191,22 @@ const AccountInfo = () => {
               }}
               alt='No Image Found'
             />
-            {fetchedPersonalInfo.image === null && (
-              <input
-                id='file-input'
-                type='file'
-                accept='image/*'
-                hidden
-                onChange={handleImageFile}
-                onClick={(e) => {
-                  e.target.value = null
-                }}
-              />
-            )}
-          </div>
+            <input
+              id='file-input'
+              type='file'
+              accept='image/*'
+              hidden
+              onChange={(e: any) => handleImageFile(e)}
+              onClick={(e: any) => {
+                e.target.value = null
+              }}
+            />
+          </label>
+          {fetchedPersonalInfo.image !== null && (
+            <Button disableRipple className='no-hover' sx={{ fontSize: 12 }}>
+              Remove
+            </Button>
+          )}
         </DisplayPicture>
         {/* Displaying information about the user */}
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -222,7 +237,7 @@ const AccountInfo = () => {
               display: { xs: 'none', sm: 'block' },
             }}
           >
-            {fetchedPersonalInfo.description === '' &&
+            {fetchedPersonalInfo.description !== '' &&
               formatPersonalInfoDescription(fetchedPersonalInfo.description)}
           </Typography>
           <Typography
@@ -293,6 +308,15 @@ const AccountInfo = () => {
         </Box>
         <Box sx={{ flexGrow: 4 }} />
       </FlexBox>
+      {isAccountVerificationPopupOpen && (
+        <AccountVerificationPopup
+          userName={fetchedPersonalInfo.userName}
+          verificationDate={fetchedPersonalInfo.verificationDate}
+          verificationLink={fetchedPersonalInfo.verificationLink}
+          verificationDescription={fetchedPersonalInfo.verificationDescription}
+          handleClose={toggleAccountVerificationPopup}
+        />
+      )}
     </>
   )
 }

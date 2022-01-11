@@ -33,7 +33,10 @@ const fetchedPersonalInfo: IPersonalInfo = {
 
   verified: true,
   verificationDate: new Date(),
-  verificationFile: null,
+  verificationDate: new Date(),
+  verificationLink: 'https://google.com',
+  verificationDescription:
+    'This user is verified as a trustworthy seller on Tokenverse',
 }
 
 const edit = () => {
@@ -150,7 +153,7 @@ const edit = () => {
         {/* Display Picture and Remove Button */}
         <Box sx={{ marginBottom: MARGIN_LARGE }}>
           <Box sx={{ marginLeft: '2.5rem', marginBottom: MARGIN_SMALL }}>
-            <div>
+            <label htmlFor='file-input'>
               <img
                 src={
                   personalInfo.image === null
@@ -172,13 +175,16 @@ const edit = () => {
                 accept='image/*'
                 hidden
                 onChange={(e: any) =>
-                  setPersonalInfo({ ...personalInfo, image: e.target.files[0] })
+                  setPersonalInfo({
+                    ...personalInfo,
+                    image: e.target.files[0],
+                  })
                 }
                 onClick={(e: any) => {
                   e.target.value = null
                 }}
               />
-            </div>
+            </label>
           </Box>
           <Box sx={{ marginLeft: '7.5rem' }}>
             {personalInfo.image !== null && (
