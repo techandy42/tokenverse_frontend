@@ -5,7 +5,6 @@ import CardMedia from '@mui/material/CardMedia'
 import Typography from '@mui/material/Typography'
 import IToken from '../../../interfaces/IToken'
 import Link from 'next/link'
-import Button from '@mui/material/Button'
 
 interface IProps {
   collectionName: string

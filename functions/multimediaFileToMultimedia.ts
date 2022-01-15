@@ -1,5 +1,7 @@
+import IMultimedia from '../interfaces/IMultimedia'
+
 const multimediaFileToMultimedia = (multimediaFile: File) => {
-  const multimedia = {
+  const multimedia: IMultimedia = {
     lastModified: multimediaFile.lastModified,
     lastModifiedDate: multimediaFile.lastModifiedDate,
     name: multimediaFile.name,

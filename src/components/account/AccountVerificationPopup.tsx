@@ -10,7 +10,6 @@ interface IProps {
   userName: string
   verificationDate: Date
   verificationLink: string
-  verificationDescription: string
   handleClose: () => void
 }
 
@@ -18,7 +17,6 @@ const AccountVerificationPopup: React.FC<IProps> = ({
   userName,
   verificationDate,
   verificationLink,
-  verificationDescription,
   handleClose,
 }) => {
   const formattedVerificationDate = dateFormat(
@@ -58,7 +56,10 @@ const AccountVerificationPopup: React.FC<IProps> = ({
             />
           </Box>
         )}
-        <Typography>Description: {verificationDescription}</Typography>
+        <Typography>
+          Description: The user has been verified to be a trustworthy seller on
+          Tokenverse
+        </Typography>
       </div>
     </div>
   )

@@ -73,7 +73,15 @@ const CreateMultiple: React.FC<IProps> = ({
           multimediaFile === null
             ? null
             : multimediaFileToMultimedia(multimediaFile)
-        await createItem(name, collection, blockchainType, fileUrl, multimedia)
+        const item = await createItem(
+          name,
+          collection,
+          blockchainType,
+          fileUrl,
+          multimedia,
+        )
+        console.log(item)
+        // send the item to the back-end
       }
       setClearCounter(clearCounter + 1)
     }

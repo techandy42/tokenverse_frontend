@@ -29,10 +29,11 @@ const CollectionAndBlockchainTypeInputs: React.FC<IProps> = ({
   )
 
   const handleRenameInitialCollection = () => {
-    if (collections.slice(1).includes(initialCollectionName)) {
+    // check if the collection name already exists
+    if (true) {
       alert(`Error: "${initialCollectionName}" already exists`)
     } else {
-      // Sent the collection to the back-end
+      // Modify the collection at redux
     }
   }
 

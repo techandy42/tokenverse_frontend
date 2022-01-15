@@ -14,6 +14,7 @@ import isUrlValid from '../../../functions/isUrlValid'
 import FlexBox from '../../components/styles/FlexBox'
 import FlexSpace from '../../components/styles/FlexSpace'
 import Link from 'next/link'
+import multimediaFileToMultimedia from '../../../functions/multimediaFileToMultimedia'
 
 // Fetch the personal information of the back-end
 const fetchedPersonalInfo: IPersonalInfo = {
@@ -33,10 +34,7 @@ const fetchedPersonalInfo: IPersonalInfo = {
 
   verified: true,
   verificationDate: new Date(),
-  verificationDate: new Date(),
   verificationLink: 'https://google.com',
-  verificationDescription:
-    'This user is verified as a trustworthy seller on Tokenverse',
 }
 
 const edit = () => {
@@ -125,6 +123,19 @@ const edit = () => {
     }
     if (isFieldsValid) {
       // Send the data to the back-end
+      const modifiedPersonalInfoFields = {
+        image: personalInfo.image,
+        userName: personalInfo.userName,
+        companyName: personalInfo.companyName,
+        description: personalInfo.description,
+        email: personalInfo.email,
+        mainLink: personalInfo.mainLink,
+        facebookLink: personalInfo.facebookLink,
+        instagramLink: personalInfo.instagramLink,
+        twitterLink: personalInfo.twitterLink,
+        linkedInLink: personalInfo.linkedInLink,
+      }
+      // send the info to the back-end
     } else {
       alert('Some of the input fields are invalid')
     }

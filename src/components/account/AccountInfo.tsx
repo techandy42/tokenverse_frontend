@@ -20,6 +20,7 @@ import TwitterIcon from '@mui/icons-material/Twitter'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import IPersonalInfo from '../../../interfaces/IPersonalInfo'
 import AccountVerificationPopup from './AccountVerificationPopup'
+import Tooltip from '@mui/material/Tooltip'
 
 // Fetch the personal information of the back-end
 const fetchedPersonalInfo: IPersonalInfo = {
@@ -37,11 +38,9 @@ const fetchedPersonalInfo: IPersonalInfo = {
   twitterLink: 'https://twitter.com',
   linkedInLink: 'https://linkedin.com',
 
-  verified: true,
+  verified: false,
   verificationDate: new Date(),
   verificationLink: 'https://google.com',
-  verificationDescription:
-    'This user is verified as a trustworthy seller on Tokenverse',
 }
 
 const VerificationBoxUp750 = styled('div')(({ theme }) => ({
@@ -131,11 +130,25 @@ const AccountInfo = () => {
           disableRipple
           sx={{ marginRight: '0.5rem' }}
         >
-          <AssignmentTurnedInIcon
-            color={fetchedPersonalInfo.verified ? 'primary' : 'disabled'}
-            sx={{ fontSize: 30 }}
-            onClick={toggleAccountVerificationPopup}
-          />
+          {fetchedPersonalInfo.verified ? (
+            <Tooltip placement='top' title='Verification Info'>
+              <AssignmentTurnedInIcon
+                color='primary'
+                sx={{ fontSize: 30 }}
+                onClick={toggleAccountVerificationPopup}
+              />
+            </Tooltip>
+          ) : (
+            <Tooltip placement='top' title='Request Verification'>
+              <Link href='/account/verification-request'>
+                <AssignmentTurnedInIcon
+                  color='disabled'
+                  sx={{ fontSize: 30 }}
+                  onClick={toggleAccountVerificationPopup}
+                />
+              </Link>
+            </Tooltip>
+          )}
         </IconButton>
         <Link href='/account/edit'>
           <Button
@@ -313,7 +326,6 @@ const AccountInfo = () => {
           userName={fetchedPersonalInfo.userName}
           verificationDate={fetchedPersonalInfo.verificationDate}
           verificationLink={fetchedPersonalInfo.verificationLink}
-          verificationDescription={fetchedPersonalInfo.verificationDescription}
           handleClose={toggleAccountVerificationPopup}
         />
       )}
