@@ -158,7 +158,7 @@ const edit = () => {
           </Typography>
           <FlexSpace />
           <Link href='/account'>
-            <Button>Back</Button>
+            <Button className='btn'>Back</Button>
           </Link>
         </FlexBox>
         {/* Display Picture and Remove Button */}

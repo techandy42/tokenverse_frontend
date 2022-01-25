@@ -77,15 +77,14 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
         multimediaFile === null
           ? null
           : multimediaFileToMultimedia(multimediaFile)
-      const item = await createItem(
+      const tokenId = await createItem(
         name,
         collection,
         blockchainType,
         fileUrl,
         multimedia,
       )
-      console.log(item)
-      // send the item to the back-end
+      // send the info to back-end
       setClearCounter(clearCounter + 1)
     }
     if (!validedImageFile) setIsFileErrorOpen(true)

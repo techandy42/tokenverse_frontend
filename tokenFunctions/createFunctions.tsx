@@ -37,7 +37,7 @@ export const createItem = async (
   try {
     const added = await client.add(data)
     const url = `https://ipfs.infura.io/ipfs/${added.path}`
-    createSale(url)
+    return createSale(url)
   } catch (error) {
     console.log(`Error uploading file: `, error)
   }
@@ -58,4 +58,5 @@ const createSale = async (url: string) => {
   contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
   transaction = await contract.createMintMarketItem(nftaddress, tokenId)
   await transaction.wait()
+  return tokenId
 }

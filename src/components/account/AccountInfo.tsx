@@ -7,7 +7,7 @@ import FlexSpace from '../styles/FlexSpace'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
-import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn'
+import VerifiedUserOutlinedIcon from '@mui/icons-material/VerifiedUserOutlined'
 import CopyToClipboardBar from '../styles/CopyToClipboardBar'
 import { styled } from '@mui/material/styles'
 import { BREAKPOINT_SMALL, BREAKPOINT_LARGE } from '../../../constants'
@@ -38,7 +38,7 @@ const fetchedPersonalInfo: IPersonalInfo = {
   twitterLink: 'https://twitter.com',
   linkedInLink: 'https://linkedin.com',
 
-  verified: false,
+  verified: true,
   verificationDate: new Date(),
   verificationLink: 'https://google.com',
 }
@@ -120,49 +120,6 @@ const AccountInfo = () => {
     }
   }
 
-  const displayVerficationAndEditButtons = () => {
-    return (
-      <>
-        <IconButton
-          size='large'
-          edge='end'
-          color='inherit'
-          disableRipple
-          sx={{ marginRight: '0.5rem' }}
-        >
-          {fetchedPersonalInfo.verified ? (
-            <Tooltip placement='top' title='Verification Info'>
-              <AssignmentTurnedInIcon
-                color='primary'
-                sx={{ fontSize: 30 }}
-                onClick={toggleAccountVerificationPopup}
-              />
-            </Tooltip>
-          ) : (
-            <Tooltip placement='top' title='Request Verification'>
-              <Link href='/account/verification-request'>
-                <AssignmentTurnedInIcon
-                  color='disabled'
-                  sx={{ fontSize: 30 }}
-                  onClick={toggleAccountVerificationPopup}
-                />
-              </Link>
-            </Tooltip>
-          )}
-        </IconButton>
-        <Link href='/account/edit'>
-          <Button
-            variant='contained'
-            size='small'
-            sx={{ textTransform: 'none' }}
-          >
-            Edit
-          </Button>
-        </Link>
-      </>
-    )
-  }
-
   const formatPersonalInfoDescription = (
     fetchedPersonalInfoDescription: string,
   ) => {
@@ -232,16 +189,47 @@ const AccountInfo = () => {
             <Typography
               className='font-chakra'
               variant='h4'
-              sx={{ marginRight: '0.75rem' }}
+              sx={{ marginRight: '2rem' }}
             >
-              {fetchedPersonalInfo.userName}
+              <span style={{ marginRight: '0.5rem' }}>
+                {fetchedPersonalInfo.userName}
+              </span>
+              <span>
+                {fetchedPersonalInfo.verified && (
+                  <Tooltip placement='top' title='Verification Info'>
+                    <VerifiedUserOutlinedIcon
+                      color='primary'
+                      sx={{ fontSize: 24 }}
+                      onClick={toggleAccountVerificationPopup}
+                    />
+                  </Tooltip>
+                )}
+              </span>
             </Typography>
             <VerificationBoxUp750>
-              {displayVerficationAndEditButtons()}
+              <Link href='/account/edit'>
+                <Button
+                  variant='outlined'
+                  size='small'
+                  sx={{
+                    textTransform: 'none',
+                  }}
+                >
+                  Edit
+                </Button>
+              </Link>
             </VerificationBoxUp750>
           </FlexBox>
           <VerificationBoxDown750>
-            {displayVerficationAndEditButtons()}
+            <Link href='/account/edit'>
+              <Button
+                variant='outlined'
+                size='small'
+                sx={{ textTransform: 'none', marginBottom: '1rem' }}
+              >
+                Edit
+              </Button>
+            </Link>
           </VerificationBoxDown750>
           <Typography
             sx={{
@@ -253,19 +241,15 @@ const AccountInfo = () => {
             {fetchedPersonalInfo.description !== '' &&
               formatPersonalInfoDescription(fetchedPersonalInfo.description)}
           </Typography>
-          <Typography
-            color='primary'
-            sx={{ marginBottom: '0.5rem', cursor: 'pointer' }}
-          >
-            More Information
-          </Typography>
           {fetchedPersonalInfo.mainLink !== '' && (
             <WebsiteLink
               link={fetchedPersonalInfo.mainLink}
               title={
                 <FlexBox>
-                  <WebAssetIcon sx={{ fontSize: 20, marginRight: '0.25rem' }} />
-                  <span>{fetchedPersonalInfo.mainLink}</span>
+                  <WebAssetIcon sx={{ fontSize: 16, marginRight: '0.25rem' }} />
+                  <span style={{ fontSize: 14 }}>
+                    {fetchedPersonalInfo.mainLink}
+                  </span>
                 </FlexBox>
               }
             />
@@ -275,8 +259,8 @@ const AccountInfo = () => {
               link={fetchedPersonalInfo.facebookLink}
               title={
                 <FlexBox>
-                  <FacebookIcon sx={{ fontSize: 20, marginRight: '0.25rem' }} />
-                  <span>Facebook Account</span>
+                  <FacebookIcon sx={{ fontSize: 16, marginRight: '0.25rem' }} />
+                  <span style={{ fontSize: 14 }}>Facebook Account</span>
                 </FlexBox>
               }
             />
@@ -287,9 +271,9 @@ const AccountInfo = () => {
               title={
                 <FlexBox>
                   <InstagramIcon
-                    sx={{ fontSize: 20, marginRight: '0.25rem' }}
+                    sx={{ fontSize: 16, marginRight: '0.25rem' }}
                   />
-                  <span>Instagram Account</span>
+                  <span style={{ fontSize: 14 }}>Instagram Account</span>
                 </FlexBox>
               }
             />
@@ -299,8 +283,8 @@ const AccountInfo = () => {
               link={fetchedPersonalInfo.twitterLink}
               title={
                 <FlexBox>
-                  <TwitterIcon sx={{ fontSize: 20, marginRight: '0.25rem' }} />
-                  <span>Twitter Account</span>
+                  <TwitterIcon sx={{ fontSize: 16, marginRight: '0.25rem' }} />
+                  <span style={{ fontSize: 14 }}>Twitter Account</span>
                 </FlexBox>
               }
             />
@@ -310,8 +294,8 @@ const AccountInfo = () => {
               link={fetchedPersonalInfo.linkedInLink}
               title={
                 <FlexBox>
-                  <LinkedInIcon sx={{ fontSize: 20, marginRight: '0.25rem' }} />
-                  <span>LinkedIn Account</span>
+                  <LinkedInIcon sx={{ fontSize: 16, marginRight: '0.25rem' }} />
+                  <span style={{ fontSize: 14 }}>LinkedIn Account</span>
                 </FlexBox>
               }
               lastItem={true}
