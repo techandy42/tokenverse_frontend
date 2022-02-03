@@ -1,6 +1,42 @@
 describe('NFTMarket', function () {
   it('Should create and execute market sales', async function () {
-    // Set-Up
+    // Constant Values for testing
+    const emptyNftAddress = '0x0000000000000000000000000000000000000000'
+    const tokenURI1 = 'https://www.mytokenlocation1.com'
+    const tokenURI10 = 'https://www.mytokenlocation10.com'
+    const tokenURI2 = 'https://www.mytokenlocation2.com'
+    const tokenURIs = [
+      'https://www.mytokenlocation3.com',
+      'https://www.mytokenlocation4.com',
+      'https://www.mytokenlocation5.com',
+    ]
+    const tokenId1 = 1
+    const tokenId2 = 2
+    const tokenIdsRest = [3, 4, 5]
+    const itemId1 = 1
+    const itemId2 = 2
+    const itemId3 = 3
+    const itemIds = [1, 2, 3, 4, 5]
+    const startSaleDate = 1000
+    const endSaleDate = 1000000
+
+    // Mutable variables
+    let item = null
+    let items = null
+    let isFrozen = null
+
+    // Helper functions
+    const validateItemsNftContract = (items) => {
+      const validItems = []
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].nftContract !== emptyNftAddress) {
+          validItems.push(items[i])
+        }
+      }
+      return validItems
+    }
+
+    // Set-up
     const Market = await ethers.getContractFactory('NFTMarket')
     const market = await Market.deploy()
     await market.deployed()
@@ -11,132 +47,181 @@ describe('NFTMarket', function () {
     await nft.deployed()
     const nftContractAddress = nft.address
 
-    let listingPrice = await market.getListingPrice()
-    listingPrice = listingPrice.toString()
+    let listingRatioNum = await market.getListingRatioNum()
+    listingRatioNum = listingRatioNum.toString()
 
     const auctionPrice = ethers.utils.parseUnits('1', 'ether')
 
-    // Create and Change Functions (Minting and Putting Token on Sale)
-    await nft.createToken('https://www.mytokenlocation.com')
-    await nft.createToken('https://www.mytokenlocation2.com')
+    // Creating and Minting Tokens
+    await nft.createToken(tokenURI1)
+    await nft.createToken(tokenURI2)
 
-    await market.createMintMarketItem(nftContractAddress, 1)
-    await market.createMintMarketItem(nftContractAddress, 2)
+    await nft.createTokens(tokenURIs)
 
-    await nft.changeTokenIdToken(1, 'https://www.mytokenlocation3.com')
-    await market.changeSaleMarketItem(1, auctionPrice, { value: listingPrice })
+    await market.createMintMarketItem(nftContractAddress, tokenId1)
+    await market.createMintMarketItem(nftContractAddress, tokenId2)
 
-    let item = null
-    let items = null
+    await market.createMintMarketItems(nftContractAddress, tokenIdsRest)
 
-    // Fetching Items on Market #1
-    items = await market.fetchMarketItems()
-    items = await Promise.all(
-      items.map(async (i) => {
-        const tokenUri = await nft.tokenURI(i.tokenId)
-        let item = {
-          price: i.price.toString(),
-          tokenId: i.tokenId.toString(),
-          seller: i.seller,
-          owner: i.owner,
-          tokenUri,
-        }
-        return item
-      }),
+    // Change metadata if isFrozen is false at a given itemId
+    isFrozen = await market.getIsFrozenByItemId(itemId1)
+    if (!isFrozen) {
+      await nft.changeTokenIdToken(tokenId1, tokenURI10)
+    }
+
+    // Put up a token for sale / lease / auction
+    await market.changeUpSaleLeaseAuctionMarketItem(
+      itemId1,
+      auctionPrice,
+      true,
+      true,
+      true,
+      false,
+      startSaleDate,
+      endSaleDate,
+      {
+        value: listingRatioNum,
+      },
     )
-    console.log('items: ', items)
 
-    // Making Transaction
-    const [_, buyerAddress] = await ethers.getSigners()
+    // Modify the data of a token
+    await market.changeEditMarketItem(itemId2, true)
 
-    await market
-      .connect(buyerAddress)
-      .createMarketSale(nftContractAddress, 1, { value: auctionPrice })
-
-    // Fetching Items on Market #2
-    items = await market.fetchMarketItems()
-    items = await Promise.all(
-      items.map(async (i) => {
-        const tokenUri = await nft.tokenURI(i.tokenId)
-        let item = {
-          price: i.price.toString(),
-          tokenId: i.tokenId.toString(),
-          seller: i.seller,
-          owner: i.owner,
-          tokenUri,
-        }
-        return item
-      }),
+    // Put up a token for sale / lease / auction
+    // Put down a token from sale / lease / auction
+    await market.changeUpSaleLeaseAuctionMarketItem(
+      itemId2,
+      auctionPrice,
+      true,
+      true,
+      true,
+      true,
+      startSaleDate,
+      endSaleDate,
+      {
+        value: listingRatioNum,
+      },
     )
-    console.log('items: ', items)
+    await market.changeDownSaleLeaseAuctionMarketItem(itemId2)
 
-    // // Fetching Item on Market using itemId
-    // const itemId = 1
-    // item = await market.fetchMarketItemByItemId(itemId)
-    // const itemTokenUri = await nft.tokenURI(item.tokenId)
-    // item = {
-    //   price: item.price.toString(),
-    //   tokenId: item.tokenId.toString(),
-    //   seller: item.seller,
-    //   owner: item.owner,
-    //   itemTokenUri,
-    // }
-    // console.log('item (fetched using itemId): ', item)
-
-    // // Fetching Items on Market using itemIds
-    // const itemIds = [1]
-    // items = await market.fetchMarketItemsByItemIds(itemIds)
-    // items = await Promise.all(
-    //   items.map(async (i) => {
-    //     const tokenUri = await nft.tokenURI(i.tokenId)
-    //     let item = {
-    //       price: i.price.toString(),
-    //       tokenId: i.tokenId.toString(),
-    //       seller: i.seller,
-    //       owner: i.owner,
-    //       tokenUri,
-    //     }
-    //     return item
-    //   }),
-    // )
-    // console.log('items (fetched using itemIds): ', items)
-
-    // Fetching User Puchased Items
-    items = await market.fetchUserPurchasedItems()
+    // Fetching Items from User
+    items = await market.fetchUserItems()
+    items = validateItemsNftContract(items)
     items = await Promise.all(
       items.map(async (i) => {
-        const tokenUri = await nft.tokenURI(i.tokenId)
+        const tokenURI = await nft.tokenURI(i.tokenId)
         let item = {
-          price: i.price.toString(),
+          itemId: i.itemId.toString(),
+          nftContract: i.nftContract,
           tokenId: i.tokenId.toString(),
-          seller: i.seller,
-          owner: i.owner,
-          tokenUri,
-        }
-        return item
-      }),
-    )
-    console.log('items (user purchased): ', items)
-
-    // Fetching User Created Items
-    items = await market.fetchUserCreatedItems()
-    items = await Promise.all(
-      items.map(async (i) => {
-        const tokenUri = await nft.tokenURI(i.tokenId)
-        let item = {
-          tokenUri,
-          itemId: i.itemId.toNumber(),
-          tokenId: i.tokenId.toNumber(),
           creator: i.creator,
           seller: i.seller,
           owner: i.owner,
           price: i.price.toString(),
-          onSale: i.onSale,
-          frozen: i.frozen,
+          isOnSale: i.isOnSale,
+          isOnLease: i.isOnLease,
+          isOnAuction: i.isOnAuction,
+          isFrozen: i.isFrozen,
+          startSaleDate: i.startSaleDate.toString(),
+          endSaleDate: i.endSaleDate.toString(),
+          tokenURI,
         }
         return item
       }),
     )
-    console.log('items (user not sale): ', items)
+    console.log('items: ', items)
+
+    // Set-up transaction
+    const [_, buyerAddress] = await ethers.getSigners()
+
+    // Making sale
+    await market
+      .connect(buyerAddress)
+      .createMarketSale(nftContractAddress, itemId1, { value: auctionPrice })
+
+    // Burning (deleting) token
+    await nft.connect(buyerAddress).burn(tokenId1)
+    await market.connect(buyerAddress).deleteItem(itemId1, tokenId1)
+
+    // Making ownership transfer (non-sale)
+    await market
+      .connect(buyerAddress)
+      .createTransferOwnership(nftContractAddress, itemId3)
+
+    // Fetching Items from User
+    items = await market.fetchUserItems()
+    items = validateItemsNftContract(items)
+    items = await Promise.all(
+      items.map(async (i) => {
+        const tokenURI = await nft.tokenURI(i.tokenId)
+        let item = {
+          itemId: i.itemId.toString(),
+          nftContract: i.nftContract,
+          tokenId: i.tokenId.toString(),
+          creator: i.creator,
+          seller: i.seller,
+          owner: i.owner,
+          price: i.price.toString(),
+          isOnSale: i.isOnSale,
+          isOnLease: i.isOnLease,
+          isOnAuction: i.isOnAuction,
+          isFrozen: i.isFrozen,
+          startSaleDate: i.startSaleDate.toString(),
+          endSaleDate: i.endSaleDate.toString(),
+          tokenURI,
+        }
+        return item
+      }),
+    )
+    console.log('items (fetched items from user): ', items)
+
+    // Fetching Item on Market using itemId
+    let i = await market.fetchItemByItemId(itemId2)
+    i = validateItemsNftContract([i])[0]
+    const tokenURI = await nft.tokenURI(i.tokenId)
+    item = {
+      itemId: i.itemId.toString(),
+      nftContract: i.nftContract,
+      tokenId: i.tokenId.toString(),
+      creator: i.creator,
+      seller: i.seller,
+      owner: i.owner,
+      price: i.price.toString(),
+      isOnSale: i.isOnSale,
+      isOnLease: i.isOnLease,
+      isOnAuction: i.isOnAuction,
+      isFrozen: i.isFrozen,
+      startSaleDate: i.startSaleDate.toString(),
+      endSaleDate: i.endSaleDate.toString(),
+      tokenURI,
+    }
+    console.log('item (fetched using itemId): ', item)
+
+    // Fetching Items on Market using itemIds
+    items = await market.fetchItemsByItemIds(itemIds)
+    items = validateItemsNftContract(items)
+    items = await Promise.all(
+      items.map(async (i) => {
+        const tokenURI = await nft.tokenURI(i.tokenId)
+        let item = {
+          itemId: i.itemId.toString(),
+          nftContract: i.nftContract,
+          tokenId: i.tokenId.toString(),
+          creator: i.creator,
+          seller: i.seller,
+          owner: i.owner,
+          price: i.price.toString(),
+          isOnSale: i.isOnSale,
+          isOnLease: i.isOnLease,
+          isOnAuction: i.isOnAuction,
+          isFrozen: i.isFrozen,
+          startSaleDate: i.startSaleDate.toString(),
+          endSaleDate: i.endSaleDate.toString(),
+          tokenURI,
+        }
+        return item
+      }),
+    )
+    console.log('items (fetched using itemIds): ', items)
   })
 })

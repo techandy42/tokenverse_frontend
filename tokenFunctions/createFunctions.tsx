@@ -4,8 +4,18 @@ import Web3Modal from 'web3modal'
 import { nftaddress, nftmarketaddress } from '../config'
 import NFT from '../artifacts/contracts/NFT.sol/NFT.json'
 import Market from '../artifacts/contracts/NFTMarket.sol/NFTMarket.json'
+import {
+  BlockchainType,
+  SaleType,
+  CollectibleCategory,
+  ProductKeyRealLifeAssetCategory,
+  ProductKeyVirtualAssetCategory,
+  ErcType,
+} from '../enums/nftMetadata'
 
+// @ts-ignore
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
+//
 
 export const getFileUrl = async (file: any) => {
   try {
@@ -22,9 +32,16 @@ export const getFileUrl = async (file: any) => {
 export const createItem = async (
   name: string,
   collection: string,
-  blockchainType: string,
+  blockchainType: BlockchainType,
   fileUrl: string,
   multimedia: any,
+  saleType: SaleType,
+  collectibleCategory: CollectibleCategory,
+  productKeyRealLifeAssetCategory: ProductKeyRealLifeAssetCategory,
+  productKeyVirtualAssetCategory: ProductKeyVirtualAssetCategory,
+  isSensitiveContent: boolean,
+  properties: JSON,
+  ercType: ErcType,
 ) => {
   if (!name || !collection || !blockchainType || !fileUrl) return
   const data = JSON.stringify({
@@ -33,6 +50,13 @@ export const createItem = async (
     blockchainType,
     image: fileUrl,
     multimedia,
+    saleType,
+    collectibleCategory,
+    productKeyRealLifeAssetCategory,
+    productKeyVirtualAssetCategory,
+    isSensitiveContent,
+    properties,
+    ercType,
   })
   try {
     const added = await client.add(data)

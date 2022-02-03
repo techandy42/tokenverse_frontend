@@ -12,7 +12,7 @@
   //   let tokenId = value.toNumber()
 * price - numeric value create from the following code
   //   const price = ethers.utils.parseUnits(formTextField.price, 'ether')
-* msg.value - numeric value fetched using the getListingPrice() function
+* msg.value - numeric value fetched using the getListingRatioNum() function
 */
  
 /*
@@ -21,6 +21,10 @@
 * tokenId - id of the token that has access to tokenURI
  */
  
+/* List of information included as metadata:
+*  
+ */
+
 // SPDX-License-Identifier: MIT OR Apache-2.0
 pragma solidity ^0.8.3;
  
@@ -29,15 +33,16 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
  
 import "hardhat/console.sol";
- 
+
 contract NFTMarket is ReentrancyGuard {
     using Counters for Counters.Counter;
     Counters.Counter private _itemIds;
-    Counters.Counter private _itemsSale;
- 
+    uint constant ether_unit = 1e18; 
+    uint256 constant listingRatioNum = 25;
+    uint256 constant listingRatioDen = 1000;
+
     address payable owner;
-    uint256 listingPrice = 0.025 ether;
- 
+
     constructor() {
         owner = payable(msg.sender);
     }
@@ -50,13 +55,17 @@ contract NFTMarket is ReentrancyGuard {
         address payable seller;
         address payable owner;
         uint256 price;
-        bool onSale;
-        bool frozen;
+        bool isOnSale;
+        bool isOnLease;
+        bool isOnAuction;
+        bool isFrozen;
+        uint256 startSaleDate;
+        uint256 endSaleDate;
     }
  
     mapping(uint256 => MarketItem) private idToMarketItem;
  
-    event MarketItemCreated (
+    event MarketItemEvent (
         uint indexed itemId,
         address indexed nftContract,
         uint256 indexed tokenId,
@@ -64,22 +73,80 @@ contract NFTMarket is ReentrancyGuard {
         address seller,
         address owner,
         uint256 price,
-        bool onSale,
-        bool frozen
+        bool isOnSale,
+        bool isOnLease,
+        bool isOnAuction,
+        bool isFrozen,
+        uint256 startSaleDate,
+        uint256 endSaleDate
     );
  
-    /* Returns the listing price of the contract */
-    function getListingPrice() public view returns (uint256) {
-        return listingPrice;
-    }
+    event MarketItemsEvent (
+        uint[] indexed itemIds,
+        address[] indexed nftContracts,
+        uint256[] indexed tokenIds,
+        address[] creator,
+        address[] seller,
+        address[] owner,
+        uint256[] price,
+        bool[] isOnSale,
+        bool[] isOnLease,
+        bool[] isOnAuction,
+        bool[] isFrozen,
+        uint256[] startSaleDate,
+        uint256[] endSaleDate
+    );
  
-    /* Mints the token */
+    /* Returns the listing ratio's numerator of the contract */
+    function getListingRatioNum() public view returns (uint256) {
+        return listingRatioNum;
+    }
+
+    /* Returns the listing ratio's denominator of the contract */
+    function getListingRatioDen() public view returns (uint256) {
+        return listingRatioDen;
+    }
+
+    function getIsFrozenByItemId(
+        uint itemId
+    ) public view returns (bool) {
+        bool isFrozen = idToMarketItem[itemId].isFrozen;
+        return isFrozen;
+    }
+
+    /* Clears the price, isOnSale, isOnLease, isOnAuction, startSaleDate, endSaleDate of the given item */
+    function clearItem(uint itemId) private {
+        idToMarketItem[itemId].price = 0;
+        idToMarketItem[itemId].isOnSale = false;
+        idToMarketItem[itemId].isOnLease = false;
+        idToMarketItem[itemId].isOnAuction = false;
+        idToMarketItem[itemId].startSaleDate = 0;
+        idToMarketItem[itemId].endSaleDate = 0;
+    }
+
+    /* Returns if the msg.sender is valid to use the token */
+    function getSaleValid(
+        MarketItem memory item,
+        uint currentDate
+    ) public view returns (bool) {
+        if (item.isOnSale || item.isOnLease || item.isOnAuction) {
+            if (currentDate < item.startSaleDate || currentDate > item.endSaleDate) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
+    }
+
+    /* Mints one token */
     function createMintMarketItem(
         address nftContract,
         uint256 tokenId
     ) public payable nonReentrant {
         _itemIds.increment();
-        uint256 itemId = _itemIds.current();
+        uint itemId = _itemIds.current();
  
         idToMarketItem[itemId] = MarketItem(
             itemId,
@@ -90,12 +157,16 @@ contract NFTMarket is ReentrancyGuard {
             payable(address(0)),
             0,
             false,
-            false
+            false,
+            false,
+            false,
+            0,
+            0
         );
  
         IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
  
-        emit MarketItemCreated(
+        emit MarketItemEvent(
             itemId,
             nftContract,
             tokenId,
@@ -104,112 +175,253 @@ contract NFTMarket is ReentrancyGuard {
             address(0),
             0,
             false,
-            false
+            false,
+            false,
+            false,
+            0,
+            0
         );
     }
 
-    /* Puts the token on sale */
-    function changeSaleMarketItem(
-        uint256 itemId,
-        uint256 price
+    /* Mints multiple token */
+    function createMintMarketItems(
+        address nftContract,
+        uint256[] memory tokenIds
+    ) public payable nonReentrant {
+
+        // loop over the params
+        // store them in list to emit 
+        uint paramsLength = tokenIds.length;
+        uint[] memory itemIds = new uint[](paramsLength);
+        address[] memory nftContracts = new address[](paramsLength);
+        address[] memory msgSenders = new address[](paramsLength);
+        address[] memory addressZeroes = new address[](paramsLength);
+        uint[] memory zeroes = new uint[](paramsLength);
+        bool[] memory falses = new bool[](paramsLength);
+
+        for (uint i = 0; i < paramsLength; i++) {
+            _itemIds.increment();
+            uint itemId = _itemIds.current();
+            uint256 tokenId = tokenIds[i];
+
+            // fill the arrays with values
+            itemIds[i] = itemId;
+            nftContracts[i] = nftContract;
+            msgSenders[i] = msg.sender;
+            addressZeroes[i] = address(0);
+            zeroes[i] = 0;
+            falses[i] = false; 
+
+            idToMarketItem[itemId] = MarketItem(
+                itemId,
+                nftContract,
+                tokenId,
+                payable(msg.sender),
+                payable(msg.sender),
+                payable(address(0)),
+                0,
+                false,
+                false,
+                false,
+                false,
+                0,
+                0
+            );
+    
+            IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
+        }
+        
+        emit MarketItemsEvent(
+            itemIds,
+            nftContracts,
+            tokenIds,
+            msgSenders,
+            msgSenders,
+            addressZeroes,
+            zeroes,
+            falses,
+            falses,
+            falses,
+            falses,
+            zeroes,
+            zeroes
+        );
+    }
+
+    /* Puts the token on sale / lease / auction */
+    function changeUpSaleLeaseAuctionMarketItem(
+        uint itemId,
+        uint256 price,
+        bool isOnSale,
+        bool isOnLease,
+        bool isOnAuction,
+        bool isFrozen,
+        uint256 startSaleDate,
+        uint256 endSaleDate
     ) public payable nonReentrant {
         require(price > 0, "Price must be at least 1 wei");
-        require(msg.value == listingPrice, "Price must be equal to listing price");
+        require(msg.value == listingRatioNum, "Price must be equal to listing ratio's numerator");
 
-        _itemsSale.increment();
-
+        // Modifies the token's data
         idToMarketItem[itemId].price = price;
-        idToMarketItem[itemId].onSale = true;
+        idToMarketItem[itemId].isOnSale = isOnSale;
+        idToMarketItem[itemId].isOnLease = isOnLease;
+        idToMarketItem[itemId].isOnAuction = isOnAuction;
+        idToMarketItem[itemId].startSaleDate = startSaleDate;
+        idToMarketItem[itemId].endSaleDate = endSaleDate;
+        bool isAlreadyFrozen = idToMarketItem[itemId].isFrozen;
+        if (!isAlreadyFrozen && isFrozen) {
+            idToMarketItem[itemId].isFrozen = isFrozen;
+        } 
         address seller = idToMarketItem[itemId].seller;
         if (msg.sender != seller) {
             idToMarketItem[itemId].seller = payable(msg.sender);
         }
     }
 
+    /* Edits the token data */
+    function changeEditMarketItem(
+        uint itemId,
+        bool isFrozen
+    ) public {
+        // Modifies the token's data
+        bool isAlreadyFrozen = idToMarketItem[itemId].isFrozen;
+        if (!isAlreadyFrozen && isFrozen) {
+            idToMarketItem[itemId].isFrozen = isFrozen;
+        } 
+    }
+
+    /* Puts the token down from sale / lease / auction */
+    function changeDownSaleLeaseAuctionMarketItem(
+        uint itemId
+    ) public payable nonReentrant {
+        clearItem(itemId);
+        address seller = idToMarketItem[itemId].seller;
+        if (address(0) != seller) {
+            idToMarketItem[itemId].seller = payable(address(0));
+        }
+    }
+    
+    /* Transfer ownership from one user to another */
+    function createTransferOwnership(
+        address nftContract,
+        uint itemId
+    ) public payable nonReentrant {
+        bool isOnSale = idToMarketItem[itemId].isOnSale;
+        bool isOnLease = idToMarketItem[itemId].isOnLease;
+        bool isOnAuction = idToMarketItem[itemId].isOnAuction;
+        uint256 tokenId = idToMarketItem[itemId].tokenId;
+
+        require(isOnSale != true, "The item cannot be on Sale");
+        require(isOnLease != true, "The item cannot be on Lease");
+        require(isOnAuction != true, "The item cannot be on Auction");
+
+        IERC721(nftContract).transferFrom(address(this), msg.sender, tokenId);
+        idToMarketItem[itemId].owner = payable(msg.sender);
+        clearItem(itemId);
+    }
+
+    /* Perform sale */
     function createMarketSale(
         address nftContract,
-        uint256 itemId
+        uint itemId
     ) public payable nonReentrant {
         uint price = idToMarketItem[itemId].price;
-        uint tokenId = idToMarketItem[itemId].tokenId;
-        bool onSale = idToMarketItem[itemId].onSale;
+        uint256 tokenId = idToMarketItem[itemId].tokenId;
+        bool isOnSale = idToMarketItem[itemId].isOnSale;
+
         require(msg.value == price, "Please submit the asking value in order to complete the purchase");
-        require(onSale == true, "The item is not on the market");
-       
-        _itemsSale.decrement();
+        require(isOnSale == true, "The item has to be on sale");
  
         idToMarketItem[itemId].seller.transfer(msg.value);
         IERC721(nftContract).transferFrom(address(this), msg.sender, tokenId);
         idToMarketItem[itemId].owner = payable(msg.sender);
-        idToMarketItem[itemId].onSale = false;
-        payable(owner).transfer(listingPrice);
-    }
- 
-    /* Returns all market items (items listed in the market) */
-    function fetchMarketItems() public view returns (MarketItem[] memory) {
-        uint itemsSaleCount = _itemsSale.current();
-        uint currentIndex = 0;
- 
-        MarketItem[] memory items = new MarketItem[](itemsSaleCount);
-        for (uint i = 0; i < itemsSaleCount; i++) {
-            if (idToMarketItem[i + 1].onSale == true) {
-                uint currentId = i + 1;
-                MarketItem storage currentItem = idToMarketItem[currentId];
-                items[currentIndex] = currentItem;
-                currentIndex += 1;
-            }
-        }
-        return items;
-    }
- 
-    /*
-    * User can fetch items on:
-    * all
-    * purchased
-    * created
-    * on market
-    * not on market
-    * Add in functions as needed
-     */
- 
-    /* Returns only items that a user has purchased */
-    function fetchUserPurchasedItems() public view returns (MarketItem[] memory) {
-        uint totalItemCount = _itemIds.current();
-        uint itemCount = 0;
-        uint currentIndex = 0;
-   
-        for (uint i = 0; i < totalItemCount; i++) {
-            if (idToMarketItem[i + 1].owner == msg.sender) {
-                itemCount += 1;
-            }
-        }
-   
-        MarketItem[] memory items = new MarketItem[](itemCount);
-        for (uint i = 0; i < totalItemCount; i++) {
-            if (idToMarketItem[i + 1].owner == msg.sender) {
-                uint currentId = i + 1;
-                MarketItem storage currentItem = idToMarketItem[currentId];
-                items[currentIndex] = currentItem;
-                currentIndex += 1;
-            }
-        }
-        return items;
+        clearItem(itemId);
+        // transfering sale listing price
+        // this doesn't work
+        uint saleListingRatioNum = (price * (listingRatioNum / listingRatioDen)) * ether_unit;
+        payable(owner).transfer(saleListingRatioNum);
     }
 
-    function fetchUserCreatedItems() public view returns (MarketItem[] memory) {
+    /* Deletes the token */
+    function deleteItem(
+        uint itemId,
+        uint256 tokenId
+    ) public payable nonReentrant {
+        address owner = idToMarketItem[itemId].owner;
+        require (((owner != address(0)) && (owner == msg.sender)), "The owner must be the message sender and not a null address");
+        idToMarketItem[itemId] = MarketItem(
+            itemId,
+            address(0),
+            tokenId,
+            payable(address(0)),
+            payable(address(0)),
+            payable(address(0)),
+            0,
+            false,
+            false,
+            false,
+            false,
+            0,
+            0
+        );
+
+        emit MarketItemEvent(
+            itemId,
+            address(0),
+            tokenId,
+            address(0),
+            address(0),
+            address(0),
+            0,
+            false,
+            false,
+            false,
+            false,
+            0,
+            0
+        );
+    }
+
+    /* Fetchs one token by itemId */
+    function fetchItemByItemId(
+        uint itemId
+    ) public view returns (MarketItem memory) {
+        MarketItem storage item = idToMarketItem[itemId];
+        return item;
+    }
+
+    /* Fetches multiple tokens by itemIds */
+    function fetchItemsByItemIds(
+        uint[] memory itemIds
+    ) public view returns (MarketItem[] memory) {
+        uint itemIdsLength = itemIds.length;
+        MarketItem[] memory items = new MarketItem[](itemIdsLength);
+        for (uint i = 0; i < itemIdsLength; i++) {
+            uint itemId = itemIds[i];
+            MarketItem storage item = idToMarketItem[itemId];
+            items[i] = item;
+        }
+        return items;
+    }
+ 
+    /* Functions for testing */
+
+    /* Returns only items that a user has purchased */
+    function fetchUserItems() public view returns (MarketItem[] memory) {
         uint totalItemCount = _itemIds.current();
         uint itemCount = 0;
         uint currentIndex = 0;
    
         for (uint i = 0; i < totalItemCount; i++) {
-            if (idToMarketItem[i + 1].creator == msg.sender) {
+            if (idToMarketItem[i + 1].owner == msg.sender || idToMarketItem[i + 1].creator == msg.sender) {
                 itemCount += 1;
             }
         }
    
         MarketItem[] memory items = new MarketItem[](itemCount);
         for (uint i = 0; i < totalItemCount; i++) {
-            if (idToMarketItem[i + 1].creator == msg.sender) {
+            if (idToMarketItem[i + 1].owner == msg.sender || idToMarketItem[i + 1].creator == msg.sender) {
                 uint currentId = i + 1;
                 MarketItem storage currentItem = idToMarketItem[currentId];
                 items[currentIndex] = currentItem;

@@ -26,8 +26,29 @@ contract NFT is ERC721URIStorage {
         return newItemId;
     }
 
+    function createTokens(string[] memory tokenURIs) public returns (uint[] memory) {
+        uint256 tokenURILength = tokenURIs.length;
+        uint256[] memory newItemIds = new uint256[](tokenURILength);
+        for (uint i = 0; i < tokenURILength; i++) {
+            _tokenIds.increment();
+            uint256 newItemId = _tokenIds.current();
+            string memory tokenURI = tokenURIs[i];
+            _mint(msg.sender, newItemId);
+            _setTokenURI(newItemId, tokenURI);
+            setApprovalForAll(contractAddress, true);
+            newItemIds[i] = newItemId;
+        }
+        return newItemIds;
+    }
+
     function changeTokenIdToken(uint256 tokenId, string memory newTokenURI) public {
-        // check if the token is frozen
         _setTokenURI(tokenId, newTokenURI);
+    }
+
+    function burn(
+        uint256 tokenId
+    ) public {
+        require(_isApprovedOrOwner(msg.sender, tokenId));
+        _burn(tokenId);
     }
 }
