@@ -19,11 +19,7 @@
 * Variables Description:
 * itemId - index number of a token in idToMarketItem
 * tokenId - id of the token that has access to tokenURI
- */
- 
-/* List of information included as metadata:
-*  
- */
+*/
 
 // SPDX-License-Identifier: MIT OR Apache-2.0
 pragma solidity ^0.8.3;
@@ -130,13 +126,18 @@ contract NFTMarket is ReentrancyGuard {
         idToMarketItem[itemId].endSaleDate = 0;
     }
 
-    /* Returns if the msg.sender is valid to use the token */
-    function getSaleValid(
-        MarketItem memory item,
+    /* Returns if the message sender is valid to use the token */
+    function getMarketValid(
+        uint itemId,
         uint currentDate
     ) public view returns (bool) {
-        if (item.isOnSale || item.isOnLease || item.isOnAuction) {
-            if (currentDate < item.startSaleDate || currentDate > item.endSaleDate) {
+        bool isOnSale = idToMarketItem[itemId].isOnSale;
+        bool isOnLease = idToMarketItem[itemId].isOnLease;
+        bool isOnAuction = idToMarketItem[itemId].isOnAuction;
+        uint256 startSaleDate = idToMarketItem[itemId].startSaleDate;
+        uint256 endSaleDate = idToMarketItem[itemId].endSaleDate;
+        if (isOnSale || isOnLease || isOnAuction) {
+            if (currentDate < startSaleDate || currentDate > endSaleDate) {
                 return false;
             } else {
                 return true;
@@ -194,7 +195,6 @@ contract NFTMarket is ReentrancyGuard {
         address nftContract,
         uint256[] memory tokenIds
     ) public payable nonReentrant {
-
         // loop over the params
         // store them in list to emit 
         uint paramsLength = tokenIds.length;

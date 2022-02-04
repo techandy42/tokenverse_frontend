@@ -1,6 +1,6 @@
 describe('NFTMarket', function () {
   it('Should create and execute market sales', async function () {
-    // Constant Values for testing
+    /* Constant Values for testing */
     const emptyNftAddress = '0x0000000000000000000000000000000000000000'
     const tokenURI1 = 'https://www.mytokenlocation1.com'
     const tokenURI10 = 'https://www.mytokenlocation10.com'
@@ -25,11 +25,11 @@ describe('NFTMarket', function () {
     const startSaleDate = 1000
     const endSaleDate = 1000000
 
-    // Mutable variables
+    /* Mutable variables */
     let item = null
     let items = null
 
-    // Helper functions
+    /* Helper functions */
     const validateItemsNftContract = (items) => {
       const validItems = []
       for (let i = 0; i < items.length; i++) {
@@ -40,7 +40,7 @@ describe('NFTMarket', function () {
       return validItems
     }
 
-    // Set-up
+    /* Set-up */
     const Market = await ethers.getContractFactory('NFTMarket')
     const market = await Market.deploy()
     await market.deployed()
@@ -56,7 +56,7 @@ describe('NFTMarket', function () {
 
     const auctionPrice = ethers.utils.parseUnits('1', 'ether')
 
-    // Creating and Minting Tokens
+    /* Creating and Minting Tokens */
     await nft.createToken(tokenURI1)
     await nft.createToken(tokenURI2)
 
@@ -67,10 +67,10 @@ describe('NFTMarket', function () {
 
     await market.createMintMarketItems(nftContractAddress, tokenIds345)
 
-    // Change metadata of the token
+    /* Change metadata of the token */
     await nft.changeTokenIdToken(tokenId1, tokenURI10, true)
 
-    // Put up a token for sale / lease / auction
+    /* Put up a token for sale / lease / auction */
     await market.changeUpSaleLeaseAuctionMarketItem(
       itemId1,
       auctionPrice,
@@ -84,8 +84,8 @@ describe('NFTMarket', function () {
       },
     )
 
-    // Put up a token for sale / lease / auction
-    // Put down a token from sale / lease / auction
+    /* Put up a token for sale / lease / auction */
+    /* Put down a token from sale / lease / auction */
     await market.changeUpSaleLeaseAuctionMarketItem(
       itemId2,
       auctionPrice,
@@ -100,7 +100,7 @@ describe('NFTMarket', function () {
     )
     await market.changeDownSaleLeaseAuctionMarketItem(itemId2)
 
-    // Fetching Items from User
+    /* Fetching Items from User */
     items = await market.fetchUserItems()
     items = validateItemsNftContract(items)
     items = await Promise.all(
@@ -126,24 +126,24 @@ describe('NFTMarket', function () {
     )
     console.log('items: ', items)
 
-    // Set-up transaction
+    /* Set-up transaction */
     const [_, buyerAddress] = await ethers.getSigners()
 
-    // Making sale
+    /* Making sale */
     await market
       .connect(buyerAddress)
       .createMarketSale(nftContractAddress, itemId1, { value: auctionPrice })
 
-    // Burning (deleting) token
-    await nft.connect(buyerAddress).burn(tokenId1)
+    /* Burning (deleting) token */
+    await nft.connect(buyerAddress).burnToken(tokenId1)
     await market.connect(buyerAddress).deleteItem(itemId1, tokenId1)
 
-    // Making ownership transfer (non-sale)
+    /* Making ownership transfer (non-sale) */
     await market
       .connect(buyerAddress)
       .createTransferOwnership(nftContractAddress, itemId3)
 
-    // Fetching Items from User
+    /* Fetching Items from User */
     items = await market.fetchUserItems()
     items = validateItemsNftContract(items)
     items = await Promise.all(
@@ -169,7 +169,7 @@ describe('NFTMarket', function () {
     )
     console.log('items (fetched items from user): ', items)
 
-    // Fetching Item on Market using itemId
+    /* Fetching Item on Market using itemId */
     let i = await market.fetchItemByItemId(itemId2)
     i = validateItemsNftContract([i])[0]
     const tokenURI = await nft.tokenURI(i.tokenId)
@@ -190,7 +190,7 @@ describe('NFTMarket', function () {
     }
     console.log('item (fetched using itemId): ', item)
 
-    // Fetching Items on Market using itemIds
+    /* Fetching Items on Market using itemIds */
     items = await market.fetchItemsByItemIds(itemIds)
     items = validateItemsNftContract(items)
     items = await Promise.all(

@@ -5,8 +5,8 @@ import { nftmarketaddress, nftaddress } from '../config'
 import Market from '../artifacts/contracts/NFTMarket.sol/NFTMarket.json'
 import NFT from '../artifacts/contracts/NFT.sol/NFT.json'
 
-/* Fetches the NFTs created or owned by the user */
-const loadNFTs = async () => {
+/* Fetches the tokens using the given itemIds */
+const fetchItemByItemIds = async (itemIds: number[]) => {
   const web3Modal = new Web3Modal({
     network: 'mainnet',
     cacheProvider: true,
@@ -20,7 +20,7 @@ const loadNFTs = async () => {
     signer,
   )
   const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
-  const data = await marketContract.fetchUserItems()
+  const data = await marketContract.fetchItemByItemIds(itemIds)
   const items = await Promise.all(
     data.map(async (i: any) => {
       const tokenURI = await tokenContract.tokenURI(i.tokenId)
@@ -70,4 +70,4 @@ const loadNFTs = async () => {
   return items
 }
 
-export default loadNFTs
+export default fetchItemByItemIds

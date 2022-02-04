@@ -10,7 +10,8 @@ import blockchainTypes from '../../../constants/blockchainTypes'
 import { collections } from '../../pages/create'
 import CollectionAndBlockchainTypeInputs from './createShared/CollectionAndBlockchainTypeInputs'
 import Names from './createMultiple/Names'
-import { getFileUrl, createItem } from '../../../tokenFunctions/createFunctions'
+import createItem from '../../../tokenFunctions/createItem'
+import getFileUrl from '../../../tokenFunctions/getFileUrl'
 import multimediaFileToMultimedia from '../../../functions/multimediaFileToMultimedia'
 
 interface IProps {

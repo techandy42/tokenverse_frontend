@@ -28,6 +28,7 @@ contract NFT is ERC721URIStorage {
         return isBurned;
     }
 
+    /* Creates a single token (stored in Ethereum back-end) */
     function createToken(string memory tokenURI) public returns (uint) {
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
@@ -39,6 +40,7 @@ contract NFT is ERC721URIStorage {
         return newItemId;
     }
 
+    /* Creates multiple tokens (stored in Ethereum back-end) */
     function createTokens(string[] memory tokenURIs) public returns (uint[] memory) {
         uint256 tokenURILength = tokenURIs.length;
         uint256[] memory newItemIds = new uint256[](tokenURILength);
@@ -55,6 +57,7 @@ contract NFT is ERC721URIStorage {
         return newItemIds;
     }
 
+    /* Changes the TokenURI of the token */
     function changeTokenIdToken(uint256 tokenId, string memory newTokenURI, bool isMetadataFrozen) public {
         // This function will be modified to support frozen tokens through decentralized metadata storage
         // The function currently validates using a map
@@ -69,7 +72,8 @@ contract NFT is ERC721URIStorage {
         }
     }
 
-    function burn(
+    /* Burns (destories) the token */
+    function burnToken(
         uint256 tokenId
     ) public {
         address owner = ownerOf(tokenId);

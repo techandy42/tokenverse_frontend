@@ -6,6 +6,7 @@ export interface IAccountInfo {
   errorMessage: string | null
 }
 
+/* Fetches the Metamask account informations */
 const getAccount = async () => {
   let accountInfo: IAccountInfo = {
     accountAddress: '',
