@@ -16,6 +16,18 @@ contract NFT is ERC721URIStorage {
         contractAddress = marketplaceAddress;
     }
 
+    mapping(uint256 => bool) internal burnedMarketItem;
+    mapping(uint256 => address) internal allowance;
+    mapping(uint256 => bool) internal metadataFrozenMarketItem;
+
+    /* Returns if the item is burned */
+    function getIsBurned(
+        uint itemId
+    ) public view returns (bool) {
+        bool isBurned = burnedMarketItem[itemId];
+        return isBurned;
+    }
+
     function createToken(string memory tokenURI) public returns (uint) {
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
@@ -23,6 +35,7 @@ contract NFT is ERC721URIStorage {
         _mint(msg.sender, newItemId);
         _setTokenURI(newItemId, tokenURI);
         setApprovalForAll(contractAddress, true);
+        allowance[newItemId] = msg.sender;
         return newItemId;
     }
 
@@ -36,19 +49,32 @@ contract NFT is ERC721URIStorage {
             _mint(msg.sender, newItemId);
             _setTokenURI(newItemId, tokenURI);
             setApprovalForAll(contractAddress, true);
+            allowance[newItemId] = msg.sender;
             newItemIds[i] = newItemId;
         }
         return newItemIds;
     }
 
-    function changeTokenIdToken(uint256 tokenId, string memory newTokenURI) public {
-        _setTokenURI(tokenId, newTokenURI);
+    function changeTokenIdToken(uint256 tokenId, string memory newTokenURI, bool isMetadataFrozen) public {
+        // This function will be modified to support frozen tokens through decentralized metadata storage
+        // The function currently validates using a map
+        address owner = ownerOf(tokenId);
+        bool isCurrentlyMetadataFrozen = metadataFrozenMarketItem[tokenId];
+        require(owner == msg.sender || allowance[tokenId] == msg.sender, 'The owner must be the message sender or the message sender must be approved');
+        require(isCurrentlyMetadataFrozen == false, 'The metadata of the token is frozen');
+        if (isMetadataFrozen == false) {
+            _setTokenURI(tokenId, newTokenURI);
+        } else {
+            metadataFrozenMarketItem[tokenId] = true;
+        }
     }
 
     function burn(
         uint256 tokenId
     ) public {
-        require(_isApprovedOrOwner(msg.sender, tokenId));
+        address owner = ownerOf(tokenId);
+        require(owner == msg.sender || allowance[tokenId] == msg.sender, 'The owner must be the message sender or the message sender must be approved');
         _burn(tokenId);
+        burnedMarketItem[tokenId] = true;
     }
 }

@@ -58,14 +58,14 @@ contract NFTMarket is ReentrancyGuard {
         bool isOnSale;
         bool isOnLease;
         bool isOnAuction;
-        bool isFrozen;
         uint256 startSaleDate;
         uint256 endSaleDate;
     }
  
-    mapping(uint256 => MarketItem) private idToMarketItem;
+    mapping(uint256 => MarketItem) internal idToMarketItem;
+    mapping(uint256 => address) internal allowance;
  
-    event MarketItemEvent (
+    event MarketItemCreated (
         uint indexed itemId,
         address indexed nftContract,
         uint256 indexed tokenId,
@@ -76,12 +76,26 @@ contract NFTMarket is ReentrancyGuard {
         bool isOnSale,
         bool isOnLease,
         bool isOnAuction,
-        bool isFrozen,
         uint256 startSaleDate,
         uint256 endSaleDate
     );
  
-    event MarketItemsEvent (
+    event MarketItemDeleted (
+        uint indexed itemId,
+        address indexed nftContract,
+        uint256 indexed tokenId,
+        address creator,
+        address seller,
+        address owner,
+        uint256 price,
+        bool isOnSale,
+        bool isOnLease,
+        bool isOnAuction,
+        uint256 startSaleDate,
+        uint256 endSaleDate
+    );
+ 
+    event MarketItemsCreated (
         uint[] indexed itemIds,
         address[] indexed nftContracts,
         uint256[] indexed tokenIds,
@@ -92,7 +106,6 @@ contract NFTMarket is ReentrancyGuard {
         bool[] isOnSale,
         bool[] isOnLease,
         bool[] isOnAuction,
-        bool[] isFrozen,
         uint256[] startSaleDate,
         uint256[] endSaleDate
     );
@@ -105,13 +118,6 @@ contract NFTMarket is ReentrancyGuard {
     /* Returns the listing ratio's denominator of the contract */
     function getListingRatioDen() public view returns (uint256) {
         return listingRatioDen;
-    }
-
-    function getIsFrozenByItemId(
-        uint itemId
-    ) public view returns (bool) {
-        bool isFrozen = idToMarketItem[itemId].isFrozen;
-        return isFrozen;
     }
 
     /* Clears the price, isOnSale, isOnLease, isOnAuction, startSaleDate, endSaleDate of the given item */
@@ -159,14 +165,15 @@ contract NFTMarket is ReentrancyGuard {
             false,
             false,
             false,
-            false,
             0,
             0
         );
  
         IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
  
-        emit MarketItemEvent(
+        allowance[tokenId] = msg.sender;
+
+        emit MarketItemCreated(
             itemId,
             nftContract,
             tokenId,
@@ -174,7 +181,6 @@ contract NFTMarket is ReentrancyGuard {
             msg.sender,
             address(0),
             0,
-            false,
             false,
             false,
             false,
@@ -223,15 +229,16 @@ contract NFTMarket is ReentrancyGuard {
                 false,
                 false,
                 false,
-                false,
                 0,
                 0
             );
     
             IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
+
+            allowance[tokenId] = msg.sender;
         }
         
-        emit MarketItemsEvent(
+        emit MarketItemsCreated(
             itemIds,
             nftContracts,
             tokenIds,
@@ -239,7 +246,6 @@ contract NFTMarket is ReentrancyGuard {
             msgSenders,
             addressZeroes,
             zeroes,
-            falses,
             falses,
             falses,
             falses,
@@ -255,7 +261,6 @@ contract NFTMarket is ReentrancyGuard {
         bool isOnSale,
         bool isOnLease,
         bool isOnAuction,
-        bool isFrozen,
         uint256 startSaleDate,
         uint256 endSaleDate
     ) public payable nonReentrant {
@@ -269,26 +274,10 @@ contract NFTMarket is ReentrancyGuard {
         idToMarketItem[itemId].isOnAuction = isOnAuction;
         idToMarketItem[itemId].startSaleDate = startSaleDate;
         idToMarketItem[itemId].endSaleDate = endSaleDate;
-        bool isAlreadyFrozen = idToMarketItem[itemId].isFrozen;
-        if (!isAlreadyFrozen && isFrozen) {
-            idToMarketItem[itemId].isFrozen = isFrozen;
-        } 
         address seller = idToMarketItem[itemId].seller;
         if (msg.sender != seller) {
             idToMarketItem[itemId].seller = payable(msg.sender);
         }
-    }
-
-    /* Edits the token data */
-    function changeEditMarketItem(
-        uint itemId,
-        bool isFrozen
-    ) public {
-        // Modifies the token's data
-        bool isAlreadyFrozen = idToMarketItem[itemId].isFrozen;
-        if (!isAlreadyFrozen && isFrozen) {
-            idToMarketItem[itemId].isFrozen = isFrozen;
-        } 
     }
 
     /* Puts the token down from sale / lease / auction */
@@ -349,7 +338,8 @@ contract NFTMarket is ReentrancyGuard {
         uint256 tokenId
     ) public payable nonReentrant {
         address owner = idToMarketItem[itemId].owner;
-        require (((owner != address(0)) && (owner == msg.sender)), "The owner must be the message sender and not a null address");
+        require( owner == msg.sender || allowance[tokenId] == msg.sender );
+
         idToMarketItem[itemId] = MarketItem(
             itemId,
             address(0),
@@ -361,12 +351,11 @@ contract NFTMarket is ReentrancyGuard {
             false,
             false,
             false,
-            false,
             0,
             0
         );
 
-        emit MarketItemEvent(
+        emit MarketItemDeleted(
             itemId,
             address(0),
             tokenId,
@@ -374,7 +363,6 @@ contract NFTMarket is ReentrancyGuard {
             address(0),
             address(0),
             0,
-            false,
             false,
             false,
             false,

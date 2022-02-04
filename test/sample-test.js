@@ -12,10 +12,15 @@ describe('NFTMarket', function () {
     ]
     const tokenId1 = 1
     const tokenId2 = 2
-    const tokenIdsRest = [3, 4, 5]
+    const tokenId3 = 3
+    const tokenId4 = 4
+    const tokenId5 = 5
+    const tokenIds345 = [3, 4, 5]
     const itemId1 = 1
     const itemId2 = 2
     const itemId3 = 3
+    const itemId4 = 4
+    const itemId5 = 5
     const itemIds = [1, 2, 3, 4, 5]
     const startSaleDate = 1000
     const endSaleDate = 1000000
@@ -23,7 +28,6 @@ describe('NFTMarket', function () {
     // Mutable variables
     let item = null
     let items = null
-    let isFrozen = null
 
     // Helper functions
     const validateItemsNftContract = (items) => {
@@ -61,13 +65,10 @@ describe('NFTMarket', function () {
     await market.createMintMarketItem(nftContractAddress, tokenId1)
     await market.createMintMarketItem(nftContractAddress, tokenId2)
 
-    await market.createMintMarketItems(nftContractAddress, tokenIdsRest)
+    await market.createMintMarketItems(nftContractAddress, tokenIds345)
 
-    // Change metadata if isFrozen is false at a given itemId
-    isFrozen = await market.getIsFrozenByItemId(itemId1)
-    if (!isFrozen) {
-      await nft.changeTokenIdToken(tokenId1, tokenURI10)
-    }
+    // Change metadata of the token
+    await nft.changeTokenIdToken(tokenId1, tokenURI10, true)
 
     // Put up a token for sale / lease / auction
     await market.changeUpSaleLeaseAuctionMarketItem(
@@ -76,7 +77,6 @@ describe('NFTMarket', function () {
       true,
       true,
       true,
-      false,
       startSaleDate,
       endSaleDate,
       {
@@ -84,15 +84,11 @@ describe('NFTMarket', function () {
       },
     )
 
-    // Modify the data of a token
-    await market.changeEditMarketItem(itemId2, true)
-
     // Put up a token for sale / lease / auction
     // Put down a token from sale / lease / auction
     await market.changeUpSaleLeaseAuctionMarketItem(
       itemId2,
       auctionPrice,
-      true,
       true,
       true,
       true,
@@ -121,7 +117,6 @@ describe('NFTMarket', function () {
           isOnSale: i.isOnSale,
           isOnLease: i.isOnLease,
           isOnAuction: i.isOnAuction,
-          isFrozen: i.isFrozen,
           startSaleDate: i.startSaleDate.toString(),
           endSaleDate: i.endSaleDate.toString(),
           tokenURI,
@@ -165,7 +160,6 @@ describe('NFTMarket', function () {
           isOnSale: i.isOnSale,
           isOnLease: i.isOnLease,
           isOnAuction: i.isOnAuction,
-          isFrozen: i.isFrozen,
           startSaleDate: i.startSaleDate.toString(),
           endSaleDate: i.endSaleDate.toString(),
           tokenURI,
@@ -190,7 +184,6 @@ describe('NFTMarket', function () {
       isOnSale: i.isOnSale,
       isOnLease: i.isOnLease,
       isOnAuction: i.isOnAuction,
-      isFrozen: i.isFrozen,
       startSaleDate: i.startSaleDate.toString(),
       endSaleDate: i.endSaleDate.toString(),
       tokenURI,
@@ -214,7 +207,6 @@ describe('NFTMarket', function () {
           isOnSale: i.isOnSale,
           isOnLease: i.isOnLease,
           isOnAuction: i.isOnAuction,
-          isFrozen: i.isFrozen,
           startSaleDate: i.startSaleDate.toString(),
           endSaleDate: i.endSaleDate.toString(),
           tokenURI,
