@@ -20,6 +20,15 @@ contract NFT is ERC721URIStorage {
     mapping(uint256 => address) internal allowance;
     mapping(uint256 => bool) internal metadataFrozenMarketItem;
 
+    event ItemChangeTokenURI (
+        uint256 indexed tokenId,
+        string tokenURI
+    );
+
+    event ItemBurned (
+        uint256 indexed tokenId
+    );
+
     /* Returns if the item is burned */
     function getIsBurned(
         uint itemId
@@ -58,7 +67,7 @@ contract NFT is ERC721URIStorage {
     }
 
     /* Changes the TokenURI of the token */
-    function changeTokenIdToken(uint256 tokenId, string memory newTokenURI, bool isMetadataFrozen) public {
+    function changeTokenURI(uint256 tokenId, string memory newTokenURI, bool isMetadataFrozen) public {
         // This function will be modified to support frozen tokens through decentralized metadata storage
         // The function currently validates using a map
         address owner = ownerOf(tokenId);
@@ -70,6 +79,15 @@ contract NFT is ERC721URIStorage {
         } else {
             metadataFrozenMarketItem[tokenId] = true;
         }
+        emit ItemChangeTokenURI(
+          tokenId,
+          newTokenURI
+        );
+    }
+
+    /* Set allowance at tokenId to null address */
+    function changeAllowanceToNullAddress(uint256 tokenId) public {
+        allowance[tokenId] = address(0);
     }
 
     /* Burns (destories) the token */
@@ -80,5 +98,9 @@ contract NFT is ERC721URIStorage {
         require(owner == msg.sender || allowance[tokenId] == msg.sender, 'The owner must be the message sender or the message sender must be approved');
         _burn(tokenId);
         burnedMarketItem[tokenId] = true;
+
+        emit ItemBurned(
+          tokenId
+        );
     }
 }

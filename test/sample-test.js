@@ -68,7 +68,7 @@ describe('NFTMarket', function () {
     await market.createMintMarketItems(nftContractAddress, tokenIds345)
 
     /* Change metadata of the token */
-    await nft.changeTokenIdToken(tokenId1, tokenURI10, true)
+    await nft.changeTokenURI(tokenId1, tokenURI10, true)
 
     /* Put up a token for sale / lease / auction */
     await market.changeUpSaleLeaseAuctionMarketItem(
@@ -133,6 +133,7 @@ describe('NFTMarket', function () {
     await market
       .connect(buyerAddress)
       .createMarketSale(nftContractAddress, itemId1, { value: auctionPrice })
+    await nft.connect(buyerAddress).changeAllowanceToNullAddress(tokenId1)
 
     /* Burning (deleting) token */
     await nft.connect(buyerAddress).burnToken(tokenId1)
@@ -142,6 +143,7 @@ describe('NFTMarket', function () {
     await market
       .connect(buyerAddress)
       .createTransferOwnership(nftContractAddress, itemId3)
+    await nft.connect(buyerAddress).changeAllowanceToNullAddress(tokenId3)
 
     /* Fetching Items from User */
     items = await market.fetchUserItems()

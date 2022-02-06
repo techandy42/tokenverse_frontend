@@ -76,19 +76,31 @@ contract NFTMarket is ReentrancyGuard {
         uint256 endSaleDate
     );
  
-    event MarketItemDeleted (
-        uint indexed itemId,
-        address indexed nftContract,
-        uint256 indexed tokenId,
-        address creator,
-        address seller,
-        address owner,
+    event MarketItemOnMarket(
+        uint256 tokenId,
         uint256 price,
         bool isOnSale,
         bool isOnLease,
         bool isOnAuction,
         uint256 startSaleDate,
         uint256 endSaleDate
+    );
+
+    event MarketItemOffMarket(
+        uint256 tokenId
+    );
+
+    event MarketItemPurchaseTransaction (
+        uint256 tokenId,
+        address seller,
+        address buyer,
+        uint256 price
+    );
+
+    event MarketItemNonPurchaseTransaction (
+        uint256 tokenId,
+        address seller,
+        address buyer
     );
  
     event MarketItemsCreated (
@@ -267,6 +279,8 @@ contract NFTMarket is ReentrancyGuard {
         require(price > 0, "Price must be at least 1 wei");
         require(msg.value == listingRatioNum, "Price must be equal to listing ratio's numerator");
 
+        uint256 tokenId = idToMarketItem[itemId].tokenId;
+
         // Modifies the token's data
         idToMarketItem[itemId].price = price;
         idToMarketItem[itemId].isOnSale = isOnSale;
@@ -278,17 +292,33 @@ contract NFTMarket is ReentrancyGuard {
         if (msg.sender != seller) {
             idToMarketItem[itemId].seller = payable(msg.sender);
         }
+
+        emit MarketItemOnMarket(
+            tokenId,
+            price,
+            isOnSale,
+            isOnLease,
+            isOnAuction,
+            startSaleDate,
+            endSaleDate
+        );
     }
 
     /* Puts the token down from sale / lease / auction */
     function changeDownSaleLeaseAuctionMarketItem(
         uint itemId
     ) public payable nonReentrant {
+        uint256 tokenId = idToMarketItem[itemId].tokenId;
+
         clearItem(itemId);
         address seller = idToMarketItem[itemId].seller;
         if (address(0) != seller) {
             idToMarketItem[itemId].seller = payable(address(0));
         }
+
+        emit MarketItemOffMarket(
+            tokenId
+        );
     }
     
     /* Transfer ownership from one user to another */
@@ -300,6 +330,8 @@ contract NFTMarket is ReentrancyGuard {
         bool isOnLease = idToMarketItem[itemId].isOnLease;
         bool isOnAuction = idToMarketItem[itemId].isOnAuction;
         uint256 tokenId = idToMarketItem[itemId].tokenId;
+        address creator = idToMarketItem[itemId].creator;
+        address seller = idToMarketItem[itemId].seller;
 
         require(isOnSale != true, "The item cannot be on Sale");
         require(isOnLease != true, "The item cannot be on Lease");
@@ -308,6 +340,15 @@ contract NFTMarket is ReentrancyGuard {
         IERC721(nftContract).transferFrom(address(this), msg.sender, tokenId);
         idToMarketItem[itemId].owner = payable(msg.sender);
         clearItem(itemId);
+        if (allowance[tokenId] == creator) {
+            allowance[tokenId] = address(0);
+        }
+
+        emit MarketItemNonPurchaseTransaction(
+            tokenId,
+            seller,
+            msg.sender
+        );
     }
 
     /* Perform sale */
@@ -318,6 +359,7 @@ contract NFTMarket is ReentrancyGuard {
         uint price = idToMarketItem[itemId].price;
         uint256 tokenId = idToMarketItem[itemId].tokenId;
         bool isOnSale = idToMarketItem[itemId].isOnSale;
+        address seller = idToMarketItem[itemId].seller;
 
         require(msg.value == price, "Please submit the asking value in order to complete the purchase");
         require(isOnSale == true, "The item has to be on sale");
@@ -327,9 +369,18 @@ contract NFTMarket is ReentrancyGuard {
         idToMarketItem[itemId].owner = payable(msg.sender);
         clearItem(itemId);
         // transfering sale listing price
-        // this doesn't work
         uint saleListingRatioNum = (price * (listingRatioNum / listingRatioDen)) * ether_unit;
         payable(owner).transfer(saleListingRatioNum);
+        if (allowance[tokenId] == address(this)) {
+            allowance[tokenId] = address(0);
+        }
+
+        emit MarketItemPurchaseTransaction(
+            tokenId,
+            seller,
+            msg.sender,
+            price
+        );
     }
 
     /* Deletes the token */
@@ -347,21 +398,6 @@ contract NFTMarket is ReentrancyGuard {
             payable(address(0)),
             payable(address(0)),
             payable(address(0)),
-            0,
-            false,
-            false,
-            false,
-            0,
-            0
-        );
-
-        emit MarketItemDeleted(
-            itemId,
-            address(0),
-            tokenId,
-            address(0),
-            address(0),
-            address(0),
             0,
             false,
             false,
