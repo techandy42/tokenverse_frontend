@@ -1,10 +1,10 @@
 import { ethers } from 'ethers'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
 import Web3Modal from 'web3modal'
-import { nftaddress, nftmarketaddress } from '../config'
-import NFT from '../artifacts/contracts/NFT.sol/NFT.json'
-import Market from '../artifacts/contracts/NFTMarket.sol/NFTMarket.json'
-import IData from '../interfaces/IData'
+import { nftaddress, nftmarketaddress } from '../../config'
+import NFT from '../../artifacts/contracts/NFT.sol/NFT.json'
+import Market from '../../artifacts/contracts/NFTMarket.sol/NFTMarket.json'
+import IData from '../../interfaces/IData'
 
 // @ts-ignore
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
@@ -52,21 +52,26 @@ const createItem = async (dataFields: IData) => {
 
 /* Helper function to mint the token */
 const createMintMarketItem = async (url: string) => {
-  const web3Modal = new Web3Modal()
-  const connection = await web3Modal.connect()
-  const provider = new ethers.providers.Web3Provider(connection)
-  const signer = provider.getSigner()
+  try {
+    const web3Modal = new Web3Modal()
+    const connection = await web3Modal.connect()
+    const provider = new ethers.providers.Web3Provider(connection)
+    const signer = provider.getSigner()
 
-  let contract = new ethers.Contract(nftaddress, NFT.abi, signer)
-  let transaction = await contract.createToken(url)
-  let tx = await transaction.wait()
-  let event = tx.events[0]
-  let value = event.args[2]
-  let tokenId = value.toNumber()
-  contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
-  transaction = await contract.createMintMarketItem(nftaddress, tokenId)
-  await transaction.wait()
-  return tokenId
+    let contract = new ethers.Contract(nftaddress, NFT.abi, signer)
+    let transaction = await contract.createToken(url)
+    let tx = await transaction.wait()
+    let event = tx.events[0]
+    let value = event.args[2]
+    let tokenId = value.toNumber()
+    contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
+    transaction = await contract.createMintMarketItem(nftaddress, tokenId)
+    await transaction.wait()
+    return tokenId
+  } catch (error) {
+    console.log('Error minting token: ', error)
+  }
+  return -1
 }
 
 export default createItem
