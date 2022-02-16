@@ -1,3 +1,12 @@
+/* enums for the following
+ * BlockchainType
+ * ErcType
+ * SaleType
+ * CollectibleCategory
+ * ProductKeyVirtualAssetCategory
+ * ProductKeyRealLifeAssetCategory
+ */
+
 export enum BlockchainType {
   POLYGON = 'POLYGON',
 }

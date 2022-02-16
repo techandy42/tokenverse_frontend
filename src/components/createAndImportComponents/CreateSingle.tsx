@@ -9,8 +9,8 @@ import { MARGIN_LARGE, MARGIN_SMALL } from '../../../constants'
 import CollectionAndBlockchainTypeInputs from './createShared/CollectionAndBlockchainTypeInputs'
 import Alert from '@mui/material/Alert'
 import blockchainTypes from '../../../constants/blockchainTypes'
-import createItem from '../../../tokenFunctions/createItem'
-import getFileUrl from '../../../tokenFunctions/getFileUrl'
+import createItem from '../../../tokenFunctions/create_set_delete/createItem'
+import getFileUrl from '../../../tokenFunctions/getters/getFileUrl'
 import multimediaFileToMultimedia from '../../../functions/multimediaFileToMultimedia'
 
 interface IProps {
