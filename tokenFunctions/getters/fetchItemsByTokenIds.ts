@@ -4,9 +4,10 @@ import Web3Modal from 'web3modal'
 import { nftmarketaddress, nftaddress } from '../../config'
 import Market from '../../artifacts/contracts/NFTMarket.sol/NFTMarket.json'
 import NFT from '../../artifacts/contracts/NFT.sol/NFT.json'
+import IItem from '../../interfaces/IItem'
 
-/* Fetches the tokens using the given itemIds */
-const fetchItemByItemIds = async (itemIds: number[]) => {
+/* Fetches the tokens using the given tokenIds */
+const fetchItemByTokenIds = async (tokenIds: number[]) => {
   try {
     const web3Modal = new Web3Modal({
       network: 'mainnet',
@@ -21,13 +22,13 @@ const fetchItemByItemIds = async (itemIds: number[]) => {
       signer,
     )
     const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
-    const data = await marketContract.fetchItemByItemIds(itemIds)
-    const items = await Promise.all(
+    const data = await marketContract.fetchItemsByTokenIds(tokenIds)
+    const items: IItem[] = await Promise.all(
       data.map(async (i: any) => {
         const tokenURI = await tokenContract.tokenURI(i.tokenId)
         const meta = await axios.get(tokenURI)
         let price = ethers.utils.formatUnits(i.price.toString(), 'ether')
-        let item = {
+        let item: IItem = {
           // token information
           itemId: i.itemId.toNumber(),
           tokenId: i.tokenId.toNumber(),
@@ -50,8 +51,8 @@ const fetchItemByItemIds = async (itemIds: number[]) => {
           multimedia: meta.data.multimedia,
           saleType: meta.data.saleType,
           collectibleCategory: meta.data.collectibleCategory,
-          productKeyRealLifeAssetCategory:
-            meta.data.productKeyRealLifeAssetCategory,
+          productKeyAccessTokenCategory:
+            meta.data.productKeyAccessTokenCategory,
           productKeyVirtualAssetCategory:
             meta.data.productKeyVirtualAssetCategory,
           isSensitiveContent: meta.data.isSensitiveContent,
@@ -75,4 +76,4 @@ const fetchItemByItemIds = async (itemIds: number[]) => {
   return null
 }
 
-export default fetchItemByItemIds
+export default fetchItemByTokenIds

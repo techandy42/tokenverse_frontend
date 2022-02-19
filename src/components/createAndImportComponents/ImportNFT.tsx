@@ -1,4 +1,6 @@
 import React from 'react'
+import Typography from '@mui/material/Typography'
+import { MARGIN_LARGE } from '../../../constants'
 
 interface IProps {
   clearCounter: number
@@ -8,7 +10,17 @@ interface IProps {
 const ImportNFT: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
   return (
     <div>
-      <h1>Import NFT</h1>
+      <Typography
+        variant='h3'
+        sx={{
+          marginTop: MARGIN_LARGE,
+          marginBottom: MARGIN_LARGE,
+          fontWeight: 200,
+        }}
+        className='font-chakra'
+      >
+        Import a NFT - Coming Soon
+      </Typography>
     </div>
   )
 }

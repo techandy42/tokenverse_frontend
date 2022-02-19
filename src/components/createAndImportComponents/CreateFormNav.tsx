@@ -39,15 +39,6 @@ const CreateFormNav: React.FC<IProps> = ({
               <Button sx={{ textTransform: 'none' }}>Create Multiple</Button>
             )}
           </Link>
-          <Link href='/create/sft'>
-            {formType === 'sft' ? (
-              <Button sx={{ textTransform: 'none' }} variant='contained'>
-                Create SFT
-              </Button>
-            ) : (
-              <Button sx={{ textTransform: 'none' }}>Create SFT</Button>
-            )}
-          </Link>
           <Link href='/create/import-nft'>
             {formType === 'import-nft' ? (
               <Button sx={{ textTransform: 'none' }} variant='contained'>
@@ -55,15 +46,6 @@ const CreateFormNav: React.FC<IProps> = ({
               </Button>
             ) : (
               <Button sx={{ textTransform: 'none' }}>Import NFT</Button>
-            )}
-          </Link>
-          <Link href='/create/import-sft'>
-            {formType === 'import-sft' ? (
-              <Button sx={{ textTransform: 'none' }} variant='contained'>
-                Import SFT
-              </Button>
-            ) : (
-              <Button sx={{ textTransform: 'none' }}>Import SFT</Button>
             )}
           </Link>
         </ButtonGroup>

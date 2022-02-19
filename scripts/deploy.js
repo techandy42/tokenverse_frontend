@@ -1,3 +1,5 @@
+// Deploys NFT and NFTMarket
+
 const hre = require('hardhat')
 
 async function main() {

@@ -6,8 +6,8 @@ import Market from '../../artifacts/contracts/NFTMarket.sol/NFTMarket.json'
 import NFT from '../../artifacts/contracts/NFT.sol/NFT.json'
 import IItem from '../../interfaces/IItem'
 
-/* Fetches the token using the given itemId */
-const fetchItemByItemId = async (itemId: number) => {
+/* Fetches the token using the given tokenId */
+const fetchItemByTokenId = async (tokenId: number) => {
   try {
     const web3Modal = new Web3Modal({
       network: 'mainnet',
@@ -22,7 +22,7 @@ const fetchItemByItemId = async (itemId: number) => {
       signer,
     )
     const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
-    const i = await marketContract.fetchItemByItemId(itemId)
+    const i = await marketContract.fetchItemByTokenId(tokenId)
     const tokenURI = await tokenContract.tokenURI(i.tokenId)
     const meta = await axios.get(tokenURI)
     let price = ethers.utils.formatUnits(i.price.toString(), 'ether')
@@ -69,4 +69,4 @@ const fetchItemByItemId = async (itemId: number) => {
   return null
 }
 
-export default fetchItemByItemId
+export default fetchItemByTokenId

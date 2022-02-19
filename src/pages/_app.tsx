@@ -1,3 +1,6 @@
+/* The master page of the application that wraps other pages */
+/* Provider and ThemeProvider provides the child pages and components with Redux and MUI theme */
+
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import Layout from '../components/Layout'

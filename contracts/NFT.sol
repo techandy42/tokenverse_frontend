@@ -31,14 +31,14 @@ contract NFT is ERC721URIStorage {
 
     /* Returns if the item is burned */
     function getIsBurned(
-        uint itemId
+        uint256 itemId
     ) public view returns (bool) {
         bool isBurned = burnedMarketItem[itemId];
         return isBurned;
     }
 
     /* Creates a single token (stored in Ethereum back-end) */
-    function createToken(string memory tokenURI) public returns (uint) {
+    function createToken(string memory tokenURI) public returns (uint256) {
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
 
@@ -50,10 +50,10 @@ contract NFT is ERC721URIStorage {
     }
 
     /* Creates multiple tokens (stored in Ethereum back-end) */
-    function createTokens(string[] memory tokenURIs) public returns (uint[] memory) {
+    function createTokens(string[] memory tokenURIs) public returns (uint256[] memory) {
         uint256 tokenURILength = tokenURIs.length;
         uint256[] memory newItemIds = new uint256[](tokenURILength);
-        for (uint i = 0; i < tokenURILength; i++) {
+        for (uint256 i = 0; i < tokenURILength; i++) {
             _tokenIds.increment();
             uint256 newItemId = _tokenIds.current();
             string memory tokenURI = tokenURIs[i];

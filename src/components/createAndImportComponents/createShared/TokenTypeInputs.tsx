@@ -9,20 +9,26 @@ import Autocomplete from '@mui/material/Autocomplete'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import { collections } from '../../../pages/create'
 import blockchainTypes from '../../../../constants/blockchainTypes'
+import ercTypes from '../../../../constants/ercTypes'
 import { MARGIN_LARGE, MARGIN_SMALL } from '../../../../constants'
+import { BlockchainType, ErcType } from '../../../../enums/nftMetadata'
 
 interface IProps {
   collection: string
   setCollection: React.Dispatch<React.SetStateAction<string>>
   blockchainType: string
   setBlockchainType: React.Dispatch<React.SetStateAction<string>>
+  ercType: string
+  setErcType: React.Dispatch<React.SetStateAction<string>>
 }
 
-const CollectionAndBlockchainTypeInputs: React.FC<IProps> = ({
+const TokenTypeInputs: React.FC<IProps> = ({
   collection,
   setCollection,
   blockchainType,
   setBlockchainType,
+  ercType,
+  setErcType,
 }) => {
   const [initialCollectionName, setInitialCollectionName] = useState(
     collections[0],
@@ -100,11 +106,30 @@ const CollectionAndBlockchainTypeInputs: React.FC<IProps> = ({
         sx={{ marginBottom: MARGIN_LARGE }}
       >
         {blockchainTypes.map((blockchainType) => (
-          <MenuItem value={blockchainType}>{blockchainType}</MenuItem>
+          <MenuItem value={blockchainType}>
+            {blockchainType === BlockchainType.POLYGON ? 'Polygon' : null}
+          </MenuItem>
+        ))}
+      </Select>
+      <Typography sx={{ marginBottom: MARGIN_SMALL }}>ERC Types</Typography>
+      <Select
+        value={ercType}
+        onChange={(e) => setErcType(e.target.value)}
+        fullWidth
+        sx={{ marginBottom: MARGIN_LARGE }}
+      >
+        {ercTypes.map((ercType) => (
+          <MenuItem value={ercType}>
+            {ercType === ErcType.ERC_721
+              ? 'ERC-721'
+              : ercType === ErcType.ERC_1155
+              ? 'ERC-1155'
+              : null}
+          </MenuItem>
         ))}
       </Select>
     </div>
   )
 }
 
-export default CollectionAndBlockchainTypeInputs
+export default TokenTypeInputs

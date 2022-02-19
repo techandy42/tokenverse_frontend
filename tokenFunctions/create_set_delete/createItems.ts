@@ -37,8 +37,7 @@ const createItems = async (dataFieldsList: IData[]) => {
       multimedia: dataFields.multimedia,
       saleType: dataFields.saleType,
       collectibleCategory: dataFields.collectibleCategory,
-      productKeyRealLifeAssetCategory:
-        dataFields.productKeyRealLifeAssetCategory,
+      productKeyAccessTokenCategory: dataFields.productKeyAccessTokenCategory,
       productKeyVirtualAssetCategory: dataFields.productKeyVirtualAssetCategory,
       isSensitiveContent: dataFields.isSensitiveContent,
       ercType: dataFields.ercType,

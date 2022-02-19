@@ -12,36 +12,36 @@ const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
 /* Creates a token item */
 const createItem = async (dataFields: IData) => {
-  if (
-    !dataFields.name ||
-    !dataFields.collection ||
-    !dataFields.blockchainType ||
-    !dataFields.fileUrl ||
-    !dataFields.ercType
-  )
-    return
-  const data = JSON.stringify({
-    name: dataFields.name,
-    collection: dataFields.collection,
-    blockchainType: dataFields.blockchainType,
-    fileUrl: dataFields.fileUrl,
-    multimedia: dataFields.multimedia,
-    saleType: dataFields.saleType,
-    collectibleCategory: dataFields.collectibleCategory,
-    productKeyRealLifeAssetCategory: dataFields.productKeyRealLifeAssetCategory,
-    productKeyVirtualAssetCategory: dataFields.productKeyVirtualAssetCategory,
-    isSensitiveContent: dataFields.isSensitiveContent,
-    ercType: dataFields.ercType,
-    descriptions: dataFields.descriptions,
-    propertiesKey: dataFields.propertiesKey,
-    propertiesValue: dataFields.propertiesValue,
-    imagesKey: dataFields.imagesKey,
-    imagesValue: dataFields.imagesValue,
-    levelsKey: dataFields.levelsKey,
-    levelsValueNum: dataFields.levelsValueNum,
-    levelsValueDen: dataFields.levelsValueDen,
-  })
   try {
+    if (
+      !dataFields.name ||
+      !dataFields.collection ||
+      !dataFields.blockchainType ||
+      !dataFields.fileUrl ||
+      !dataFields.ercType
+    )
+      throw { error: 'dataFields fields are invalid' }
+    const data = JSON.stringify({
+      name: dataFields.name,
+      collection: dataFields.collection,
+      blockchainType: dataFields.blockchainType,
+      fileUrl: dataFields.fileUrl,
+      multimedia: dataFields.multimedia,
+      saleType: dataFields.saleType,
+      collectibleCategory: dataFields.collectibleCategory,
+      productKeyAccessTokenCategory: dataFields.productKeyAccessTokenCategory,
+      productKeyVirtualAssetCategory: dataFields.productKeyVirtualAssetCategory,
+      isSensitiveContent: dataFields.isSensitiveContent,
+      ercType: dataFields.ercType,
+      descriptions: dataFields.descriptions,
+      propertiesKey: dataFields.propertiesKey,
+      propertiesValue: dataFields.propertiesValue,
+      imagesKey: dataFields.imagesKey,
+      imagesValue: dataFields.imagesValue,
+      levelsKey: dataFields.levelsKey,
+      levelsValueNum: dataFields.levelsValueNum,
+      levelsValueDen: dataFields.levelsValueDen,
+    })
     const added = await client.add(data)
     const url = `https://ipfs.infura.io/ipfs/${added.path}`
     return createMintMarketItem(url)
@@ -57,7 +57,6 @@ const createMintMarketItem = async (url: string) => {
     const connection = await web3Modal.connect()
     const provider = new ethers.providers.Web3Provider(connection)
     const signer = provider.getSigner()
-
     let contract = new ethers.Contract(nftaddress, NFT.abi, signer)
     let transaction = await contract.createToken(url)
     let tx = await transaction.wait()

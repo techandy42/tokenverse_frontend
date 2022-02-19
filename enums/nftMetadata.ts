@@ -4,7 +4,7 @@
  * SaleType
  * CollectibleCategory
  * ProductKeyVirtualAssetCategory
- * ProductKeyRealLifeAssetCategory
+ * ProductKeyAccessTokenCategory
  */
 
 export enum BlockchainType {
@@ -42,20 +42,9 @@ export enum CollectibleCategory {
   TRADING_CARD = 'TRADING_CARD',
 }
 
-export enum ProductKeyRealLifeAssetCategory {
+export enum ProductKeyAccessTokenCategory {
   MISCELLANEOUS = 'MISCELLANEOUS',
-  CLOTHING_WEARABLE = 'CLOTHING_WEARABLE',
-  BEAUTY_ACCESSORY = 'BEAUTY_ACCESSORY',
-  TOOL_EQUIPMENT = 'TOOL_EQUIPMENT',
-  MATERIAL_MACHINE_PART = 'MATERIAL_MACHINE_PART',
-  ELECTRONIC_APPLIANCE = 'ELECTRONIC_APPLIANCE',
-  GROCERY_FOOD = 'GROCERY_FOOD',
-  WEAPON = 'WEAPON',
-  FURNITURE = 'FURNITURE',
-  REAL_ESTATE = 'REAL_ESTATE',
-  TOY_GAME = 'TOY_GAME',
-  HOME_SUPPLY = 'HOME_SUPPLY',
-  MEDICAL_MAGIC_ITEM = 'MEDICAL_MAGIC_ITEM',
+  // Soon to be added
 }
 
 export enum ProductKeyVirtualAssetCategory {

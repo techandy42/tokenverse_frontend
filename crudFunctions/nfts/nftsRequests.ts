@@ -8,10 +8,10 @@ import {
   SaleType,
   CollectibleCategory,
   ProductKeyVirtualAssetCategory,
-  ProductKeyRealLifeAssetCategory,
+  ProductKeyAccessTokenCategory,
 } from '../../enums/nftMetadata'
 
-interface INft {
+export interface INft {
   address: string
   name: string
   blockchainType: BlockchainType
@@ -23,7 +23,7 @@ interface INft {
   ercType: ErcType
 }
 
-interface INfts {
+export interface INfts {
   address: string
   names: string[]
   blockchainType: BlockchainType
@@ -35,7 +35,7 @@ interface INfts {
   ercType: ErcType
 }
 
-interface INftMarketInfo {
+export interface INftMarketInfo {
   // data
   price: number
   isOnSale: boolean
@@ -46,7 +46,7 @@ interface INftMarketInfo {
   // metadata
   saleType: SaleType
   collectibleCategory: CollectibleCategory
-  productKeyRealLifeAssetCategory: ProductKeyRealLifeAssetCategory
+  productKeyAccessTokenCategory: ProductKeyAccessTokenCategory
   productKeyVirtualAssetCategory: ProductKeyVirtualAssetCategory
   isSensitiveContent: boolean
   descriptions: string[]
@@ -59,7 +59,7 @@ interface INftMarketInfo {
   levelsValueDen: number[]
 }
 
-interface INftEditInfo {
+export interface INftEditInfo {
   name: string
   fileUrl: string
   multimediaFile: JSON | null
@@ -67,7 +67,7 @@ interface INftEditInfo {
   collection: string
   saleType: SaleType
   collectibleCategory: CollectibleCategory
-  productKeyRealLifeAssetCategory: ProductKeyRealLifeAssetCategory
+  productKeyAccessTokenCategory: ProductKeyAccessTokenCategory
   productKeyVirtualAssetCategory: ProductKeyVirtualAssetCategory
   isSensitiveContent: boolean
   descriptions: string[]
@@ -80,7 +80,7 @@ interface INftEditInfo {
   levelsValueDen: number[]
 }
 
-interface INftAddressInfo {
+export interface INftAddressInfo {
   address: string
 }
 

@@ -169,12 +169,12 @@ describe('NFTMarket', function () {
         return item
       }),
     )
-    console.log('items (fetched items from user): ', items)
+    console.log('items (fetched user items): ', items)
 
     /* Fetching Item on Market using itemId */
     let i = await market.fetchItemByItemId(itemId2)
     i = validateItemsNftContract([i])[0]
-    const tokenURI = await nft.tokenURI(i.tokenId)
+    let tokenURI = await nft.tokenURI(i.tokenId)
     item = {
       itemId: i.itemId.toString(),
       nftContract: i.nftContract,
@@ -217,5 +217,52 @@ describe('NFTMarket', function () {
       }),
     )
     console.log('items (fetched using itemIds): ', items)
+
+    /* Fetching Item on Market using tokenId */
+    i = await market.fetchItemByTokenId(tokenId2)
+    i = validateItemsNftContract([i])[0]
+    tokenURI = await nft.tokenURI(i.tokenId)
+    item = {
+      itemId: i.itemId.toString(),
+      nftContract: i.nftContract,
+      tokenId: i.tokenId.toString(),
+      creator: i.creator,
+      seller: i.seller,
+      owner: i.owner,
+      price: i.price.toString(),
+      isOnSale: i.isOnSale,
+      isOnLease: i.isOnLease,
+      isOnAuction: i.isOnAuction,
+      startSaleDate: i.startSaleDate.toString(),
+      endSaleDate: i.endSaleDate.toString(),
+      tokenURI,
+    }
+    console.log('item (fetched using tokenId): ', item)
+
+    /* Fetching Items on Market using tokenIds */
+    items = await market.fetchItemsByTokenIds(tokenIds345)
+    items = validateItemsNftContract(items)
+    items = await Promise.all(
+      items.map(async (i) => {
+        const tokenURI = await nft.tokenURI(i.tokenId)
+        let item = {
+          itemId: i.itemId.toString(),
+          nftContract: i.nftContract,
+          tokenId: i.tokenId.toString(),
+          creator: i.creator,
+          seller: i.seller,
+          owner: i.owner,
+          price: i.price.toString(),
+          isOnSale: i.isOnSale,
+          isOnLease: i.isOnLease,
+          isOnAuction: i.isOnAuction,
+          startSaleDate: i.startSaleDate.toString(),
+          endSaleDate: i.endSaleDate.toString(),
+          tokenURI,
+        }
+        return item
+      }),
+    )
+    console.log('items (fetched using tokenIds): ', items)
   })
 })

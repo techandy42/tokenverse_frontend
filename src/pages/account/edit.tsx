@@ -9,12 +9,12 @@ import Alert from '@mui/material/Alert'
 import { MARGIN_LARGE, MARGIN_SMALL } from '../../../constants'
 import DividerMarginBottom from '../../components/styles/DividerMarginBottom'
 import default_account_image from '../../../images/default_account_image.jpg'
-import isEmailValid from '../../../functions/isEmailValid'
-import isUrlValid from '../../../functions/isUrlValid'
+import isEmailValid from '../../../helperFunctions/isEmailValid'
+import isUrlValid from '../../../helperFunctions/isUrlValid'
 import FlexBox from '../../components/styles/FlexBox'
 import FlexSpace from '../../components/styles/FlexSpace'
 import Link from 'next/link'
-import multimediaFileToMultimedia from '../../../functions/multimediaFileToMultimedia'
+import multimediaFileToMultimedia from '../../../helperFunctions/multimediaFileToMultimedia'
 
 // Fetch the personal information of the back-end
 const fetchedPersonalInfo: IPersonalInfo = {

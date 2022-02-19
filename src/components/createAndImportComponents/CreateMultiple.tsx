@@ -7,16 +7,17 @@ import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import Alert from '@mui/material/Alert'
 import blockchainTypes from '../../../constants/blockchainTypes'
+import ercTypes from '../../../constants/ercTypes'
 import { collections } from '../../pages/create'
-import CollectionAndBlockchainTypeInputs from './createShared/CollectionAndBlockchainTypeInputs'
+import TokenTypeInputs from './createShared/TokenTypeInputs'
 import Names from './createMultiple/Names'
 import createItem from '../../../tokenFunctions/create_set_delete/createItem'
 import getFileUrl from '../../../tokenFunctions/getters/getFileUrl'
-import multimediaFileToMultimedia from '../../../functions/multimediaFileToMultimedia'
+import multimediaFileToMultimedia from '../../../helperFunctions/multimediaFileToMultimedia'
 
 interface IProps {
   clearCounter: number
-  setClearCounter: Dispatch<SetStateAction<number>>
+  setClearCounter: React.Dispatch<React.SetStateAction<number>>
 }
 
 const CreateMultiple: React.FC<IProps> = ({
@@ -27,6 +28,7 @@ const CreateMultiple: React.FC<IProps> = ({
   const [blockchainType, setBlockchainType] = useState<string>(
     blockchainTypes[0],
   )
+  const [ercType, setErcType] = useState<string>(ercTypes[0])
   const [genericName, setGenericName] = useState<string>('')
   const [names, setNames] = useState<string[]>([])
   const [files, setFiles] = useState<[File, File | null][]>([])
@@ -37,6 +39,7 @@ const CreateMultiple: React.FC<IProps> = ({
   useEffect(() => {
     setCollection(collections[0])
     setBlockchainType(blockchainTypes[0])
+    setErcType(ercTypes[0])
     setGenericName('')
     setNames([])
     setFiles([])
@@ -139,11 +142,13 @@ const CreateMultiple: React.FC<IProps> = ({
         value={genericName}
         onChange={handleGenericNameChange}
       />
-      <CollectionAndBlockchainTypeInputs
+      <TokenTypeInputs
         collection={collection}
         setCollection={setCollection}
         blockchainType={blockchainType}
         setBlockchainType={setBlockchainType}
+        ercType={ercType}
+        setErcType={setErcType}
       />
       <DividerMarginBottom />
       <Names names={names} setNames={setNames} files={files} />

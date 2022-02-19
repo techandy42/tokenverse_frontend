@@ -16,7 +16,6 @@
 // bool frozen;
 
 import { useEffect, useState } from 'react'
-import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 import AccountInfo from '../components/account/AccountInfo'
 import AccountNav from '../components/account/AccountNav'
@@ -42,6 +41,7 @@ const account = () => {
   const [collectionNFTs, setCollectionNFTs] = useState<ICollectionNFTs>({})
   const [loadingState, setLoadingState] = useState('not-loaded')
 
+  /*
   useEffect(() => {
     const getNFTs = async () => {
       const items: IToken[] = await loadNFTs()
@@ -66,6 +66,7 @@ const account = () => {
     }
     return collectionNFTs
   }
+  */
 
   if (loadingState === 'not-loaded')
     return (

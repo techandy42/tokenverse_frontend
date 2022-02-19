@@ -6,16 +6,23 @@ import DividerMarginBottom from '../styles/DividerMarginBottom'
 import FileUploadAndDisplay from './createSingle/FileUploadAndDisplay'
 import { collections } from '../../pages/create'
 import { MARGIN_LARGE, MARGIN_SMALL } from '../../../constants'
-import CollectionAndBlockchainTypeInputs from './createShared/CollectionAndBlockchainTypeInputs'
+import TokenTypeInputs from './createShared/TokenTypeInputs'
 import Alert from '@mui/material/Alert'
 import blockchainTypes from '../../../constants/blockchainTypes'
+import ercTypes from '../../../constants/ercTypes'
 import createItem from '../../../tokenFunctions/create_set_delete/createItem'
 import getFileUrl from '../../../tokenFunctions/getters/getFileUrl'
-import multimediaFileToMultimedia from '../../../functions/multimediaFileToMultimedia'
+import multimediaFileToMultimedia from '../../../helperFunctions/multimediaFileToMultimedia'
+import IData from '../../../interfaces/IData'
+import IItem from '../../../interfaces/IItem'
+import formatDataFields from '../../../helperFunctions/formatDataFields'
+import { BlockchainType, ErcType } from '../../../enums/nftMetadata'
+import { nftsPost, INft } from '../../../crudFunctions/nfts/nftsRequests'
+import fetchItemByTokenId from '../../../tokenFunctions/getters/fetchItemByTokenId'
 
 interface IProps {
   clearCounter: number
-  setClearCounter: React.Dispatch<SetStateAction<number>>
+  setClearCounter: React.Dispatch<React.SetStateAction<number>>
 }
 
 const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
@@ -23,6 +30,7 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
   const [blockchainType, setBlockchainType] = useState<string>(
     blockchainTypes[0],
   )
+  const [ercType, setErcType] = useState<string>(ercTypes[0])
   const [name, setName] = useState<string>('')
   const [file, setFile] = useState<File | null>(null)
   const [multimediaImageFile, setMultimediaImageFile] = useState<File | null>(
@@ -40,6 +48,7 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
   useEffect(() => {
     setCollection(collections[0])
     setBlockchainType(blockchainTypes[0])
+    setErcType(ercTypes[0])
     setName('')
     setFile(null)
     setMultimediaImageFile(null)
@@ -66,10 +75,10 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
 
   const handleSubmit = async (e: React.FormEventHandler<HTMLFormElement>) => {
     e.preventDefault()
-    const validedImageFile = validImageFile()
-    const validedMultimediaImageFile = validMultimediaImageFile()
-    if (validedImageFile && validedMultimediaImageFile) {
-      // Format Token and mint
+    let validedImageFile = true
+    let validedMultimediaImageFile = true
+    let validFileUrl = true
+    try {
       const imageFile =
         file.type.split('/')[0] === 'image' ? file : multimediaImageFile
       const fileUrl = await getFileUrl(imageFile)
@@ -78,16 +87,70 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
         multimediaFile === null
           ? null
           : multimediaFileToMultimedia(multimediaFile)
-      const tokenId = await createItem(
+      validedImageFile = validImageFile()
+      validedMultimediaImageFile = validMultimediaImageFile()
+      validFileUrl = fileUrl !== undefined
+      if (!validedImageFile || !validedMultimediaImageFile || !validFileUrl) {
+        throw { error: 'Invalid image, multimedia image, or file url' }
+      }
+      // Format Token and mint
+      // format dataFields
+      const typeCheckedBlockchainType: BlockchainType =
+        BlockchainType.POLYGON === blockchainType
+          ? BlockchainType.POLYGON
+          : BlockchainType.POLYGON
+      const typeCheckedErcType: ErcType =
+        ErcType.ERC_721 === ercType
+          ? ErcType.ERC_721
+          : ErcType.ERC_1155 === ercType
+          ? ErcType.ERC_1155
+          : ErcType.ERC_721
+      const dataFields: IData = formatDataFields(
         name,
         collection,
-        blockchainType,
+        typeCheckedBlockchainType,
+        typeCheckedErcType,
         fileUrl,
         multimedia,
       )
-      // send the info to back-end
-      setClearCounter(clearCounter + 1)
+      const multimediaFileAsJSON = JSON.stringify(multimediaFile)
+      let tokenId = 0
+      let item: IItem | null = null
+      if (typeCheckedErcType === ErcType.ERC_721) {
+        // create item
+        tokenId = await createItem(dataFields)
+
+        // fetch token and send the info to back-end
+        item = await fetchItemByTokenId(tokenId)
+      } else if (typeCheckedErcType === ErcType.ERC_1155) {
+        // handle ERC_1155 functions
+      } else {
+        throw { error: `Erc Type invalid: ${typeCheckedErcType}` }
+      }
+
+      if (item === null) {
+        throw { error: 'Item cannot be null' }
+      }
+
+      const crudItem: INft = {
+        address: item?.creator,
+        name: item?.name,
+        blockchainType: item?.blockchainType,
+        fileUrl: item?.fileUrl,
+        multimediaFile: multimediaFileAsJSON,
+        tokenId: item?.tokenId,
+        itemId: item?.itemId,
+        collection: item?.collection,
+        ercType: item?.ercType,
+      }
+
+      await nftsPost(crudItem)
+    } catch (error) {
+      console.error(error)
     }
+
+    // clear all states
+    setClearCounter(clearCounter + 1)
     if (!validedImageFile) setIsFileErrorOpen(true)
     if (!validedMultimediaImageFile) setIsMultimediaImageFileErrorOpen(true)
   }
@@ -129,11 +192,13 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
         onChange={(e) => setName(e.target.value)}
         required
       />
-      <CollectionAndBlockchainTypeInputs
+      <TokenTypeInputs
         collection={collection}
         setCollection={setCollection}
         blockchainType={blockchainType}
         setBlockchainType={setBlockchainType}
+        ercType={ercType}
+        setErcType={setErcType}
       />
       <DividerMarginBottom />
       <Button variant='contained' type='submit' sx={{ textTransform: 'none' }}>

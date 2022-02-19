@@ -1,19 +1,33 @@
 import {
   BlockchainType,
+  ErcType,
   SaleType,
   CollectibleCategory,
   ProductKeyAccessTokenCategory,
   ProductKeyVirtualAssetCategory,
-  ErcType,
 } from '../enums/nftMetadata'
-import IMultimedia from './IMultimedia'
 
-export default interface IData {
+interface IItem {
+  // token information
+  itemId: number
+  tokenId: number
+  nftContract: string
+  creator: string
+  seller: string
+  owner: string
+  price: string
+  isOnSale: boolean
+  isOnLease: boolean
+  isOnAuction: boolean
+  startSaleDate: Date
+  endSaleDate: Date
+  tokenURI: string
+  // token metadata information
   name: string
   collection: string
   blockchainType: BlockchainType
   fileUrl: string
-  multimedia: IMultimedia | null
+  multimedia?: JSON
   saleType: SaleType
   collectibleCategory: CollectibleCategory
   productKeyAccessTokenCategory: ProductKeyAccessTokenCategory
@@ -29,3 +43,5 @@ export default interface IData {
   levelsValueNum: number[]
   levelsValueDen: number[]
 }
+
+export default IItem
