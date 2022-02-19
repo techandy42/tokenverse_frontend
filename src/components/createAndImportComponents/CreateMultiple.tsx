@@ -1,3 +1,6 @@
+/* Creates multiple tokens */
+/* Tested, no bug */
+
 import React, { useState, useEffect } from 'react'
 import Button from '@mui/material/Button'
 import { MARGIN_LARGE, MARGIN_SMALL } from '../../../constants'
@@ -11,9 +14,18 @@ import ercTypes from '../../../constants/ercTypes'
 import { collections } from '../../pages/create'
 import TokenTypeInputs from './createShared/TokenTypeInputs'
 import Names from './createMultiple/Names'
-import createItem from '../../../tokenFunctions/create_set_delete/createItem'
+import createItems from '../../../tokenFunctions/create_set_delete/createItems'
 import getFileUrl from '../../../tokenFunctions/getters/getFileUrl'
 import multimediaFileToMultimedia from '../../../helperFunctions/multimediaFileToMultimedia'
+import IData from '../../../interfaces/IData'
+import IItem from '../../../interfaces/IItem'
+import { BlockchainType, ErcType } from '../../../enums/nftMetadata'
+import formatDataFields from '../../../helperFunctions/formatDataFields'
+import fetchItemsByTokenIds from '../../../tokenFunctions/getters/fetchItemsByTokenIds'
+import {
+  nftsPostMultiple,
+  INfts,
+} from '../../../crudFunctions/nfts/nftsRequests'
 
 interface IProps {
   clearCounter: number
@@ -45,12 +57,12 @@ const CreateMultiple: React.FC<IProps> = ({
     setFiles([])
   }, [clearCounter])
 
-  const validImageFile = () => {
+  const validImageFiles = () => {
     if (files.length === 0) return false
     else return true
   }
 
-  const validMultimediaImageFile = () => {
+  const validMultimediaImageFiles = () => {
     let valid = true
     for (const file of files) {
       if (file[0].type.split('/')[0] !== 'image' && file[1] === null) {
@@ -63,13 +75,16 @@ const CreateMultiple: React.FC<IProps> = ({
 
   const handleSubmit = async (e: React.FormEventHandler<HTMLFormElement>) => {
     e.preventDefault()
-    const validedImageFile = validImageFile()
-    const validedMultimediaImageFile = validMultimediaImageFile()
-    if (validedImageFile && validedMultimediaImageFile) {
-      // Format Token and mint
-      // [imageFile, null] or [multimediaFile, imageFile]
-      for (let i = 0; i < files.length; i++) {
-        const name = names[i]
+    let validedImageFiles = true
+    let validedMultimediaImageFiles = true
+    let validFileUrls = true
+    const dataLength = files.length
+    try {
+      const fileUrls = []
+      const multimedias = []
+
+      // format data for the arrays
+      for (let i = 0; i < dataLength; i++) {
         const imageFile = files[i][1] === null ? files[i][0] : files[i][1]
         const fileUrl = await getFileUrl(imageFile)
         const multimediaFile = files[i][1] === null ? null : files[i][0]
@@ -77,20 +92,131 @@ const CreateMultiple: React.FC<IProps> = ({
           multimediaFile === null
             ? null
             : multimediaFileToMultimedia(multimediaFile)
-        const item = await createItem(
-          name,
-          collection,
-          blockchainType,
-          fileUrl,
-          multimedia,
-        )
-        console.log(item)
-        // send the item to the back-end
+
+        // push to arrays
+        fileUrls.push(fileUrl)
+        multimedias.push(multimedia)
+
+        // validate fileUrl
+        if (fileUrl === undefined) {
+          validFileUrls = false
+        }
       }
-      setClearCounter(clearCounter + 1)
+
+      validedImageFiles = validImageFiles()
+      validedMultimediaImageFiles = validMultimediaImageFiles()
+
+      // validate data
+      if (
+        !validedImageFiles ||
+        !validedMultimediaImageFiles ||
+        !validFileUrls
+      ) {
+        throw { error: 'Invalid image, multimedia image, or file url' }
+      }
+
+      // format data (and set appropriate type(s))
+      const typeCheckedBlockchainType: BlockchainType =
+        BlockchainType.POLYGON === blockchainType
+          ? BlockchainType.POLYGON
+          : BlockchainType.POLYGON
+      const typeCheckedErcType: ErcType =
+        ErcType.ERC_721 === ercType
+          ? ErcType.ERC_721
+          : ErcType.ERC_1155 === ercType
+          ? ErcType.ERC_1155
+          : ErcType.ERC_721
+
+      // format data into array of IData
+      const dataFieldsList: IData[] = []
+      for (let i = 0; i < dataLength; i++) {
+        const dataFields: IData = formatDataFields(
+          names[i],
+          collection,
+          typeCheckedBlockchainType,
+          typeCheckedErcType,
+          fileUrls[i],
+          multimedias[i],
+        )
+        dataFieldsList.push(dataFields)
+      }
+
+      let tokenIds: number[] | false | undefined = []
+      let items: IItem[] | null = null
+
+      if (typeCheckedErcType === ErcType.ERC_721) {
+        // handle createItems and fetchItemsByTokenIds
+        // create items
+        tokenIds = await createItems(dataFieldsList)
+
+        if (!tokenIds || tokenIds === undefined)
+          throw { error: 'Token ids are invalid' }
+
+        let validTokenIds = true
+        let errorTokenIdsMsg = ''
+        // validate tokenIds
+        for (let i = 0; i < tokenIds.length; i++) {
+          if (tokenIds[i] < 1) {
+            validTokenIds = false
+            errorTokenIdsMsg += `| Index: ${i} | Value: ${tokenIds[i]}|`
+          }
+        }
+
+        if (!validTokenIds)
+          throw { error: `Invalid tokenIds: ${errorTokenIdsMsg}` }
+
+        // fetch tokens
+        items = await fetchItemsByTokenIds(tokenIds)
+      } else if (typeCheckedErcType === ErcType.ERC_1155) {
+        // handle ERC_1155 functions
+      } else {
+        throw { error: `Erc Type invalid: ${typeCheckedErcType}` }
+      }
+
+      if (items === null) {
+        throw { error: 'Item cannot be null' }
+      }
+
+      const fetchedNames = []
+      const fetchedFileUrls = []
+      const fetchedMultimediaFiles = []
+      const fetchedTokenIds = []
+      const fetchedItemIds = []
+      for (const item of items) {
+        fetchedNames.push(item.name)
+        fetchedFileUrls.push(item.fileUrl)
+        let fetchedMultimediaFileAsJSON = null
+        const fetchedMultimediaFile = item.multimedia
+        if (fetchedMultimediaFile !== null) {
+          fetchedMultimediaFileAsJSON = JSON.stringify(fetchedMultimediaFile)
+        }
+        fetchedMultimediaFiles.push(fetchedMultimediaFileAsJSON)
+        fetchedTokenIds.push(item.tokenId)
+        fetchedItemIds.push(item.itemId)
+      }
+
+      const crudItems: INfts = {
+        address: items[0]?.creator,
+        names: fetchedNames,
+        blockchainType: items[0]?.blockchainType,
+        fileUrls: fetchedFileUrls,
+        multimediaFiles: fetchedMultimediaFiles,
+        tokenIds: fetchedTokenIds,
+        itemIds: fetchedItemIds,
+        collection: items[0]?.collection,
+        ercType: items[0]?.ercType,
+      }
+
+      // send data to back-end
+      await nftsPostMultiple(crudItems)
+    } catch (error) {
+      console.log('Something went wrong while creating multiple tokens', error)
     }
-    if (!validedImageFile) setIsFileErrorOpen(true)
-    if (!validedMultimediaImageFile) setIsMultimediaImageFileErrorOpen(true)
+
+    // clear all states
+    setClearCounter(clearCounter + 1)
+    if (!validedImageFiles) setIsFileErrorOpen(true)
+    if (!validedMultimediaImageFiles) setIsMultimediaImageFileErrorOpen(true)
   }
 
   const handleGenericNameChange = (e: any) => {

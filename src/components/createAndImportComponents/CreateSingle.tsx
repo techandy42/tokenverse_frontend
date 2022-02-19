@@ -1,3 +1,6 @@
+/* Creates a single token */
+/* Tested, no bug */
+
 import React, { useState, useEffect } from 'react'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
@@ -79,6 +82,7 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
     let validedMultimediaImageFile = true
     let validFileUrl = true
     try {
+      // format data (and set appropriate type(s))
       const imageFile =
         file.type.split('/')[0] === 'image' ? file : multimediaImageFile
       const fileUrl = await getFileUrl(imageFile)
@@ -90,11 +94,13 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
       validedImageFile = validImageFile()
       validedMultimediaImageFile = validMultimediaImageFile()
       validFileUrl = fileUrl !== undefined
+
+      // validate data
       if (!validedImageFile || !validedMultimediaImageFile || !validFileUrl) {
         throw { error: 'Invalid image, multimedia image, or file url' }
       }
-      // Format Token and mint
-      // format dataFields
+
+      // format data (and set appropriate type(s))
       const typeCheckedBlockchainType: BlockchainType =
         BlockchainType.POLYGON === blockchainType
           ? BlockchainType.POLYGON
@@ -105,6 +111,8 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
           : ErcType.ERC_1155 === ercType
           ? ErcType.ERC_1155
           : ErcType.ERC_721
+
+      // format dataFields
       const dataFields: IData = formatDataFields(
         name,
         collection,
@@ -113,14 +121,16 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
         fileUrl,
         multimedia,
       )
-      const multimediaFileAsJSON = JSON.stringify(multimediaFile)
       let tokenId = 0
       let item: IItem | null = null
       if (typeCheckedErcType === ErcType.ERC_721) {
         // create item
         tokenId = await createItem(dataFields)
 
-        // fetch token and send the info to back-end
+        // validate tokenId
+        if (tokenId < 1) throw { error: `Invalid tokenId: ${tokenId}` }
+
+        // fetch token
         item = await fetchItemByTokenId(tokenId)
       } else if (typeCheckedErcType === ErcType.ERC_1155) {
         // handle ERC_1155 functions
@@ -130,6 +140,13 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
 
       if (item === null) {
         throw { error: 'Item cannot be null' }
+      }
+
+      let multimediaFileAsJSON = null
+
+      // format data for back-end
+      if (item.multimedia !== null) {
+        multimediaFileAsJSON = JSON.stringify(item.multimedia)
       }
 
       const crudItem: INft = {
@@ -144,9 +161,10 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
         ercType: item?.ercType,
       }
 
+      // send data to back-end
       await nftsPost(crudItem)
     } catch (error) {
-      console.error(error)
+      console.log('Something went wrong while creating single token', error)
     }
 
     // clear all states

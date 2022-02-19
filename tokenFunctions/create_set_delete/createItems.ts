@@ -78,18 +78,22 @@ const createMintMarketItems = async (urls: string[]) => {
     // Make this plural instead of singular
     // Complete this section when writing the front-end code
 
-    // let tx = await transaction.wait()
-    // let event = tx.events[0]
-    // let value = event.args[2]
-    // let tokenId = value.toNumber()
+    let tx = await transactions.wait()
+    const tokenIds = []
+    for (let i = 0; i < tx.events.length; i = i + 2) {
+      const event = tx.events[i]
+      const value = event.args[2]
+      const tokenId = value.toNumber()
+      tokenIds.push(tokenId)
+    }
     contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
-    // transaction = await contract.createMintMarketItems(nftaddress, tokenId)
-    // await transaction.wait()
-    // return tokenId
+    transactions = await contract.createMintMarketItems(nftaddress, tokenIds)
+    await transactions.wait()
+    return tokenIds
   } catch (error) {
     console.log('Error minting tokens: ', error)
   }
-  return -1
+  return false
 }
 
 export default createItems
