@@ -208,7 +208,8 @@ const CreateMultiple: React.FC<IProps> = ({
       }
 
       // send data to back-end
-      await nftsPostMultiple(crudItems)
+      const nfts = await nftsPostMultiple(crudItems)
+      console.log('nfts: ', nfts)
     } catch (error) {
       console.log('Something went wrong while creating multiple tokens', error)
     }

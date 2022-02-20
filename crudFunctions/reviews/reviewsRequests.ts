@@ -3,14 +3,14 @@
 import axios from 'axios'
 import { urlReviews } from '../crudUrls'
 
-interface IReviewInfo {
+export interface IReviewInfo {
   address: string
   tokenId: number
   rating: number
   comment: string
 }
 
-interface IReviewNewInfo {
+export interface IReviewNewInfo {
   rating: number
   comment: string
 }

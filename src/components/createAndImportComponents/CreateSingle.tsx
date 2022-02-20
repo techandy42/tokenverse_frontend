@@ -162,7 +162,8 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
       }
 
       // send data to back-end
-      await nftsPost(crudItem)
+      const nft = await nftsPost(crudItem)
+      console.log('nft: ', nft)
     } catch (error) {
       console.log('Something went wrong while creating single token', error)
     }

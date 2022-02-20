@@ -3,10 +3,10 @@
 import axios from 'axios'
 import { urlCollections } from '../crudUrls'
 
-interface INewCollectionName {
+export interface INewCollectionName {
   newName: string
 }
-interface INewCollectionInfo {
+export interface INewCollectionInfo {
   newName: string
   image: JSON | null
   description: string

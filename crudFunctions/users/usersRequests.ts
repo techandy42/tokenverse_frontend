@@ -3,13 +3,13 @@
 import axios from 'axios'
 import { urlUsers } from '../crudUrls'
 
-interface IUserInfo {
+export interface IUserInfo {
   address: string
 }
-interface IUserLikedCartInfo {
+export interface IUserLikedCartInfo {
   tokenId: number
 }
-interface IUserNewInfo {
+export interface IUserNewInfo {
   image: JSON | null
   userName: string
   companyName: string
