@@ -27,7 +27,7 @@ interface IItem {
   collection: string
   blockchainType: BlockchainType
   fileUrl: string
-  multimedia?: JSON
+  multimedia: string | null
   saleType: SaleType
   collectibleCategory: CollectibleCategory
   productKeyAccessTokenCategory: ProductKeyAccessTokenCategory

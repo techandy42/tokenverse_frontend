@@ -16,7 +16,6 @@ import TokenTypeInputs from './createShared/TokenTypeInputs'
 import Names from './createMultiple/Names'
 import createItems from '../../../tokenFunctions/create_set_delete/createItems'
 import getFileUrl from '../../../tokenFunctions/getters/getFileUrl'
-import multimediaFileToMultimedia from '../../../helperFunctions/multimediaFileToMultimedia'
 import IData from '../../../interfaces/IData'
 import IItem from '../../../interfaces/IItem'
 import { BlockchainType, ErcType } from '../../../enums/nftMetadata'
@@ -78,6 +77,7 @@ const CreateMultiple: React.FC<IProps> = ({
     let validedImageFiles = true
     let validedMultimediaImageFiles = true
     let validFileUrls = true
+    let validMultimediaFileUrls = true
     const dataLength = files.length
     try {
       const fileUrls = []
@@ -87,20 +87,22 @@ const CreateMultiple: React.FC<IProps> = ({
       for (let i = 0; i < dataLength; i++) {
         const imageFile = files[i][1] === null ? files[i][0] : files[i][1]
         const fileUrl = await getFileUrl(imageFile)
-        const multimediaFile = files[i][1] === null ? null : files[i][0]
-        const multimedia =
-          multimediaFile === null
-            ? null
-            : multimediaFileToMultimedia(multimediaFile)
-
-        // push to arrays
-        fileUrls.push(fileUrl)
-        multimedias.push(multimedia)
+        const multimediaFileUrl =
+          files[i][1] === null ? null : await getFileUrl(files[i][0])
 
         // validate fileUrl
         if (fileUrl === undefined) {
           validFileUrls = false
+          break
         }
+        if (multimediaFileUrl === undefined) {
+          validMultimediaFileUrls = false
+          break
+        }
+
+        // push to arrays
+        fileUrls.push(fileUrl)
+        multimedias.push(multimediaFileUrl)
       }
 
       validedImageFiles = validImageFiles()
@@ -110,9 +112,13 @@ const CreateMultiple: React.FC<IProps> = ({
       if (
         !validedImageFiles ||
         !validedMultimediaImageFiles ||
-        !validFileUrls
+        !validFileUrls ||
+        !validMultimediaFileUrls
       ) {
-        throw { error: 'Invalid image, multimedia image, or file url' }
+        throw {
+          error:
+            'Invalid images, multimedia images, file urls, or multimedia file urls',
+        }
       }
 
       // format data (and set appropriate type(s))
@@ -185,22 +191,18 @@ const CreateMultiple: React.FC<IProps> = ({
       for (const item of items) {
         fetchedNames.push(item.name)
         fetchedFileUrls.push(item.fileUrl)
-        let fetchedMultimediaFileAsJSON = null
         const fetchedMultimediaFile = item.multimedia
-        if (fetchedMultimediaFile !== null) {
-          fetchedMultimediaFileAsJSON = JSON.stringify(fetchedMultimediaFile)
-        }
-        fetchedMultimediaFiles.push(fetchedMultimediaFileAsJSON)
+        fetchedMultimediaFiles.push(fetchedMultimediaFile)
         fetchedTokenIds.push(item.tokenId)
         fetchedItemIds.push(item.itemId)
       }
 
       const crudItems: INfts = {
-        address: items[0]?.creator,
+        address: items[0]?.creator.toLowerCase(),
         names: fetchedNames,
         blockchainType: items[0]?.blockchainType,
         fileUrls: fetchedFileUrls,
-        multimediaFiles: fetchedMultimediaFiles,
+        multimediaFileUrls: fetchedMultimediaFiles,
         tokenIds: fetchedTokenIds,
         itemIds: fetchedItemIds,
         collection: items[0]?.collection,

@@ -1,4 +1,3 @@
-import IMultimedia from '../interfaces/IMultimedia'
 import {
   BlockchainType,
   ErcType,
@@ -15,7 +14,7 @@ const formatDataFields = (
   blockchainType: BlockchainType,
   ercType: ErcType,
   fileUrl: string,
-  multimedia: IMultimedia | null,
+  multimedia: string | null,
 ) => {
   const dataFields: IData = {
     name,

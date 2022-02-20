@@ -24,7 +24,7 @@ interface IProps {
 
 const Main: React.FC<IProps> = ({ children }) => {
   const dispatch = useAppDispatch()
-  // To fetch accountInfo
+  /* To fetch accountInfo and accountData */
   // const accountInfo = useAppSelector(selectAccountInfo)
   // const accountData = useAppSelector(selectAccountData)
 

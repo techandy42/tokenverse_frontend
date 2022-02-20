@@ -60,13 +60,9 @@ const createMintMarketItem = async (url: string) => {
     let contract = new ethers.Contract(nftaddress, NFT.abi, signer)
     let transaction = await contract.createToken(url)
     let tx = await transaction.wait()
-    console.log('tx: ', tx)
     let event = tx.events[0]
-    console.log('event: ', event)
     let value = event.args[2]
-    console.log('value: ', value)
     let tokenId = value.toNumber()
-    console.log('tokenId: ', tokenId)
     contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
     transaction = await contract.createMintMarketItem(nftaddress, tokenId)
     await transaction.wait()

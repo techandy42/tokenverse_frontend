@@ -11,6 +11,6 @@ export default interface IToken {
   name: string
   collection: string
   blockchainType: string
-  image: any
-  multimedia: any
+  image: string
+  multimedia: string | null
 }

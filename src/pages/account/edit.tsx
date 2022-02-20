@@ -14,7 +14,12 @@ import isUrlValid from '../../../helperFunctions/isUrlValid'
 import FlexBox from '../../components/styles/FlexBox'
 import FlexSpace from '../../components/styles/FlexSpace'
 import Link from 'next/link'
-import multimediaFileToMultimedia from '../../../helperFunctions/multimediaFileToMultimedia'
+import { useAppDispatch, useAppSelector } from '../../redux/app/hooks'
+import {
+  updateAccountData,
+  selectAccountData,
+  AccountDataState,
+} from '../../redux/features/accountDataSlice'
 
 // Fetch the personal information of the back-end
 const fetchedPersonalInfo: IPersonalInfo = {
@@ -34,10 +39,41 @@ const fetchedPersonalInfo: IPersonalInfo = {
 
   verified: true,
   verificationDate: new Date(),
-  verificationLink: 'https://google.com',
+}
+
+const imageAsFile = (image: BlobPart[] | null) => {
+  if (image === null) {
+    return null
+  } else {
+    return new File(image, 'image file')
+  }
 }
 
 const edit = () => {
+  const dispatch = useAppDispatch()
+  // To fetch accountData
+  const accountData = useAppSelector(selectAccountData)
+
+  const image = imageAsFile(accountData.image)
+
+  const fetchedPersonInfo: IPersonalInfo = {
+    joinedDate: accountData.createdAt,
+    image,
+    userName: accountData.userName,
+    companyName: accountData.companyName,
+    description: accountData.description,
+    email: accountData.email,
+
+    mainLink: accountData.mainLink,
+    facebookLink: accountData.facebookLink,
+    instagramLink: accountData.instagramLink,
+    twitterLink: accountData.twitterLink,
+    linkedInLink: accountData.linkedInLink,
+
+    verified: accountData.verified,
+    verificationDate: accountData.verificationDate,
+  }
+
   const [personalInfo, setPersonalInfo] =
     useState<IPersonalInfo>(fetchedPersonalInfo)
   const [userNameValid, setUserNameValid] = useState<boolean>(true)

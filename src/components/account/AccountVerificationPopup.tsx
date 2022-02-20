@@ -9,14 +9,12 @@ import Box from '@mui/material/Box'
 interface IProps {
   userName: string
   verificationDate: Date
-  verificationLink: string
   handleClose: () => void
 }
 
 const AccountVerificationPopup: React.FC<IProps> = ({
   userName,
   verificationDate,
-  verificationLink,
   handleClose,
 }) => {
   const formattedVerificationDate = dateFormat(
@@ -43,19 +41,6 @@ const AccountVerificationPopup: React.FC<IProps> = ({
         <Typography sx={{ marginBottom: '1rem' }}>
           Verified Date: {formattedVerificationDate}
         </Typography>
-        {verificationLink !== '' && (
-          <Box sx={{ marginBottom: '1rem' }}>
-            <WebsiteLink
-              link={verificationLink}
-              title={
-                <FlexBox>
-                  <WebAssetIcon sx={{ fontSize: 20, marginRight: '0.25rem' }} />
-                  <span>{verificationLink}</span>
-                </FlexBox>
-              }
-            />
-          </Box>
-        )}
         <Typography>
           Description: The user has been verified to be a trustworthy seller on
           Tokenverse

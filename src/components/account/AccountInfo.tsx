@@ -39,7 +39,6 @@ const fetchedPersonalInfo: IPersonalInfo = {
 
   verified: true,
   verificationDate: new Date(),
-  verificationLink: 'https://google.com',
 }
 
 const VerificationBoxUp750 = styled('div')(({ theme }) => ({
@@ -310,7 +309,6 @@ const AccountInfo = () => {
         <AccountVerificationPopup
           userName={fetchedPersonalInfo.userName}
           verificationDate={fetchedPersonalInfo.verificationDate}
-          verificationLink={fetchedPersonalInfo.verificationLink}
           handleClose={toggleAccountVerificationPopup}
         />
       )}

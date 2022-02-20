@@ -3,7 +3,7 @@
 // collection: string,
 // blockchainType: string,
 // fileUrl: string,
-// multimediaFile: any,
+// multimediaFileUrl: any,
 
 // uint itemId;
 // address nftContract;

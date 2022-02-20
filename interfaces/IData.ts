@@ -6,14 +6,13 @@ import {
   ProductKeyVirtualAssetCategory,
   ErcType,
 } from '../enums/nftMetadata'
-import IMultimedia from './IMultimedia'
 
 export default interface IData {
   name: string
   collection: string
   blockchainType: BlockchainType
   fileUrl: string
-  multimedia: IMultimedia | null
+  multimedia: string | null
   saleType: SaleType
   collectibleCategory: CollectibleCategory
   productKeyAccessTokenCategory: ProductKeyAccessTokenCategory

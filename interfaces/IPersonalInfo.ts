@@ -14,5 +14,4 @@ export default interface IPersonalInfo {
 
   verified: boolean
   verificationDate: Date | null
-  verificationLink: string
 }

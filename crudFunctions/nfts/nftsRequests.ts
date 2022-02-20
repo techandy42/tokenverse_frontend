@@ -16,7 +16,7 @@ export interface INft {
   name: string
   blockchainType: BlockchainType
   fileUrl: string
-  multimediaFile: JSON | null
+  multimediaFileUrl: string | null
   tokenId: number
   itemId: number
   collection: string
@@ -28,7 +28,7 @@ export interface INfts {
   names: string[]
   blockchainType: BlockchainType
   fileUrls: string[]
-  multimediaFiles: JSON[]
+  multimediaFileUrls: (string | null)[]
   tokenIds: number[]
   itemIds: number[]
   collection: string
@@ -62,7 +62,7 @@ export interface INftMarketInfo {
 export interface INftEditInfo {
   name: string
   fileUrl: string
-  multimediaFile: JSON | null
+  multimediaFileUrl: string | null
   isMetadataFrozen: boolean
   collection: string
   saleType: SaleType

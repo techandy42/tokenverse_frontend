@@ -15,7 +15,6 @@ import blockchainTypes from '../../../constants/blockchainTypes'
 import ercTypes from '../../../constants/ercTypes'
 import createItem from '../../../tokenFunctions/create_set_delete/createItem'
 import getFileUrl from '../../../tokenFunctions/getters/getFileUrl'
-import multimediaFileToMultimedia from '../../../helperFunctions/multimediaFileToMultimedia'
 import IData from '../../../interfaces/IData'
 import IItem from '../../../interfaces/IItem'
 import formatDataFields from '../../../helperFunctions/formatDataFields'
@@ -81,23 +80,30 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
     let validedImageFile = true
     let validedMultimediaImageFile = true
     let validFileUrl = true
+    let validMultimediaFileUrl = true
     try {
       // format data (and set appropriate type(s))
       const imageFile =
         file.type.split('/')[0] === 'image' ? file : multimediaImageFile
       const fileUrl = await getFileUrl(imageFile)
-      const multimediaFile = file.type.split('/')[0] === 'image' ? null : file
-      const multimedia =
-        multimediaFile === null
-          ? null
-          : multimediaFileToMultimedia(multimediaFile)
+      const multimediaFileUrl =
+        file.type.split('/')[0] === 'image' ? null : await getFileUrl(file)
       validedImageFile = validImageFile()
       validedMultimediaImageFile = validMultimediaImageFile()
       validFileUrl = fileUrl !== undefined
+      validMultimediaFileUrl = multimediaFileUrl !== undefined
 
       // validate data
-      if (!validedImageFile || !validedMultimediaImageFile || !validFileUrl) {
-        throw { error: 'Invalid image, multimedia image, or file url' }
+      if (
+        !validedImageFile ||
+        !validedMultimediaImageFile ||
+        !validFileUrl ||
+        !validMultimediaFileUrl
+      ) {
+        throw {
+          error:
+            'Invalid image, multimedia image, file url, or multimedia file url',
+        }
       }
 
       // format data (and set appropriate type(s))
@@ -119,7 +125,7 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
         typeCheckedBlockchainType,
         typeCheckedErcType,
         fileUrl,
-        multimedia,
+        multimediaFileUrl,
       )
       let tokenId = 0
       let item: IItem | null = null
@@ -142,19 +148,12 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
         throw { error: 'Item cannot be null' }
       }
 
-      let multimediaFileAsJSON = null
-
-      // format data for back-end
-      if (item.multimedia !== null) {
-        multimediaFileAsJSON = JSON.stringify(item.multimedia)
-      }
-
       const crudItem: INft = {
-        address: item?.creator,
+        address: item?.creator.toLowerCase(),
         name: item?.name,
         blockchainType: item?.blockchainType,
         fileUrl: item?.fileUrl,
-        multimediaFile: multimediaFileAsJSON,
+        multimediaFileUrl: item?.multimedia,
         tokenId: item?.tokenId,
         itemId: item?.itemId,
         collection: item?.collection,
