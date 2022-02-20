@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Typography from '@mui/material/Typography'
 import default_account_image from '../../../images/default_account_image.jpg'
-import getAccount, {
-  IAccountInfo,
-} from '../../../tokenFunctions/getters/getAccount'
 import FlexBox from '../styles/FlexBox'
 import FlexSpace from '../styles/FlexSpace'
 import Box from '@mui/material/Box'
@@ -79,6 +76,7 @@ const AccountInfo = () => {
   const [isAccountVerificationPopupOpen, setIsAccountVerificationPopupOpen] =
     useState<boolean>(false)
 
+  /*
   useEffect(() => {
     const callAccount = async () => {
       const accountInfo = await getAccount()
@@ -88,6 +86,7 @@ const AccountInfo = () => {
     }
     callAccount()
   }, [])
+  */
 
   const displayAccountInfo = () => {
     if (accountInfo !== null) {

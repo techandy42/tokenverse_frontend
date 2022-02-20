@@ -1,3 +1,5 @@
+*** This is a documentation of fetching account information using Web3 ***
+
 import Web3 from 'web3'
 
 export interface IAccountInfo {
@@ -20,6 +22,7 @@ const getAccount = async () => {
   if (typeof window.ethereum !== 'undefined') {
     // Instance web3 with the provided information
     const web3 = new Web3(window.ethereum)
+    console.log('web3: ', web3)
     try {
       // Request account access
       await window.ethereum.enable()
