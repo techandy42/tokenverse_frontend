@@ -43,6 +43,10 @@ const Main: React.FC<IProps> = ({ children }) => {
       'user account (after handling non-existing account case): ',
       userAccount,
     )
+
+    const image =
+      userAccount.data.image === undefined ? null : userAccount.data.image
+
     const data: AccountDataState = {
       email: userAccount.data.email,
       address: userAccount.data.address,
@@ -50,7 +54,7 @@ const Main: React.FC<IProps> = ({ children }) => {
       createdAt: userAccount.data.createdAt,
       description: userAccount.data.description,
       facebookLink: userAccount.data.facebookLink,
-      image: userAccount.data.image,
+      image,
       instagramLink: userAccount.data.instagramLink,
       linkedInLink: userAccount.data.linkedInLink,
       mainLink: userAccount.data.mainLink,
@@ -62,6 +66,7 @@ const Main: React.FC<IProps> = ({ children }) => {
       likedNfts: userAccount.data.likedNfts,
       cartNfts: userAccount.data.cartNfts,
     }
+
     dispatch(updateAccountData(data))
   }
 
@@ -110,6 +115,10 @@ const Main: React.FC<IProps> = ({ children }) => {
             // prints changed account info to console
             console.log('account changed: ', account)
             console.log('current ether balance: ', etherBalance)
+
+            // dispatch account info change
+            dispatch(updateAccount(account))
+            dispatch(updateEtherBalance(etherBalance))
 
             accountDataSetUp(account)
           },

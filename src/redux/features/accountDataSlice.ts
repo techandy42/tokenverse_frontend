@@ -15,7 +15,7 @@ export type AccountDataState = {
   createdAt: Date
   description: string
   facebookLink: string
-  image: JSON | null
+  image: string | null
   instagramLink: string
   linkedInLink: string
   mainLink: string
@@ -53,7 +53,23 @@ export const accountDataSlice = createSlice({
   initialState,
   reducers: {
     updateAccountData: (state, action: PayloadAction<AccountDataState>) => {
-      state = action.payload
+      state.email = action.payload.email
+      state.address = action.payload.address
+      state.companyName = action.payload.companyName
+      state.createdAt = action.payload.createdAt
+      state.description = action.payload.description
+      state.facebookLink = action.payload.facebookLink
+      state.image = action.payload.image
+      state.instagramLink = action.payload.instagramLink
+      state.linkedInLink = action.payload.linkedInLink
+      state.mainLink = action.payload.mainLink
+      state.twitterLink = action.payload.twitterLink
+      state.userName = action.payload.userName
+      state.verified = action.payload.verified
+      state.verificationDate = action.payload.verificationDate
+      state.role = action.payload.role
+      state.likedNfts = action.payload.likedNfts
+      state.cartNfts = action.payload.cartNfts
     },
   },
 })

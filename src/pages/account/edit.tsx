@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import IPersonalInfo from '../../../interfaces/IPersonalInfo'
 import StyledPageBase from '../../components/styles/StyledPageBase'
 import Button from '@mui/material/Button'
@@ -16,66 +16,54 @@ import FlexSpace from '../../components/styles/FlexSpace'
 import Link from 'next/link'
 import { useAppDispatch, useAppSelector } from '../../redux/app/hooks'
 import {
+  updateAccount,
+  updateEtherBalance,
+  updateNetworkId,
+  selectAccountInfo,
+} from '../../redux/features/accountInfoSlice'
+import {
   updateAccountData,
   selectAccountData,
   AccountDataState,
 } from '../../redux/features/accountDataSlice'
+import {
+  usersPut,
+  usersGetByUserName,
+  IUserNewInfo,
+} from '../../../crudFunctions/users/usersRequests'
+import { useRouter } from 'next/router'
+import getFileUrl from '../../../tokenFunctions/getters/getFileUrl'
+import { currentUrl } from '../../../constants/currentUrl'
 
-// Fetch the personal information of the back-end
-const fetchedPersonalInfo: IPersonalInfo = {
-  joinedDate: new Date(),
+const initialPersonInfo: IPersonalInfo = {
+  joinedDate: new Date(0, 0, 0, 0, 0, 0),
   image: null,
-  userName: 'Andy Lee',
-  companyName: 'Tokenverse',
-  description:
-    'I am the founder of Tokenverse, which is an NFT and SFT trading platform for all virtual reality platforms and games.',
-  email: 'techandy42@email.com',
+  userName: '',
+  companyName: '',
+  description: '',
+  email: '',
 
-  mainLink: 'https://google.com',
-  facebookLink: 'https://facebook.com',
-  instagramLink: 'https://instagram.com',
-  twitterLink: 'https://twitter.com',
-  linkedInLink: 'https://linkedin.com',
+  mainLink: '',
+  facebookLink: '',
+  instagramLink: '',
+  twitterLink: '',
+  linkedInLink: '',
 
-  verified: true,
-  verificationDate: new Date(),
-}
-
-const imageAsFile = (image: BlobPart[] | null) => {
-  if (image === null) {
-    return null
-  } else {
-    return new File(image, 'image file')
-  }
+  verified: false,
+  verificationDate: new Date(0, 0, 0, 0, 0, 0),
 }
 
 const edit = () => {
+  const router = useRouter()
   const dispatch = useAppDispatch()
+  // For testing
+  const accountInfo = useAppSelector(selectAccountInfo)
   // To fetch accountData
   const accountData = useAppSelector(selectAccountData)
 
-  const image = imageAsFile(accountData.image)
-
-  const fetchedPersonInfo: IPersonalInfo = {
-    joinedDate: accountData.createdAt,
-    image,
-    userName: accountData.userName,
-    companyName: accountData.companyName,
-    description: accountData.description,
-    email: accountData.email,
-
-    mainLink: accountData.mainLink,
-    facebookLink: accountData.facebookLink,
-    instagramLink: accountData.instagramLink,
-    twitterLink: accountData.twitterLink,
-    linkedInLink: accountData.linkedInLink,
-
-    verified: accountData.verified,
-    verificationDate: accountData.verificationDate,
-  }
-
   const [personalInfo, setPersonalInfo] =
-    useState<IPersonalInfo>(fetchedPersonalInfo)
+    useState<IPersonalInfo>(initialPersonInfo)
+  const [originalUserName, setOriginalUserName] = useState<string>('')
   const [userNameValid, setUserNameValid] = useState<boolean>(true)
   const [emailValid, setEmailValid] = useState<boolean>(true)
   const [mainLinkValid, setMainLinkValid] = useState<boolean>(true)
@@ -83,6 +71,28 @@ const edit = () => {
   const [instagramLinkValid, setInstagramLinkValid] = useState<boolean>(true)
   const [twitterLinkValid, setTwitterLinkValid] = useState<boolean>(true)
   const [linkedInLinkValid, setLinkedInLinkValid] = useState<boolean>(true)
+
+  useEffect(() => {
+    const fetchedPersonalInfo: IPersonalInfo = {
+      joinedDate: accountData.createdAt,
+      image: accountData.image,
+      userName: accountData.userName,
+      companyName: accountData.companyName,
+      description: accountData.description,
+      email: accountData.email,
+
+      mainLink: accountData.mainLink,
+      facebookLink: accountData.facebookLink,
+      instagramLink: accountData.instagramLink,
+      twitterLink: accountData.twitterLink,
+      linkedInLink: accountData.linkedInLink,
+
+      verified: accountData.verified,
+      verificationDate: accountData.verificationDate,
+    }
+    setOriginalUserName(accountData.userName)
+    setPersonalInfo(fetchedPersonalInfo)
+  }, [accountData])
 
   const handlePersonalInfoChanges = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
@@ -93,87 +103,176 @@ const edit = () => {
     })
   }
 
-  const isUserNameValid = (userName: string) => {
+  const doesUserNameExist = async (userName: string) => {
     // check if the userName is valid with the userNames in the database
     // the userName must be unique and not empty
-    if (userName === '') return false
-    return true
-  }
-
-  const handleUserNameChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-  ) => {
-    setPersonalInfo({ ...personalInfo, userName: e.target.value })
-    if (!isUserNameValid(e.target.value)) {
-      setUserNameValid(false)
-    } else {
-      if (userNameValid === false) setUserNameValid(true)
-    }
-  }
-
-  const handleSubmit = (e: React.FormEventHandler<HTMLFormElement>) => {
-    e.preventDefault()
-    // validates userName, email, and the links
-    let isFieldsValid = true
-    if (!isUserNameValid(personalInfo.userName)) {
-      isFieldsValid = false
-      setUserNameValid(false)
-    } else {
-      if (userNameValid === false) setUserNameValid(true)
-    }
-    if (!isEmailValid(personalInfo.email)) {
-      isFieldsValid = false
-      setEmailValid(false)
-    } else {
-      if (emailValid === false) setEmailValid(true)
-    }
-    if (!isUrlValid(personalInfo.mainLink)) {
-      isFieldsValid = false
-      setMainLinkValid(false)
-    } else {
-      if (mainLinkValid === false) setMainLinkValid(true)
-    }
-    if (!isUrlValid(personalInfo.facebookLink)) {
-      isFieldsValid = false
-      setFacebookLinkValid(false)
-    } else {
-      if (facebookLinkValid === false) setFacebookLinkValid(true)
-    }
-    if (!isUrlValid(personalInfo.instagramLink)) {
-      isFieldsValid = false
-      setInstagramLinkValid(false)
-    } else {
-      if (instagramLinkValid === false) setInstagramLinkValid(true)
-    }
-    if (!isUrlValid(personalInfo.twitterLink)) {
-      isFieldsValid = false
-      setTwitterLinkValid(false)
-    } else {
-      if (twitterLinkValid === false) setTwitterLinkValid(true)
-    }
-    if (!isUrlValid(personalInfo.linkedInLink)) {
-      isFieldsValid = false
-      setLinkedInLinkValid(false)
-    } else {
-      if (linkedInLinkValid === false) setLinkedInLinkValid(true)
-    }
-    if (isFieldsValid) {
-      // Send the data to the back-end
-      const modifiedPersonalInfoFields = {
-        image: personalInfo.image,
-        userName: personalInfo.userName,
-        companyName: personalInfo.companyName,
-        description: personalInfo.description,
-        email: personalInfo.email,
-        mainLink: personalInfo.mainLink,
-        facebookLink: personalInfo.facebookLink,
-        instagramLink: personalInfo.instagramLink,
-        twitterLink: personalInfo.twitterLink,
-        linkedInLink: personalInfo.linkedInLink,
+    try {
+      const user = await usersGetByUserName(userName)
+      if (user.data === null) {
+        // user doesn't exist
+        return false
+      } else {
+        return true
       }
-      // send the info to the back-end
+    } catch (error) {
+      console.log(error)
+      return true
+    }
+  }
+
+  function removeWhitespaces(str: string) {
+    const isOnlyWhitespace = /^\s*$/.test(str)
+    if (isOnlyWhitespace) {
+      // return empty string if the str is only whitespace
+      return ''
     } else {
-      alert('Some of the input fields are invalid')
+      // trim the string if the str has non-whitespace characters
+      return str.trim()
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEventHandler<HTMLFormElement>) => {
+    e.preventDefault()
+    console.log('original userName: ', accountData.userName)
+    console.log('Modified userName: ', personalInfo.userName)
+    try {
+      /* pre-validation code */
+      // get ipfs url for image
+      let imageUrl = null
+      const image: any = personalInfo.image
+      if (image instanceof File) {
+        imageUrl = await getFileUrl(personalInfo.image)
+      } else {
+        imageUrl = personalInfo.image
+      }
+      imageUrl = imageUrl === undefined ? null : imageUrl
+
+      const userName = removeWhitespaces(personalInfo.userName)
+      const companyName = removeWhitespaces(personalInfo.companyName)
+      const description = removeWhitespaces(personalInfo.description)
+      const email = removeWhitespaces(personalInfo.email)
+      const mainLink = removeWhitespaces(personalInfo.mainLink)
+      const facebookLink = removeWhitespaces(personalInfo.facebookLink)
+      const instagramLink = removeWhitespaces(personalInfo.instagramLink)
+      const twitterLink = removeWhitespaces(personalInfo.twitterLink)
+      const linkedInLink = removeWhitespaces(personalInfo.linkedInLink)
+
+      console.log(await doesUserNameExist(userName))
+
+      /* validation code for userName, email, and the links */
+      let isFieldsValid = true
+      if (accountData.userName === userName) {
+        // userName hasn't changed
+        if (userName === '') {
+          // userName is empty (invalid)
+          console.log('userName invalid, userName unchanged')
+          isFieldsValid = false
+          setUserNameValid(false)
+        } else {
+          // userName is valid
+          console.log('userName valid, userName unchanged')
+          if (userNameValid === false) setUserNameValid(true)
+        }
+      } else {
+        // userName has changed
+        if ((await doesUserNameExist(userName)) || userName === '') {
+          // userName exists or it is empty (invalid)
+          console.log('userName invalid, userName changed')
+          isFieldsValid = false
+          setUserNameValid(false)
+        } else {
+          // userName is valid
+          console.log('userName valid, userName changed')
+          if (userNameValid === false) setUserNameValid(true)
+        }
+      }
+
+      if (!isEmailValid(email) && email !== '') {
+        isFieldsValid = false
+        setEmailValid(false)
+      } else {
+        if (emailValid === false) setEmailValid(true)
+      }
+      if (!isUrlValid(mainLink) && mainLink !== '') {
+        isFieldsValid = false
+        setMainLinkValid(false)
+      } else {
+        if (mainLinkValid === false) setMainLinkValid(true)
+      }
+      if (!isUrlValid(facebookLink) && facebookLink !== '') {
+        isFieldsValid = false
+        setFacebookLinkValid(false)
+      } else {
+        if (facebookLinkValid === false) setFacebookLinkValid(true)
+      }
+      if (!isUrlValid(instagramLink) && instagramLink !== '') {
+        isFieldsValid = false
+        setInstagramLinkValid(false)
+      } else {
+        if (instagramLinkValid === false) setInstagramLinkValid(true)
+      }
+      if (!isUrlValid(twitterLink) && twitterLink !== '') {
+        isFieldsValid = false
+        setTwitterLinkValid(false)
+      } else {
+        if (twitterLinkValid === false) setTwitterLinkValid(true)
+      }
+      if (!isUrlValid(linkedInLink) && linkedInLink !== '') {
+        isFieldsValid = false
+        setLinkedInLinkValid(false)
+      } else {
+        if (linkedInLinkValid === false) setLinkedInLinkValid(true)
+      }
+      if (isFieldsValid) {
+        // Send the data to the back-end
+        const modifiedPersonalInfoFields: IUserNewInfo = {
+          image: imageUrl,
+          userName: userName,
+          companyName: companyName,
+          description: description,
+          email: email,
+          mainLink: mainLink,
+          facebookLink: facebookLink,
+          instagramLink: instagramLink,
+          twitterLink: twitterLink,
+          linkedInLink: linkedInLink,
+        }
+
+        // send the info to the back-end
+        const userInfo = await usersPut(
+          accountInfo.account,
+          modifiedPersonalInfoFields,
+        )
+
+        const data = {
+          email: userInfo.data.email,
+          address: userInfo.data.address,
+          companyName: userInfo.data.companyName,
+          createdAt: userInfo.data.createdAt,
+          description: userInfo.data.description,
+          facebookLink: userInfo.data.facebookLink,
+          image: userInfo.data.image,
+          instagramLink: userInfo.data.instagramLink,
+          linkedInLink: userInfo.data.linkedInLink,
+          mainLink: userInfo.data.mainLink,
+          twitterLink: userInfo.data.twitterLink,
+          userName: userInfo.data.userName,
+          verified: userInfo.data.verified,
+          verificationDate: userInfo.data.verificationDate,
+          role: userInfo.data.role,
+          likedNfts: userInfo.data.likedNfts,
+          cartNfts: userInfo.data.cartNfts,
+        }
+
+        dispatch(updateAccountData(data))
+
+        // push to account page
+        router.push(`${currentUrl}/account`)
+      } else {
+        alert('Some of the input fields are invalid')
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -205,6 +304,8 @@ const edit = () => {
                 src={
                   personalInfo.image === null
                     ? default_account_image.src
+                    : typeof personalInfo.image === 'string'
+                    ? personalInfo.image
                     : URL.createObjectURL(personalInfo.image)
                 }
                 style={{
@@ -264,7 +365,7 @@ const edit = () => {
           label='Username'
           name='userName'
           value={personalInfo.userName}
-          onChange={(e) => handleUserNameChange(e)}
+          onChange={handlePersonalInfoChanges}
           required
         />
         <TextField

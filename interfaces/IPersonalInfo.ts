@@ -1,6 +1,6 @@
 export default interface IPersonalInfo {
   joinedDate: Date
-  image: File | null
+  image: string | null
   userName: string
   companyName: string
   description: string

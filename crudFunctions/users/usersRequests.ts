@@ -10,7 +10,7 @@ export interface IUserLikedCartInfo {
   tokenId: number
 }
 export interface IUserNewInfo {
-  image: JSON | null
+  image: string | null
   userName: string
   companyName: string
   description: string
@@ -24,6 +24,8 @@ export interface IUserNewInfo {
 
 export const usersPost = (userInfo: IUserInfo) => axios.post(urlUsers, userInfo)
 export const usersGet = (address: string) => axios.get(`${urlUsers}/${address}`)
+export const usersGetByUserName = (userName: string) =>
+  axios.get(`${urlUsers}/username/${userName}`)
 export const usersLikedGet = (address: string) =>
   axios.get(`${urlUsers}/liked/${address}`)
 export const usersCartGet = (address: string) =>

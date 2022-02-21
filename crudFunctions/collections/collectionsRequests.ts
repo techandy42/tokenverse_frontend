@@ -8,7 +8,7 @@ export interface INewCollectionName {
 }
 export interface INewCollectionInfo {
   newName: string
-  image: JSON | null
+  image: string | null
   description: string
 }
 
