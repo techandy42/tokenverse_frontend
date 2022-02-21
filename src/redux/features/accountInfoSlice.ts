@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../app/store'
+import emptyAddress from '../../../constants/emptyAddress'
 
 // declaring the types for account info state
 export type AccountInfoState = {
@@ -9,7 +10,7 @@ export type AccountInfoState = {
 }
 
 const initialState: AccountInfoState = {
-  account: '0x0000000000000000000000000000000000000000',
+  account: emptyAddress,
   etherBalance: '0',
   networkId: 0,
 }

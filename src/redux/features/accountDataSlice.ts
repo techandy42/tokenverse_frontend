@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../app/store'
+import emptyAddress from '../../../constants/emptyAddress'
 
 enum UserRole {
   USER = 'USER',
@@ -30,7 +31,7 @@ export type AccountDataState = {
 
 const initialState: AccountDataState = {
   email: '',
-  address: '0x0000000000000000000000000000000000000000',
+  address: emptyAddress,
   companyName: '',
   createdAt: new Date(0, 0, 0, 0, 0, 0),
   description: '',

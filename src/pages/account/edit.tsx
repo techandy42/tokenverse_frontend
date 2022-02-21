@@ -28,12 +28,15 @@ import {
 } from '../../redux/features/accountDataSlice'
 import {
   usersPut,
-  usersGetByUserName,
   IUserNewInfo,
 } from '../../../crudFunctions/users/usersRequests'
 import { useRouter } from 'next/router'
 import getFileUrl from '../../../tokenFunctions/getters/getFileUrl'
 import { currentUrl } from '../../../constants/currentUrl'
+import doesUserNameExist from '../../../helperFunctions/doesUserNameExist'
+import removeWhitespaces from '../../../helperFunctions/removeWhitespaces'
+import emptyAddress from '../../../constants/emptyAddress'
+import AccountMetaMaskNotConnected from '../../components/account/AccountMetaMaskNotConnected'
 
 const initialPersonInfo: IPersonalInfo = {
   joinedDate: new Date(0, 0, 0, 0, 0, 0),
@@ -72,6 +75,23 @@ const edit = () => {
   const [twitterLinkValid, setTwitterLinkValid] = useState<boolean>(true)
   const [linkedInLinkValid, setLinkedInLinkValid] = useState<boolean>(true)
 
+  /* MetaMask Connection Code Starts */
+  const [isMetaMaskConnected, setIsMetaMaskConnected] = useState<boolean>(true)
+  const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true)
+
+  useEffect(() => {
+    if (!isInitialLoad) {
+      if (accountInfo.account !== emptyAddress) {
+        setIsMetaMaskConnected(true)
+      } else {
+        setIsMetaMaskConnected(false)
+      }
+    } else {
+      setIsInitialLoad(false)
+    }
+  }, [accountInfo])
+  /* MetaMask Connection Code Ends */
+
   useEffect(() => {
     const fetchedPersonalInfo: IPersonalInfo = {
       joinedDate: accountData.createdAt,
@@ -101,34 +121,6 @@ const edit = () => {
       ...personalInfo,
       [e.target.name]: e.target.value,
     })
-  }
-
-  const doesUserNameExist = async (userName: string) => {
-    // check if the userName is valid with the userNames in the database
-    // the userName must be unique and not empty
-    try {
-      const user = await usersGetByUserName(userName)
-      if (user.data === null) {
-        // user doesn't exist
-        return false
-      } else {
-        return true
-      }
-    } catch (error) {
-      console.log(error)
-      return true
-    }
-  }
-
-  function removeWhitespaces(str: string) {
-    const isOnlyWhitespace = /^\s*$/.test(str)
-    if (isOnlyWhitespace) {
-      // return empty string if the str is only whitespace
-      return ''
-    } else {
-      // trim the string if the str has non-whitespace characters
-      return str.trim()
-    }
   }
 
   const handleSubmit = async (e: React.FormEventHandler<HTMLFormElement>) => {
@@ -275,6 +267,14 @@ const edit = () => {
       console.log(error)
     }
   }
+
+  /* MetaMask Connection Code Starts */
+  if (!isMetaMaskConnected) {
+    // handle this code later
+    // import AccountMetaMaskNotConnected from '../../../components/account/AccountMetaMaskNotConnected'
+    return <AccountMetaMaskNotConnected />
+  }
+  /* MetaMask Connection Code Ends */
 
   return (
     <StyledPageBase>

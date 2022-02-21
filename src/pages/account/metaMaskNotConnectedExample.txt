@@ -1,0 +1,26 @@
+*** This is example code to plug into account related pages to show messages if MetaMask is not connected ***
+
+/* MetaMask Connection Code Starts */
+const [isMetaMaskConnected, setIsMetaMaskConnected] = useState<boolean>(true)
+const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true)
+
+useEffect(() => {
+if (!isInitialLoad) {
+    if (accountInfo.account !== emptyAddress) {
+    setIsMetaMaskConnected(true)
+    } else {
+    setIsMetaMaskConnected(false)
+    }
+} else {
+    setIsInitialLoad(false)
+}
+}, [accountInfo])
+/* MetaMask Connection Code Ends */
+
+/* MetaMask Connection Code Starts */
+if (!isMetaMaskConnected) {
+// handle this code later
+// import AccountMetaMaskNotConnected from '../../../components/account/AccountMetaMaskNotConnected'
+return <AccountMetaMaskNotConnected />
+}
+/* MetaMask Connection Code Ends */
