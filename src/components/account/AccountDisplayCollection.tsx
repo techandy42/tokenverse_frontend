@@ -28,7 +28,7 @@ const AccountDisplayCollection: React.FC<IProps> = ({
       <Card sx={{ cursor: 'pointer' }}>
         <CardMedia
           component='img'
-          image={NFTs[0].image}
+          image={NFTs[0].fileUrl}
           alt='Image not found'
           sx={{ height: { xs: 120, sm: 160, md: 220 } }}
         />

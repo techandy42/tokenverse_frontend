@@ -46,6 +46,7 @@ const CreateMultiple: React.FC<IProps> = ({
   const [isFileErrorOpen, setIsFileErrorOpen] = useState<boolean>(false)
   const [isMultimediaImageFileErrorOpen, setIsMultimediaImageFileErrorOpen] =
     useState<boolean>(false)
+  const [isSubmissionProcessing, setIsSubmissionProcessing] = useState(false)
 
   useEffect(() => {
     setCollection(collections[0])
@@ -54,6 +55,7 @@ const CreateMultiple: React.FC<IProps> = ({
     setGenericName('')
     setNames([])
     setFiles([])
+    setIsSubmissionProcessing(false)
   }, [clearCounter])
 
   const validImageFiles = () => {
@@ -74,6 +76,9 @@ const CreateMultiple: React.FC<IProps> = ({
 
   const handleSubmit = async (e: React.FormEventHandler<HTMLFormElement>) => {
     e.preventDefault()
+    // set submission button to processing button
+    setIsSubmissionProcessing(true)
+
     let validedImageFiles = true
     let validedMultimediaImageFiles = true
     let validFileUrls = true
@@ -282,13 +287,34 @@ const CreateMultiple: React.FC<IProps> = ({
       <DividerMarginBottom />
       <Names names={names} setNames={setNames} files={files} />
       <DividerMarginBottom />
-      <Button
-        variant='contained'
-        sx={{ marginBottom: MARGIN_LARGE, textTransform: 'none' }}
-        type='submit'
-      >
-        Create Digital Assets
-      </Button>
+      {!isSubmissionProcessing ? (
+        <>
+          <Button
+            variant='contained'
+            type='submit'
+            sx={{
+              marginBottom: MARGIN_LARGE,
+              textTransform: 'none',
+              width: '12rem',
+            }}
+          >
+            Create Digital Assets
+          </Button>
+        </>
+      ) : (
+        <>
+          <Button
+            variant='outlined'
+            sx={{
+              marginBottom: MARGIN_LARGE,
+              textTransform: 'none',
+              width: '12rem',
+            }}
+          >
+            Processing
+          </Button>
+        </>
+      )}
     </form>
   )
 }

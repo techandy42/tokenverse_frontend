@@ -63,8 +63,6 @@ const Main: React.FC<IProps> = ({ children }) => {
       verified: userAccount.data.verified,
       verificationDate: userAccount.data.verificationDate,
       role: userAccount.data.role,
-      likedNfts: userAccount.data.likedNfts,
-      cartNfts: userAccount.data.cartNfts,
     }
 
     dispatch(updateAccountData(data))

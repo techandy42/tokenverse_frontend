@@ -20,6 +20,7 @@ import {
   updateEtherBalance,
   updateNetworkId,
   selectAccountInfo,
+  AccountInfoState,
 } from '../../redux/features/accountInfoSlice'
 import {
   updateAccountData,
@@ -59,7 +60,7 @@ const initialPersonInfo: IPersonalInfo = {
 const edit = () => {
   const router = useRouter()
   const dispatch = useAppDispatch()
-  // For testing
+  // To fetch accountInfo
   const accountInfo = useAppSelector(selectAccountInfo)
   // To fetch accountData
   const accountData = useAppSelector(selectAccountData)
@@ -236,6 +237,8 @@ const edit = () => {
           modifiedPersonalInfoFields,
         )
 
+        console.log('userInfo: ', userInfo)
+
         const data = {
           email: userInfo.data.email,
           address: userInfo.data.address,
@@ -252,8 +255,6 @@ const edit = () => {
           verified: userInfo.data.verified,
           verificationDate: userInfo.data.verificationDate,
           role: userInfo.data.role,
-          likedNfts: userInfo.data.likedNfts,
-          cartNfts: userInfo.data.cartNfts,
         }
 
         dispatch(updateAccountData(data))

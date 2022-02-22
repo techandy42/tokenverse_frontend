@@ -41,6 +41,7 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
   const [isFileErrorOpen, setIsFileErrorOpen] = useState<boolean>(false)
   const [isMultimediaImageFileErrorOpen, setIsMultimediaImageFileErrorOpen] =
     useState<boolean>(false)
+  const [isSubmissionProcessing, setIsSubmissionProcessing] = useState(false)
 
   useEffect(() => {
     if (file !== null) setIsFileErrorOpen(false)
@@ -58,6 +59,7 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
     setIsMultimediaImageFileErrorOpen(false)
     setIsFileErrorOpen(false)
     setIsMultimediaImageFileErrorOpen(false)
+    setIsSubmissionProcessing(false)
   }, [clearCounter])
 
   const validImageFile = () => {
@@ -77,6 +79,9 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
 
   const handleSubmit = async (e: React.FormEventHandler<HTMLFormElement>) => {
     e.preventDefault()
+    // set submission button to processing button
+    setIsSubmissionProcessing(true)
+
     let validedImageFile = true
     let validedMultimediaImageFile = true
     let validFileUrl = true
@@ -219,9 +224,34 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
         setErcType={setErcType}
       />
       <DividerMarginBottom />
-      <Button variant='contained' type='submit' sx={{ textTransform: 'none' }}>
-        Create Digital Asset
-      </Button>
+      {!isSubmissionProcessing ? (
+        <>
+          <Button
+            variant='contained'
+            type='submit'
+            sx={{
+              marginBottom: MARGIN_LARGE,
+              textTransform: 'none',
+              width: '12rem',
+            }}
+          >
+            Create Digital Asset
+          </Button>
+        </>
+      ) : (
+        <>
+          <Button
+            variant='outlined'
+            sx={{
+              marginBottom: MARGIN_LARGE,
+              textTransform: 'none',
+              width: '12rem',
+            }}
+          >
+            Processing
+          </Button>
+        </>
+      )}
     </form>
   )
 }

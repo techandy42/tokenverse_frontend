@@ -1,0 +1,25 @@
+*** This is an example on fetching accountInfo and acccountData states ***
+*** accountInfo --> fetched from MetaMask ***
+*** accountData --> fetched from DB ***
+
+import {
+  updateAccount,
+  updateEtherBalance,
+  updateNetworkId,
+  selectAccountInfo,
+  AccountInfoState,
+} from '../../../redux/features/accountInfoSlice'
+import {
+  updateAccountData,
+  selectAccountData,
+  AccountDataState,
+} from '../../../redux/features/accountDataSlice'
+import { useAppDispatch, useAppSelector } from '../../../redux/app/hooks'
+
+*** Inside the component ***
+
+const dispatch = useAppDispatch()
+// To fetch accountInfo
+const accountInfo = useAppSelector(selectAccountInfo)
+// To fetch accountData
+const accountData = useAppSelector(selectAccountData)
