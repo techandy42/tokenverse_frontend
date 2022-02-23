@@ -90,9 +90,6 @@ const TokenTypeInputs: React.FC<IProps> = ({
     }
   }
 
-  console.log('collectionIndex: ', collectionIndex)
-  console.log('collectionsIsNameModified: ', collectionsIsNameModified)
-
   return (
     <div>
       <Typography sx={{ marginBottom: MARGIN_SMALL }}>Collection</Typography>

@@ -59,6 +59,8 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
     useState<number>(0)
   const [collectionIndex, setCollectionIndex] = useState<number>(0)
 
+  // bugs inside the function, rewrite the function
+  // maybe fetch the collections when the account is first fetched at Main
   useEffect(() => {
     const getCollections = async () => {
       try {
