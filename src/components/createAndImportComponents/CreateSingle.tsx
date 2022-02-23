@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import DividerMarginBottom from '../styles/DividerMarginBottom'
 import FileUploadAndDisplay from './createSingle/FileUploadAndDisplay'
-import { collections } from '../../pages/create'
+// import { collections } from '../../pages/create'
 import { MARGIN_LARGE, MARGIN_SMALL } from '../../../constants'
 import TokenTypeInputs from './createShared/TokenTypeInputs'
 import Alert from '@mui/material/Alert'
@@ -17,12 +17,16 @@ import createItem from '../../../tokenFunctions/create_set_delete/createItem'
 import getFileUrl from '../../../tokenFunctions/getters/getFileUrl'
 import IData from '../../../interfaces/IData'
 import IItem from '../../../interfaces/IItem'
+import ICollection from '../../../interfaces/schema/ICollection'
 import formatDataFields from '../../../helperFunctions/dataFields/formatDataFields'
 import { BlockchainType, ErcType } from '../../../enums/nftMetadata'
 import { nftsPost, INft } from '../../../crudFunctions/nfts/nftsRequests'
 import fetchItemByTokenId from '../../../tokenFunctions/getters/fetchItemByTokenId'
 import { selectAccountInfo } from '../../redux/features/accountInfoSlice'
-import { useAppDispatch, useAppSelector } from '../../redux/app/hooks'
+import { useAppSelector } from '../../redux/app/hooks'
+import emptyAddress from '../../../constants/emptyAddress'
+import { usersGet } from '../../../crudFunctions/users/usersRequests'
+import { collectionsPost } from '../../../crudFunctions/collections/collectionsRequests'
 
 interface IProps {
   clearCounter: number
@@ -30,10 +34,13 @@ interface IProps {
 }
 
 const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
-  const dispatch = useAppDispatch()
   // To fetch accountInfo
   const accountInfo = useAppSelector(selectAccountInfo)
-  const [collection, setCollection] = useState<string>(collections[0])
+  const [collections, setCollections] = useState<string[]>([])
+  const [collectionsIsNameModified, setCollectionsIsNameModified] = useState<
+    boolean[]
+  >([])
+  const [collection, setCollection] = useState<string>('')
   const [blockchainType, setBlockchainType] = useState<string>(
     blockchainTypes[0],
   )
@@ -46,7 +53,60 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
   const [isFileErrorOpen, setIsFileErrorOpen] = useState<boolean>(false)
   const [isMultimediaImageFileErrorOpen, setIsMultimediaImageFileErrorOpen] =
     useState<boolean>(false)
-  const [isSubmissionProcessing, setIsSubmissionProcessing] = useState(false)
+  const [isSubmissionProcessing, setIsSubmissionProcessing] =
+    useState<boolean>(false)
+  const [collectionResetCounter, setCollectionResetCounter] =
+    useState<number>(0)
+  const [collectionIndex, setCollectionIndex] = useState<number>(0)
+
+  useEffect(() => {
+    const getCollections = async () => {
+      try {
+        // update collections and collection
+        const fetchedUserInfo = await usersGet(accountInfo.account)
+        if (fetchedUserInfo === undefined)
+          throw { error: 'User info not found' }
+        const fetchedCollections: ICollection[] =
+          fetchedUserInfo.data.collections
+        let isAtLeastOneCollectionNotModified = false
+        for (const fetchedCollection of fetchedCollections) {
+          if (fetchedCollection.isNameModified === false) {
+            isAtLeastOneCollectionNotModified = true
+          }
+        }
+        let collectionNames: string[] = fetchedCollections.map(
+          (fetchedCollection) => fetchedCollection.name,
+        )
+        let collectionsIsNameModified: boolean[] = fetchedCollections.map(
+          (fetchedCollection) => fetchedCollection.isNameModified,
+        )
+        /*
+        if (!isAtLeastOneCollectionNotModified) {
+          const newCollection = await collectionsPost(accountInfo.account)
+          console.log('newCollection: ', newCollection)
+          if (newCollection === undefined)
+            throw { error: 'error while creating a new collection' }
+          collectionNames = [newCollection.data.name, ...collectionNames]
+          collectionsIsNameModified = [
+            newCollection.data.isNameModified,
+            ...collectionsIsNameModified,
+          ]
+        }
+        */
+        setCollections(collectionNames)
+        setCollection(collectionNames[0])
+        setCollectionsIsNameModified(collectionsIsNameModified)
+      } catch (error) {
+        console.log(error)
+        alert(
+          'User information has not been found. Please refresh the page, or use a different account.',
+        )
+      }
+    }
+    if (accountInfo.account !== emptyAddress) {
+      getCollections()
+    }
+  }, [accountInfo, collectionResetCounter])
 
   useEffect(() => {
     if (file !== null) setIsFileErrorOpen(false)
@@ -131,7 +191,7 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
       // format dataFields
       const dataFields: IData = formatDataFields(
         name,
-        collection,
+        collection[0],
         typeCheckedBlockchainType,
         typeCheckedErcType,
         fileUrl,
@@ -182,6 +242,8 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
     setClearCounter(clearCounter + 1)
     if (!validedImageFile) setIsFileErrorOpen(true)
     if (!validedMultimediaImageFile) setIsMultimediaImageFileErrorOpen(true)
+    // increase collection reset counter, which triggers the collections to re-render
+    setCollectionResetCounter(collectionResetCounter + 1)
   }
 
   return (
@@ -222,8 +284,14 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
         required
       />
       <TokenTypeInputs
+        collections={collections}
+        setCollections={setCollections}
+        collectionsIsNameModified={collectionsIsNameModified}
+        setCollectionsIsNameModified={setCollectionsIsNameModified}
         collection={collection}
         setCollection={setCollection}
+        collectionIndex={collectionIndex}
+        setCollectionIndex={setCollectionIndex}
         blockchainType={blockchainType}
         setBlockchainType={setBlockchainType}
         ercType={ercType}

@@ -70,7 +70,6 @@ const account = () => {
       if (userItems !== null) {
         const groupedItems: ICollectionNFTs =
           groupNFTsIntoCollections(userItems)
-        console.log('groupedItems: ', groupedItems)
         setCollectionNFTs(groupedItems)
       }
       setLoadingState(LoadingState.LOADED)

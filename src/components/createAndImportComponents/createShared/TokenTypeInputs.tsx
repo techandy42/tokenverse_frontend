@@ -1,3 +1,6 @@
+/* Component with Token Fields */
+/* Tested, no bug */
+
 import React, { useState } from 'react'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
@@ -7,15 +10,21 @@ import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import Autocomplete from '@mui/material/Autocomplete'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
-import { collections } from '../../../pages/create'
 import blockchainTypes from '../../../../constants/blockchainTypes'
 import ercTypes from '../../../../constants/ercTypes'
 import { MARGIN_LARGE, MARGIN_SMALL } from '../../../../constants'
 import { BlockchainType, ErcType } from '../../../../enums/nftMetadata'
+import { collectionsChangeNamePut } from '../../../../crudFunctions/collections/collectionsRequests'
 
 interface IProps {
+  collections: string[]
+  setCollections: React.Dispatch<React.SetStateAction<string[]>>
+  collectionsIsNameModified: boolean[]
+  setCollectionsIsNameModified: React.Dispatch<React.SetStateAction<boolean[]>>
   collection: string
   setCollection: React.Dispatch<React.SetStateAction<string>>
+  collectionIndex: number
+  setCollectionIndex: React.Dispatch<React.SetStateAction<number>>
   blockchainType: string
   setBlockchainType: React.Dispatch<React.SetStateAction<string>>
   ercType: string
@@ -23,25 +32,66 @@ interface IProps {
 }
 
 const TokenTypeInputs: React.FC<IProps> = ({
+  collections,
+  setCollections,
+  collectionsIsNameModified,
+  setCollectionsIsNameModified,
   collection,
   setCollection,
+  collectionIndex,
+  setCollectionIndex,
   blockchainType,
   setBlockchainType,
   ercType,
   setErcType,
 }) => {
-  const [initialCollectionName, setInitialCollectionName] = useState(
-    collections[0],
-  )
+  const [selectedCollectionName, setSelectedCollectionName] =
+    useState<string>(collection)
+  const [
+    selectedCollectionIsNameModified,
+    setSelectedCollectionIsNameModified,
+  ] = useState<boolean>(collectionsIsNameModified[collectionIndex])
 
-  const handleRenameInitialCollection = () => {
-    // check if the collection name already exists
-    if (true) {
-      alert(`Error: "${initialCollectionName}" already exists`)
-    } else {
-      // Modify the collection at redux
+  const handleRenameSelectedCollection = async (
+    selectedCollectionName: string,
+  ) => {
+    try {
+      const newCollection = await collectionsChangeNamePut(collection, {
+        newName: selectedCollectionName,
+      })
+      const newCollectionName = newCollection.data.name
+      const newCollections = collections
+      const newCollectionsIsNameModified = collectionsIsNameModified
+      newCollections[collectionIndex] = newCollectionName
+      newCollectionsIsNameModified[collectionIndex] = true
+
+      setCollection(newCollectionName)
+      setCollections(newCollections)
+      setCollectionsIsNameModified(newCollectionsIsNameModified)
+      setSelectedCollectionName(newCollectionName)
+      setSelectedCollectionIsNameModified(true)
+    } catch (error) {
+      console.log(error)
+      alert('Collection already exists.')
     }
   }
+
+  const handleCollectionChange = (newValue: string | null) => {
+    if (newValue !== null) {
+      const index = collections.findIndex(
+        (collection) => collection === newValue,
+      )
+      // if there is no newValue in collections, don't change anything
+      if (index === -1) return
+      setCollection(newValue)
+      setCollectionIndex(index)
+      setSelectedCollectionName(newValue)
+      setSelectedCollectionIsNameModified(collectionsIsNameModified[index])
+    }
+  }
+
+  console.log('collectionIndex: ', collectionIndex)
+  console.log('collectionsIsNameModified: ', collectionsIsNameModified)
 
   return (
     <div>
@@ -49,14 +99,10 @@ const TokenTypeInputs: React.FC<IProps> = ({
       <Autocomplete
         fullWidth
         value={collection}
-        onChange={(e, newValue) => {
-          newValue !== null
-            ? setCollection(newValue)
-            : setCollection(collections[0])
-        }}
+        onChange={(e, newValue) => handleCollectionChange(newValue)}
         onInputChange={(e, newInputValue) => {
           collections.includes(newInputValue)
-            ? setCollection(newInputValue)
+            ? handleCollectionChange(newInputValue)
             : null
         }}
         options={collections}
@@ -68,7 +114,7 @@ const TokenTypeInputs: React.FC<IProps> = ({
             collection === collections[0] ? MARGIN_SMALL : MARGIN_LARGE,
         }}
       />
-      {collection === collections[0] ? (
+      {!selectedCollectionIsNameModified && (
         <>
           <Typography sx={{ marginBottom: MARGIN_SMALL }}>Optional</Typography>
           <Box
@@ -79,25 +125,26 @@ const TokenTypeInputs: React.FC<IProps> = ({
           >
             <TextField
               fullWidth
-              multiline
-              name='renameInitialCollection'
-              label='Rename Initial Collection'
-              value={initialCollectionName}
-              onChange={(e) => setInitialCollectionName(e.target.value)}
+              name='renameSelectedCollection'
+              label='Rename Selected Collection'
+              value={selectedCollectionName}
+              onChange={(e) => setSelectedCollectionName(e.target.value)}
             />
             <IconButton
               size='large'
               edge='end'
               color='inherit'
               disableRipple
-              onClick={() => handleRenameInitialCollection()}
+              onClick={() =>
+                handleRenameSelectedCollection(selectedCollectionName)
+              }
               sx={{ marginRight: 0 }}
             >
               <AddCircleOutlineIcon color='primary' />
             </IconButton>
           </Box>
         </>
-      ) : null}
+      )}
       <Typography sx={{ marginBottom: MARGIN_SMALL }}>Blockchain</Typography>
       <Select
         value={blockchainType}
