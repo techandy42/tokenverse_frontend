@@ -1,0 +1,22 @@
+/*  
+* Arguments Descriptions:
+* nftContract - ex: 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512
+* tokenId - numeric value containing information about the token (name, description, etc.)
+*           created from the following code
+  //   let contract = new ethers.Contract(nftaddress, NFT.abi, signer)
+  //   let transaction = await contract.createToken(url)
+  //   // url is the URL of all of the data
+  //   let tx = await transaction.wait()
+  //   let event = tx.events[0]
+  //   let value = event.args[2]
+  //   let tokenId = value.toNumber()
+* price - numeric value create from the following code
+  //   const price = ethers.utils.parseUnits(formTextField.price, 'ether')
+* msg.value - numeric value fetched using the getListingRatioNum() function
+*/
+ 
+/*
+* Variables Description:
+* itemId - index number of a token in idToMarketItem
+* tokenId - id of the token that has access to tokenURI
+*/
