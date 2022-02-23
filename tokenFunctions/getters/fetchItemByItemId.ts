@@ -5,8 +5,10 @@ import { nftmarketaddress, nftaddress } from '../../config'
 import Market from '../../artifacts/contracts/NFTMarket.sol/NFTMarket.json'
 import NFT from '../../artifacts/contracts/NFT.sol/NFT.json'
 import IItem from '../../interfaces/IItem'
+import validateItemsNftContract from '../../helperFunctions/validateItemsNftContract'
 
 /* Fetches the token using the given itemId */
+/* returns null if there is an error or no token has been found */
 const fetchItemByItemId = async (itemId: number) => {
   try {
     const web3Modal = new Web3Modal({
@@ -22,7 +24,10 @@ const fetchItemByItemId = async (itemId: number) => {
       signer,
     )
     const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
-    const i = await marketContract.fetchItemByItemId(itemId)
+    let i = await marketContract.fetchItemByItemId(itemId)
+    const validatedI = validateItemsNftContract([i])
+    if (validatedI.length === 0) return null
+    i = validatedI[0]
     const tokenURI = await tokenContract.tokenURI(i.tokenId)
     const meta = await axios.get(tokenURI)
     let price = ethers.utils.formatUnits(i.price.toString(), 'ether')

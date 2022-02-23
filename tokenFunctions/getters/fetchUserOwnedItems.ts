@@ -7,9 +7,9 @@ import NFT from '../../artifacts/contracts/NFT.sol/NFT.json'
 import IItem from '../../interfaces/IItem'
 import validateItemsNftContract from '../../helperFunctions/validateItemsNftContract'
 
-/* Fetches the tokens using the given tokenIds */
+/* Fetches the tokens using the given user */
 /* returns null if there is an error or no tokens has been found */
-const fetchItemByTokenIds = async (tokenIds: number[], creator: string) => {
+const fetchUserOwnedItems = async (user: string) => {
   try {
     const web3Modal = new Web3Modal({
       network: 'mainnet',
@@ -24,10 +24,7 @@ const fetchItemByTokenIds = async (tokenIds: number[], creator: string) => {
       signer,
     )
     const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
-    let iList = await marketContract.fetchItemsByTokenIdsAndCreatorAddress(
-      tokenIds,
-      creator,
-    )
+    let iList = await marketContract.fetchUserOwnedItems(user)
     const validatedIList = validateItemsNftContract(iList)
     if (validatedIList.length === 0) return null
     iList = validatedIList
@@ -84,4 +81,4 @@ const fetchItemByTokenIds = async (tokenIds: number[], creator: string) => {
   return null
 }
 
-export default fetchItemByTokenIds
+export default fetchUserOwnedItems

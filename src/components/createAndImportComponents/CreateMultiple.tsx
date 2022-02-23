@@ -25,6 +25,8 @@ import {
   nftsPostMultiple,
   INfts,
 } from '../../../crudFunctions/nfts/nftsRequests'
+import { selectAccountInfo } from '../../redux/features/accountInfoSlice'
+import { useAppDispatch, useAppSelector } from '../../redux/app/hooks'
 
 interface IProps {
   clearCounter: number
@@ -35,6 +37,9 @@ const CreateMultiple: React.FC<IProps> = ({
   clearCounter,
   setClearCounter,
 }) => {
+  const dispatch = useAppDispatch()
+  // To fetch accountInfo
+  const accountInfo = useAppSelector(selectAccountInfo)
   const [collection, setCollection] = useState<string>(collections[0])
   const [blockchainType, setBlockchainType] = useState<string>(
     blockchainTypes[0],
@@ -177,15 +182,20 @@ const CreateMultiple: React.FC<IProps> = ({
           throw { error: `Invalid tokenIds: ${errorTokenIdsMsg}` }
 
         // fetch tokens
-        items = await fetchItemsByTokenIds(tokenIds)
+        items = await fetchItemsByTokenIds(tokenIds, accountInfo.account)
       } else if (typeCheckedErcType === ErcType.ERC_1155) {
         // handle ERC_1155 functions
       } else {
         throw { error: `Erc Type invalid: ${typeCheckedErcType}` }
       }
 
+      // validate items
       if (items === null) {
         throw { error: 'Item cannot be null' }
+      } else if (items.length !== tokenIds.length) {
+        throw {
+          error: 'The length of items does not match the length of tokenIds',
+        }
       }
 
       const fetchedNames = []

@@ -21,6 +21,8 @@ import formatDataFields from '../../../helperFunctions/formatDataFields'
 import { BlockchainType, ErcType } from '../../../enums/nftMetadata'
 import { nftsPost, INft } from '../../../crudFunctions/nfts/nftsRequests'
 import fetchItemByTokenId from '../../../tokenFunctions/getters/fetchItemByTokenId'
+import { selectAccountInfo } from '../../redux/features/accountInfoSlice'
+import { useAppDispatch, useAppSelector } from '../../redux/app/hooks'
 
 interface IProps {
   clearCounter: number
@@ -28,6 +30,9 @@ interface IProps {
 }
 
 const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
+  const dispatch = useAppDispatch()
+  // To fetch accountInfo
+  const accountInfo = useAppSelector(selectAccountInfo)
   const [collection, setCollection] = useState<string>(collections[0])
   const [blockchainType, setBlockchainType] = useState<string>(
     blockchainTypes[0],
@@ -142,13 +147,14 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
         if (tokenId < 1) throw { error: `Invalid tokenId: ${tokenId}` }
 
         // fetch token
-        item = await fetchItemByTokenId(tokenId)
+        item = await fetchItemByTokenId(tokenId, accountInfo.account)
       } else if (typeCheckedErcType === ErcType.ERC_1155) {
         // handle ERC_1155 functions
       } else {
         throw { error: `Erc Type invalid: ${typeCheckedErcType}` }
       }
 
+      // validate item
       if (item === null) {
         throw { error: 'Item cannot be null' }
       }
