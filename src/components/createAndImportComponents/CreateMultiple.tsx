@@ -19,7 +19,7 @@ import getFileUrl from '../../../tokenFunctions/getters/getFileUrl'
 import IData from '../../../interfaces/IData'
 import IItem from '../../../interfaces/IItem'
 import { BlockchainType, ErcType } from '../../../enums/nftMetadata'
-import formatDataFields from '../../../helperFunctions/formatDataFields'
+import formatDataFields from '../../../helperFunctions/dataFields/formatDataFields'
 import fetchItemsByTokenIds from '../../../tokenFunctions/getters/fetchItemsByTokenIds'
 import {
   nftsPostMultiple,

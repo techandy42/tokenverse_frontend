@@ -21,15 +21,17 @@ import AccountInfo from '../components/account/AccountInfo'
 import AccountNav from '../components/account/AccountNav'
 import StyledPageBase from '../components/styles/StyledPageBase'
 import AccountDisplayCollections from '../components/account/AccountDisplayCollections'
-import loadNFTs from '../../tokenFunctions/getters/loadNFTs'
-import IToken from '../../interfaces/IToken'
+import IItem from '../../interfaces/IItem'
 import ICollectionNFTs from '../../interfaces/ICollectionNFTs'
 import { styled } from '@mui/material/styles'
 import { BREAKPOINT_SMALL } from '../../constants'
 import { selectAccountInfo } from '../redux/features/accountInfoSlice'
 import { useAppSelector } from '../redux/app/hooks'
-import INft from '../../interfaces/schema/INft'
-import ICollection from '../../interfaces/schema/ICollection'
+import fetchUserOwnedItems from '../../tokenFunctions/getters/fetchUserOwnedItems'
+import fetchUserCreatedItems from '../../tokenFunctions/getters/fetchUserCreatedItems'
+import emptyAddress from '../../constants/emptyAddress'
+import groupNFTsIntoCollections from '../../helperFunctions/account/groupNFTsIntoCollections'
+import filterDuplicateItems from '../../helperFunctions/account/filterDuplicateItems'
 
 const TextLoading = styled('p')(({ theme }) => ({
   fontWeight: 80,
@@ -46,27 +48,6 @@ enum LoadingState {
   NOT_LOADED = 'NOT_LOADED',
 }
 
-const groupNFTsIntoCollections = (items: any[]) => {
-  const collectionNFTs: ICollectionNFTs = {}
-  for (const item of items) {
-    if (!collectionNFTs.hasOwnProperty(item.collection)) {
-      collectionNFTs[item.collection] = [item]
-    } else {
-      collectionNFTs[item.collection] = [
-        ...collectionNFTs[item.collection],
-        item,
-      ]
-    }
-  }
-  return collectionNFTs
-}
-
-/*
-const groupNFTsIntoCollections = (nfts: INft[], collections: ICollection[]) => {
-  return nfts
-}
-*/
-
 const account = () => {
   // To fetch accountInfo
   const accountInfo = useAppSelector(selectAccountInfo)
@@ -76,16 +57,27 @@ const account = () => {
 
   useEffect(() => {
     const getNFTs = async () => {
-      const items = await loadNFTs()
-      console.log('items[0]', items[0])
-      if (items !== null) {
-        const groupedItems: ICollectionNFTs = groupNFTsIntoCollections(items)
+      const userCreatedItems: IItem[] | null = await fetchUserCreatedItems(
+        accountInfo.account,
+      )
+      const userOwnedItems: IItem[] | null = await fetchUserOwnedItems(
+        accountInfo.account,
+      )
+      const userItems: IItem[] | null = filterDuplicateItems(
+        userCreatedItems,
+        userOwnedItems,
+      )
+      if (userItems !== null) {
+        const groupedItems: ICollectionNFTs =
+          groupNFTsIntoCollections(userItems)
         console.log('groupedItems: ', groupedItems)
         setCollectionNFTs(groupedItems)
       }
       setLoadingState(LoadingState.LOADED)
     }
-    getNFTs()
+    if (accountInfo.account !== emptyAddress) {
+      getNFTs()
+    }
   }, [accountInfo])
 
   if (loadingState === LoadingState.NOT_LOADED)

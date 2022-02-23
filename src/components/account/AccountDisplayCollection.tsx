@@ -3,12 +3,12 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
 import Typography from '@mui/material/Typography'
-import IToken from '../../../interfaces/IToken'
+import IItem from '../../../interfaces/IItem'
 import Link from 'next/link'
 
 interface IProps {
   collectionName: string
-  NFTs: IToken[]
+  NFTs: IItem[]
 }
 
 const AccountDisplayCollection: React.FC<IProps> = ({

@@ -5,7 +5,7 @@ import { nftmarketaddress, nftaddress } from '../../config'
 import Market from '../../artifacts/contracts/NFTMarket.sol/NFTMarket.json'
 import NFT from '../../artifacts/contracts/NFT.sol/NFT.json'
 import IItem from '../../interfaces/IItem'
-import validateItemsNftContract from '../../helperFunctions/validateItemsNftContract'
+import validateItemsNftContract from '../../helperFunctions/tokenFunctions/validateItemsNftContract'
 
 /* Fetches the tokens using the given user */
 /* returns null if there is an error or no tokens has been found */

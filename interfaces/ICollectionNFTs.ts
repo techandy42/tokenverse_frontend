@@ -1,5 +1,5 @@
-import IToken from './IToken'
+import IItem from './IItem'
 
 export default interface ICollectionNFTs {
-  [key: string]: IToken[]
+  [key: string]: IItem[]
 }

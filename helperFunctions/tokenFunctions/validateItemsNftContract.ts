@@ -1,4 +1,4 @@
-import emptyAddress from '../constants/emptyAddress'
+import emptyAddress from '../../constants/emptyAddress'
 
 const validateItemsNftContract = (items: any[]) => {
   const validItems = []

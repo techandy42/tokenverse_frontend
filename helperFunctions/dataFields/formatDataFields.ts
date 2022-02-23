@@ -5,8 +5,8 @@ import {
   CollectibleCategory,
   ProductKeyAccessTokenCategory,
   ProductKeyVirtualAssetCategory,
-} from '../enums/nftMetadata'
-import IData from '../interfaces/IData'
+} from '../../enums/nftMetadata'
+import IData from '../../interfaces/IData'
 
 const formatDataFields = (
   name: string,
