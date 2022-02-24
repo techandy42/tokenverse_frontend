@@ -10,6 +10,7 @@ export const store = configureStore({
     // counter: counterReducer,
     accountInfo: accountInfoReducer,
     accountData: accountDataReducer,
+    // remove if not needed
     collections: collectionsSlice,
   },
 })
