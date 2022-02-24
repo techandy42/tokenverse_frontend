@@ -17,13 +17,15 @@ import createItem from '../../../tokenFunctions/create_set_delete/createItem'
 import getFileUrl from '../../../tokenFunctions/getters/getFileUrl'
 import IData from '../../../interfaces/IData'
 import IItem from '../../../interfaces/IItem'
-import ICollection from '../../../interfaces/schema/ICollection'
 import formatDataFields from '../../../helperFunctions/dataFields/formatDataFields'
 import { BlockchainType, ErcType } from '../../../enums/nftMetadata'
 import { nftsPost, INft } from '../../../crudFunctions/nfts/nftsRequests'
 import fetchItemByTokenId from '../../../tokenFunctions/getters/fetchItemByTokenId'
 import { selectAccountInfo } from '../../redux/features/accountInfoSlice'
 import { useAppSelector } from '../../redux/app/hooks'
+
+// Delete these
+import ICollection from '../../../interfaces/schema/ICollection'
 import emptyAddress from '../../../constants/emptyAddress'
 import { usersGet } from '../../../crudFunctions/users/usersRequests'
 import { collectionsPost } from '../../../crudFunctions/collections/collectionsRequests'
@@ -37,9 +39,6 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
   // To fetch accountInfo
   const accountInfo = useAppSelector(selectAccountInfo)
   const [collections, setCollections] = useState<string[]>([])
-  const [collectionsIsNameModified, setCollectionsIsNameModified] = useState<
-    boolean[]
-  >([])
   const [collection, setCollection] = useState<string>('')
   const [blockchainType, setBlockchainType] = useState<string>(
     blockchainTypes[0],
@@ -57,58 +56,60 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
     useState<boolean>(false)
   const [collectionResetCounter, setCollectionResetCounter] =
     useState<number>(0)
-  const [collectionIndex, setCollectionIndex] = useState<number>(0)
+
+  console.log('accountInfo: ', accountInfo)
 
   // bugs inside the function, rewrite the function
   // maybe fetch the collections when the account is first fetched at Main
-  useEffect(() => {
-    const getCollections = async () => {
-      try {
-        // update collections and collection
-        const fetchedUserInfo = await usersGet(accountInfo.account)
-        if (fetchedUserInfo === undefined)
-          throw { error: 'User info not found' }
-        const fetchedCollections: ICollection[] =
-          fetchedUserInfo.data.collections
-        let isAtLeastOneCollectionNotModified = false
-        for (const fetchedCollection of fetchedCollections) {
-          if (fetchedCollection.isNameModified === false) {
-            isAtLeastOneCollectionNotModified = true
-          }
-        }
-        let collectionNames: string[] = fetchedCollections.map(
-          (fetchedCollection) => fetchedCollection.name,
-        )
-        let collectionsIsNameModified: boolean[] = fetchedCollections.map(
-          (fetchedCollection) => fetchedCollection.isNameModified,
-        )
-        /*
-        if (!isAtLeastOneCollectionNotModified) {
-          const newCollection = await collectionsPost(accountInfo.account)
-          console.log('newCollection: ', newCollection)
-          if (newCollection === undefined)
-            throw { error: 'error while creating a new collection' }
-          collectionNames = [newCollection.data.name, ...collectionNames]
-          collectionsIsNameModified = [
-            newCollection.data.isNameModified,
-            ...collectionsIsNameModified,
-          ]
-        }
-        */
-        setCollections(collectionNames)
-        setCollection(collectionNames[0])
-        setCollectionsIsNameModified(collectionsIsNameModified)
-      } catch (error) {
-        console.log(error)
-        alert(
-          'User information has not been found. Please refresh the page, or use a different account.',
-        )
-      }
-    }
-    if (accountInfo.account !== emptyAddress) {
-      getCollections()
-    }
-  }, [accountInfo, collectionResetCounter])
+
+  // useEffect(() => {
+  //   const getCollections = async () => {
+  //     try {
+  //       // update collections and collection
+  //       const fetchedUserInfo = await usersGet(accountInfo.account)
+  //       if (fetchedUserInfo === undefined)
+  //         throw { error: 'User info not found' }
+  //       const fetchedCollections: ICollection[] =
+  //         fetchedUserInfo.data.collections
+  //       let isAtLeastOneCollectionNotModified = false
+  //       for (const fetchedCollection of fetchedCollections) {
+  //         if (fetchedCollection.isNameModified === false) {
+  //           isAtLeastOneCollectionNotModified = true
+  //         }
+  //       }
+  //       let collectionNames: string[] = fetchedCollections.map(
+  //         (fetchedCollection) => fetchedCollection.name,
+  //       )
+  //       let collectionsIsNameModified: boolean[] = fetchedCollections.map(
+  //         (fetchedCollection) => fetchedCollection.isNameModified,
+  //       )
+  //       /*
+  //       if (!isAtLeastOneCollectionNotModified) {
+  //         const newCollection = await collectionsPost(accountInfo.account)
+  //         console.log('newCollection: ', newCollection)
+  //         if (newCollection === undefined)
+  //           throw { error: 'error while creating a new collection' }
+  //         collectionNames = [newCollection.data.name, ...collectionNames]
+  //         collectionsIsNameModified = [
+  //           newCollection.data.isNameModified,
+  //           ...collectionsIsNameModified,
+  //         ]
+  //       }
+  //       */
+  //       setCollections(collectionNames)
+  //       setCollection(collectionNames[0])
+  //       setCollectionsIsNameModified(collectionsIsNameModified)
+  //     } catch (error) {
+  //       console.log(error)
+  //       alert(
+  //         'User information has not been found. Please refresh the page, or use a different account.',
+  //       )
+  //     }
+  //   }
+  //   if (accountInfo.account !== emptyAddress) {
+  //     getCollections()
+  //   }
+  // }, [accountInfo, collectionResetCounter])
 
   useEffect(() => {
     if (file !== null) setIsFileErrorOpen(false)
@@ -288,12 +289,8 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
       <TokenTypeInputs
         collections={collections}
         setCollections={setCollections}
-        collectionsIsNameModified={collectionsIsNameModified}
-        setCollectionsIsNameModified={setCollectionsIsNameModified}
         collection={collection}
         setCollection={setCollection}
-        collectionIndex={collectionIndex}
-        setCollectionIndex={setCollectionIndex}
         blockchainType={blockchainType}
         setBlockchainType={setBlockchainType}
         ercType={ercType}

@@ -16,10 +16,6 @@ export const collectionsPost = (address: string) =>
   axios.post(`${urlCollections}/${address}`)
 export const collectionsGet = (name: string) =>
   axios.get(`${urlCollections}/${name}`)
-export const collectionsChangeNamePut = (
-  name: string,
-  newCollectionName: INewCollectionName,
-) => axios.put(`${urlCollections}/change-name/${name}`, newCollectionName)
 export const collectionsChangeInfoPut = (
   name: string,
   newCollectionInfo: INewCollectionInfo,

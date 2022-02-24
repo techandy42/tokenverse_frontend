@@ -26,6 +26,10 @@ export const usersPost = (userInfo: IUserInfo) => axios.post(urlUsers, userInfo)
 export const usersGet = (address: string) => axios.get(`${urlUsers}/${address}`)
 export const usersGetByUserName = (userName: string) =>
   axios.get(`${urlUsers}/username/${userName}`)
+export const usersCollectionsGet = (address: string) =>
+  axios.get(`${urlUsers}/collections/${address}`)
+export const usersNftsGet = (address: string) =>
+  axios.get(`${urlUsers}/nfts/${address}`)
 export const usersLikedGet = (address: string) =>
   axios.get(`${urlUsers}/liked/${address}`)
 export const usersCartGet = (address: string) =>

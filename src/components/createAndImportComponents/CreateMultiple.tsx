@@ -11,7 +11,6 @@ import TextField from '@mui/material/TextField'
 import Alert from '@mui/material/Alert'
 import blockchainTypes from '../../../constants/blockchainTypes'
 import ercTypes from '../../../constants/ercTypes'
-import { collections } from '../../pages/create'
 import TokenTypeInputs from './createShared/TokenTypeInputs'
 import Names from './createMultiple/Names'
 import createItems from '../../../tokenFunctions/create_set_delete/createItems'
@@ -40,7 +39,8 @@ const CreateMultiple: React.FC<IProps> = ({
   const dispatch = useAppDispatch()
   // To fetch accountInfo
   const accountInfo = useAppSelector(selectAccountInfo)
-  const [collection, setCollection] = useState<string>(collections[0])
+  const [collections, setCollections] = useState<string[]>([])
+  const [collection, setCollection] = useState<string>('')
   const [blockchainType, setBlockchainType] = useState<string>(
     blockchainTypes[0],
   )
@@ -289,6 +289,8 @@ const CreateMultiple: React.FC<IProps> = ({
       <TokenTypeInputs
         collection={collection}
         setCollection={setCollection}
+        collections={collections}
+        setCollections={setCollections}
         blockchainType={blockchainType}
         setBlockchainType={setBlockchainType}
         ercType={ercType}

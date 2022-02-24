@@ -6,6 +6,8 @@ import NFT from '../../artifacts/contracts/NFT.sol/NFT.json'
 import Market from '../../artifacts/contracts/NFTMarket.sol/NFTMarket.json'
 import IData from '../../interfaces/IData'
 
+/* Modify the dataFields */
+
 // @ts-ignore
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 //

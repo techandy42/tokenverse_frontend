@@ -87,7 +87,7 @@ const Main: React.FC<IProps> = ({ children }) => {
           const account = accounts[0].toLowerCase()
           const weiBalance = await web3.eth.getBalance(account)
           const etherBalance = await web3.utils.fromWei(weiBalance, 'ether')
-          const networkId = await web3.eth.net.getId()
+          const networkId: number = await web3.eth.net.getId()
 
           // prints current info to console
           console.log('account: ', account)
@@ -123,12 +123,15 @@ const Main: React.FC<IProps> = ({ children }) => {
         )
 
         // detect Network account change
-        window.ethereum.on('networkChanged', function (networkId: number) {
+        window.ethereum.on('networkChanged', function (networkId: string) {
           // prints changed network info to console
           console.log('networkId changed: ', networkId)
 
+          // parse networkId as an integer
+          const networkIdAsInt = parseInt(networkId)
+
           // dispatch account info change
-          dispatch(updateNetworkId(networkId))
+          dispatch(updateNetworkId(networkIdAsInt))
         })
       } else {
         console.warn(
