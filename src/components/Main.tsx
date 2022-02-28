@@ -4,19 +4,20 @@ import {
   updateAccount,
   updateEtherBalance,
   updateNetworkId,
-  selectAccountInfo,
 } from '../redux/features/accountInfoSlice'
 import {
   updateAccountData,
-  selectAccountData,
   AccountDataState,
 } from '../redux/features/accountDataSlice'
+import { updateCollections } from '../redux/features/collectionsSlice'
 import Web3 from 'web3'
 import {
   usersGet,
   usersPost,
   IUserInfo,
+  usersCollectionsGet,
 } from '../../crudFunctions/users/usersRequests'
+import ICollection from '../../interfaces/schema/ICollection'
 
 interface IProps {
   children: ReactElement
@@ -89,15 +90,28 @@ const Main: React.FC<IProps> = ({ children }) => {
           const etherBalance = await web3.utils.fromWei(weiBalance, 'ether')
           const networkId: number = await web3.eth.net.getId()
 
+          // users' collections fetched
+          const fetchedCollectionsData = await usersCollectionsGet(account)
+          const collections: ICollection[] =
+            fetchedCollectionsData.data?.collections === undefined
+              ? new Array()
+              : fetchedCollectionsData.data?.collections
+
           // prints current info to console
           console.log('account: ', account)
           console.log('current ether balance: ', etherBalance)
           console.log('networkId: ', networkId)
 
+          // prints the users' collections
+          console.log('collections: ', collections)
+
           // dispatch account info
           dispatch(updateAccount(account))
           dispatch(updateEtherBalance(etherBalance))
           dispatch(updateNetworkId(networkId))
+
+          // dispatch collections
+          dispatch(updateCollections(collections))
 
           accountDataSetUp(account)
         }
@@ -110,13 +124,26 @@ const Main: React.FC<IProps> = ({ children }) => {
             const weiBalance = await web3.eth.getBalance(account)
             const etherBalance = await web3.utils.fromWei(weiBalance, 'ether')
 
+            // users' collections fetched
+            const fetchedCollectionsData = await usersCollectionsGet(account)
+            const collections: ICollection[] =
+              fetchedCollectionsData.data?.collections === undefined
+                ? new Array()
+                : fetchedCollectionsData.data?.collections
+
             // prints changed account info to console
             console.log('account changed: ', account)
             console.log('current ether balance: ', etherBalance)
 
+            // prints the users' collections
+            console.log('collections: ', collections)
+
             // dispatch account info change
             dispatch(updateAccount(account))
             dispatch(updateEtherBalance(etherBalance))
+
+            // dispatch collections
+            dispatch(updateCollections(collections))
 
             accountDataSetUp(account)
           },

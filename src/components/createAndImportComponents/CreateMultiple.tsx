@@ -25,7 +25,15 @@ import {
   INfts,
 } from '../../../crudFunctions/nfts/nftsRequests'
 import { selectAccountInfo } from '../../redux/features/accountInfoSlice'
-import { useAppDispatch, useAppSelector } from '../../redux/app/hooks'
+import { selectAccountData } from '../../redux/features/accountDataSlice'
+import { useAppSelector, useAppDispatch } from '../../redux/app/hooks'
+import {
+  updateCollections,
+  selectCollections,
+} from '../../redux/features/collectionsSlice'
+import ICollection from '../../../interfaces/schema/ICollection'
+import emptyAddress from '../../../constants/emptyAddress'
+import { collectionsPost } from '../../../crudFunctions/collections/collectionsRequests'
 
 interface IProps {
   clearCounter: number
@@ -36,9 +44,16 @@ const CreateMultiple: React.FC<IProps> = ({
   clearCounter,
   setClearCounter,
 }) => {
+  /* global user state fetching code starts */
   const dispatch = useAppDispatch()
-  // To fetch accountInfo
+
+  // Fetching users' informations
   const accountInfo = useAppSelector(selectAccountInfo)
+  const accountData = useAppSelector(selectAccountData)
+  const fetchedCollectionsData = useAppSelector(selectCollections)
+  const fetchedCollections: ICollection[] = fetchedCollectionsData.collections
+  /* global user state fetching code ends */
+
   const [collections, setCollections] = useState<string[]>([])
   const [collection, setCollection] = useState<string>('')
   const [blockchainType, setBlockchainType] = useState<string>(
@@ -52,6 +67,85 @@ const CreateMultiple: React.FC<IProps> = ({
   const [isMultimediaImageFileErrorOpen, setIsMultimediaImageFileErrorOpen] =
     useState<boolean>(false)
   const [isSubmissionProcessing, setIsSubmissionProcessing] = useState(false)
+
+  /* collections fetching code starts */
+  const [fetchedCollectionsLoaded, setFetchedCollectionsLoaded] =
+    useState<boolean>(false)
+  const [userAddress, setUserAddress] = useState<string>(emptyAddress)
+
+  // updates collections and collection when fetchedCollections and userAddress changes
+  // creates a new collection if no collection exists for the user
+  useEffect(() => {
+    const createNewCollection = async () => {
+      // check if accountInfo exists
+      const newCollectionData = await collectionsPost(userAddress)
+      const newCollection: ICollection = {
+        createdAt: newCollectionData.data.createdAt,
+        description: newCollectionData.data.description,
+        image: newCollectionData.data.image,
+        isNameModified: newCollectionData.data.isNameModified,
+        name: newCollectionData.data.name,
+      }
+
+      const updatedCollections: ICollection[] = [
+        ...fetchedCollections,
+        newCollection,
+      ]
+
+      dispatch(updateCollections(updatedCollections))
+    }
+
+    if (!fetchedCollectionsLoaded) {
+      setFetchedCollectionsLoaded(true)
+      console.log('fetchedCollections loading...')
+    } else {
+      if (fetchedCollections.length === 0) {
+        if (
+          userAddress === emptyAddress ||
+          accountInfo.account !== userAddress
+        ) {
+          console.log('fetchedCollections is empty. UserAccount is empty')
+        } else {
+          console.log('fetchedCollections is empty. Creating a new collection')
+
+          createNewCollection()
+        }
+      } else {
+        console.log('fetchedCollections: ', fetchedCollections)
+
+        // true if there is a collection that hasn't been modified
+        const indexIsNameNotModified = fetchedCollections
+          .map((fetchedCollection) => fetchedCollection.isNameModified)
+          .indexOf(false)
+        if (indexIsNameNotModified === -1) {
+          // if there isn't a collection that hasn't been modified
+
+          console.log(
+            'fetchedCollections only contain collections that has been modified. Creating a new collection',
+          )
+
+          createNewCollection()
+        } else {
+          // if there is a collection that hasn't been modified
+
+          // update collections and collection state
+          const fetchedCollectionsNames = fetchedCollections.map(
+            (fetchedCollection) => fetchedCollection.name,
+          )
+          setCollections(fetchedCollectionsNames)
+          setCollection(fetchedCollectionsNames[0])
+        }
+      }
+    }
+  }, [fetchedCollections, userAddress])
+
+  // updates userAddress when accountData changes
+  useEffect(() => {
+    if (accountData.address !== emptyAddress) {
+      setUserAddress(accountData.address)
+    }
+  }, [accountData])
+  /* collections fetching code ends */
 
   useEffect(() => {
     setCollection(collections[0])
