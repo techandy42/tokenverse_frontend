@@ -115,8 +115,8 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
         // true if there is a collection that hasn't been modified
         const indexIsNameNotModified = fetchedCollections
           .map((fetchedCollection) => fetchedCollection.isNameModified)
-          .indexOf(false)
-        if (indexIsNameNotModified === -1) {
+          .some((isNameModified) => isNameModified === false)
+        if (!indexIsNameNotModified) {
           // if there isn't a collection that hasn't been modified
 
           console.log(
