@@ -95,13 +95,14 @@ const AccountInfo = () => {
     }
   }
 
-  const formatPersonalInfoDescription = (
-    fetchedPersonalInfoDescription: string,
+  const formatPersonalInfoString = (
+    fetchedPersonalInfoString: string,
+    limit: number,
   ) => {
-    if (fetchedPersonalInfoDescription.length > 280) {
-      return fetchedPersonalInfoDescription.slice(0, 278) + '..'
+    if (fetchedPersonalInfoString.length > limit) {
+      return fetchedPersonalInfoString.slice(0, limit - 2) + '..'
     } else {
-      return fetchedPersonalInfoDescription
+      return fetchedPersonalInfoString
     }
   }
 
@@ -147,10 +148,10 @@ const AccountInfo = () => {
             <Typography
               className='font-chakra'
               variant='h4'
-              sx={{ marginRight: '2rem' }}
+              sx={{ marginRight: '2rem', fontSize: { xs: 18, sm: 26, md: 34 } }}
             >
               <span style={{ marginRight: '0.5rem' }}>
-                {fetchedPersonalInfo.userName}
+                {formatPersonalInfoString(fetchedPersonalInfo.userName, 24)}
               </span>
               <span>
                 {fetchedPersonalInfo.verified && (
@@ -191,13 +192,23 @@ const AccountInfo = () => {
           </VerificationBoxDown750>
           <Typography
             sx={{
+              marginBottom: '0.5rem',
+              fontWeight: 400,
+              display: { xs: 'none', sm: 'block' },
+            }}
+          >
+            {fetchedPersonalInfo.companyName !== '' &&
+              formatPersonalInfoString(fetchedPersonalInfo.companyName, 40)}
+          </Typography>
+          <Typography
+            sx={{
               marginBottom: '1rem',
               fontWeight: 300,
               display: { xs: 'none', sm: 'block' },
             }}
           >
             {fetchedPersonalInfo.description !== '' &&
-              formatPersonalInfoDescription(fetchedPersonalInfo.description)}
+              formatPersonalInfoString(fetchedPersonalInfo.description, 280)}
           </Typography>
           {fetchedPersonalInfo.mainLink !== '' && (
             <WebsiteLink
