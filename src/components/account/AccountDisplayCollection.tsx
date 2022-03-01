@@ -5,6 +5,7 @@ import CardMedia from '@mui/material/CardMedia'
 import Typography from '@mui/material/Typography'
 import IItem from '../../../interfaces/IItem'
 import Link from 'next/link'
+import default_photo_image from '../../../images/default_photo_image.jpg'
 
 interface IProps {
   collectionName: string
@@ -28,7 +29,7 @@ const AccountDisplayCollection: React.FC<IProps> = ({
       <Card sx={{ cursor: 'pointer' }}>
         <CardMedia
           component='img'
-          image={NFTs[0].fileUrl}
+          src={NFTs.length === 0 ? default_photo_image.src : NFTs[0].fileUrl}
           alt='Image not found'
           sx={{ height: { xs: 120, sm: 160, md: 220 } }}
         />

@@ -5,7 +5,6 @@ import FlexBox from '../styles/FlexBox'
 import FlexSpace from '../styles/FlexSpace'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
 import VerifiedUserOutlinedIcon from '@mui/icons-material/VerifiedUserOutlined'
 import CopyToClipboardBar from '../styles/CopyToClipboardBar'
 import { styled } from '@mui/material/styles'
@@ -138,7 +137,7 @@ const AccountInfo = () => {
               src={
                 fetchedPersonalInfo.image === null
                   ? default_account_image.src
-                  : URL.createObjectURL(fetchedPersonalInfo.image)
+                  : fetchedPersonalInfo.image
               }
               style={{
                 borderRadius: '50%',

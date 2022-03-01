@@ -109,10 +109,6 @@ const account = () => {
         const groupedItems: ICollectionNFTs = groupNFTsIntoCollections(
           collectionUuidToNameItems,
         )
-        console.log('accountInfo.account: ', accountInfo.account)
-        console.log('fetchedCollections: ', fetchedCollections)
-        console.log('userItems: ', userItems)
-        console.log('groupedItems: ', groupedItems)
         setNFTs(collectionUuidToNameItems)
         setCollectionNFTs(groupedItems)
       }
@@ -153,7 +149,6 @@ const account = () => {
         control={<Switch onClick={() => handleDisplayMode()} />}
         label='Collection'
       />
-      <div></div>
       <Divider sx={{ marginBottom: '1rem' }} />
       <AccountNav index={0} />
       {displayMode === displayModeChoices.NFT ? (
