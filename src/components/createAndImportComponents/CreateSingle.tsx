@@ -84,6 +84,7 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
         image: newCollectionData.data.image,
         isNameModified: newCollectionData.data.isNameModified,
         name: newCollectionData.data.name,
+        uuid: newCollectionData.data.uuid,
       }
 
       const updatedCollections: ICollection[] = [
@@ -208,6 +209,7 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
         !validFileUrl ||
         !validMultimediaFileUrl
       ) {
+        alert('Invalid files')
         throw {
           error:
             'Invalid image, multimedia image, file url, or multimedia file url',
@@ -226,10 +228,25 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
           ? ErcType.ERC_1155
           : ErcType.ERC_721
 
+      // fetch collection uuid and validate it
+      let uuid = ''
+      for (const fetchedCollection of fetchedCollections) {
+        if (fetchedCollection.name === collection) {
+          uuid = fetchedCollection.uuid
+          break
+        }
+      }
+      if (uuid === '') {
+        alert("Collection's uuid does not exist")
+        throw {
+          error: `uuid for the collection name ${collection} does not exist`,
+        }
+      }
+
       // format dataFields
       const dataFields: IData = formatDataFields(
         name,
-        collection,
+        uuid,
         typeCheckedBlockchainType,
         typeCheckedErcType,
         fileUrl,
@@ -249,11 +266,13 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
       } else if (typeCheckedErcType === ErcType.ERC_1155) {
         // handle ERC_1155 functions
       } else {
+        alert('Erc Type is invalid')
         throw { error: `Erc Type invalid: ${typeCheckedErcType}` }
       }
 
       // validate item
       if (item === null) {
+        alert('Item does not exist')
         throw { error: 'Item cannot be null' }
       }
 
@@ -265,7 +284,7 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
         multimediaFileUrl: item?.multimedia,
         tokenId: item?.tokenId,
         itemId: item?.itemId,
-        collection: item?.collection,
+        collection,
         ercType: item?.ercType,
       }
 
@@ -273,6 +292,9 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
       const nft = await nftsPost(crudItem)
       console.log('nft: ', nft)
     } catch (error) {
+      alert(
+        'Something went wrong while creating the token. Please try with a different token settings or account',
+      )
       console.log('Something went wrong while creating single token', error)
     }
 

@@ -85,6 +85,7 @@ const CreateMultiple: React.FC<IProps> = ({
         image: newCollectionData.data.image,
         isNameModified: newCollectionData.data.isNameModified,
         name: newCollectionData.data.name,
+        uuid: newCollectionData.data.uuid,
       }
 
       const updatedCollections: ICollection[] = [
@@ -219,6 +220,7 @@ const CreateMultiple: React.FC<IProps> = ({
         !validFileUrls ||
         !validMultimediaFileUrls
       ) {
+        alert('Invalid files')
         throw {
           error:
             'Invalid images, multimedia images, file urls, or multimedia file urls',
@@ -237,12 +239,27 @@ const CreateMultiple: React.FC<IProps> = ({
           ? ErcType.ERC_1155
           : ErcType.ERC_721
 
+      // fetch collection uuid and validate it
+      let uuid = ''
+      for (const fetchedCollection of fetchedCollections) {
+        if (fetchedCollection.name === collection) {
+          uuid = fetchedCollection.uuid
+          break
+        }
+      }
+      if (uuid === '') {
+        alert("Collection's uuid does not exist")
+        throw {
+          error: `uuid for the collection name ${collection} does not exist`,
+        }
+      }
+
       // format data into array of IData
       const dataFieldsList: IData[] = []
       for (let i = 0; i < dataLength; i++) {
         const dataFields: IData = formatDataFields(
           names[i],
-          collection,
+          uuid,
           typeCheckedBlockchainType,
           typeCheckedErcType,
           fileUrls[i],
@@ -259,8 +276,9 @@ const CreateMultiple: React.FC<IProps> = ({
         // create items
         tokenIds = await createItems(dataFieldsList)
 
-        if (!tokenIds || tokenIds === undefined)
+        if (!tokenIds || tokenIds === undefined) {
           throw { error: 'Token ids are invalid' }
+        }
 
         let validTokenIds = true
         let errorTokenIdsMsg = ''
@@ -280,6 +298,7 @@ const CreateMultiple: React.FC<IProps> = ({
       } else if (typeCheckedErcType === ErcType.ERC_1155) {
         // handle ERC_1155 functions
       } else {
+        alert('Erc Type is invalid')
         throw { error: `Erc Type invalid: ${typeCheckedErcType}` }
       }
 
@@ -314,7 +333,7 @@ const CreateMultiple: React.FC<IProps> = ({
         multimediaFileUrls: fetchedMultimediaFiles,
         tokenIds: fetchedTokenIds,
         itemIds: fetchedItemIds,
-        collection: items[0]?.collection,
+        collection,
         ercType: items[0]?.ercType,
       }
 
@@ -322,6 +341,9 @@ const CreateMultiple: React.FC<IProps> = ({
       const nfts = await nftsPostMultiple(crudItems)
       console.log('nfts: ', nfts)
     } catch (error) {
+      alert(
+        'Something went wrong while creating the tokens. Please try with a different token settings or account',
+      )
       console.log('Something went wrong while creating multiple tokens', error)
     }
 
