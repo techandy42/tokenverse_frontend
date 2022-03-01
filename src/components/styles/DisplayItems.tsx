@@ -7,8 +7,9 @@ const DisplayItems = styled('div')(({ theme }) => ({
   gridGap: '4px',
   marginTop: '4px',
   [theme.breakpoints.up(BREAKPOINT_SMALL)]: {
-    gridGap: '28px',
-    marginTop: '28px',
+    gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+    gridGap: '12px',
+    marginTop: '12px',
   },
 }))
 

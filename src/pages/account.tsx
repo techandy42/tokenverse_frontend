@@ -37,6 +37,10 @@ import { selectCollections } from '../redux/features/collectionsSlice'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Switch from '@mui/material/Switch'
 import AccountDisplayNFTs from '../components/account/AccountDisplayNFTs'
+import {
+  LoadingState,
+  DisplayModeChoices,
+} from '../../enums/accountDisplayItem'
 
 const TextLoading = styled('p')(({ theme }) => ({
   fontWeight: 80,
@@ -48,16 +52,6 @@ const TextLoading = styled('p')(({ theme }) => ({
   },
 }))
 
-enum LoadingState {
-  LOADED = 'LOADED',
-  NOT_LOADED = 'NOT_LOADED',
-}
-
-enum displayModeChoices {
-  NFT = 'NFT',
-  COLLECTION = 'COLLECTION',
-}
-
 const account = () => {
   // To fetch accountInfo
   const accountInfo = useAppSelector(selectAccountInfo)
@@ -67,9 +61,7 @@ const account = () => {
   const [NFTs, setNFTs] = useState<IItem[]>([])
   const [collectionNFTs, setCollectionNFTs] = useState<ICollectionNFTs>({})
   const [loadingState, setLoadingState] = useState(LoadingState.NOT_LOADED)
-  const [displayMode, setDisplayMode] = useState(displayModeChoices.NFT)
-
-  console.log('collectionNFTs: ', collectionNFTs)
+  const [displayMode, setDisplayMode] = useState(DisplayModeChoices.NFT)
 
   interface ICollectionUuidToName {
     [key: string]: string
@@ -123,12 +115,12 @@ const account = () => {
   }, [accountInfo, fetchedCollections])
 
   const handleDisplayMode = () => {
-    if (displayMode === displayModeChoices.NFT) {
-      setDisplayMode(displayModeChoices.COLLECTION)
-    } else if (displayMode === displayModeChoices.COLLECTION) {
-      setDisplayMode(displayModeChoices.NFT)
+    if (displayMode === DisplayModeChoices.NFT) {
+      setDisplayMode(DisplayModeChoices.COLLECTION)
+    } else if (displayMode === DisplayModeChoices.COLLECTION) {
+      setDisplayMode(DisplayModeChoices.NFT)
     } else {
-      setDisplayMode(displayModeChoices.NFT)
+      setDisplayMode(DisplayModeChoices.NFT)
     }
   }
 
@@ -151,9 +143,9 @@ const account = () => {
       />
       <Divider sx={{ marginBottom: '1rem' }} />
       <AccountNav index={0} />
-      {displayMode === displayModeChoices.NFT ? (
+      {displayMode === DisplayModeChoices.NFT ? (
         <AccountDisplayNFTs NFTs={NFTs} />
-      ) : displayMode === displayModeChoices.COLLECTION ? (
+      ) : displayMode === DisplayModeChoices.COLLECTION ? (
         <AccountDisplayCollections collectionNFTs={collectionNFTs} />
       ) : (
         <AccountDisplayNFTs NFTs={NFTs} />
