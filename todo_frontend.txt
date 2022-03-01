@@ -1,0 +1,8 @@
+*** This file contains todos for the front-end ***
+
+1) set-up account pages
+2) set-up user pages
+3) set-up collection pages
+4) set-up collection edit page
+
+5) modify the metadata and data for NFT in solidity and associated Javascript / Typescript code to fit the ERC-721 standard

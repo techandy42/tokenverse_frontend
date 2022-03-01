@@ -1,6 +1,6 @@
 import React from 'react'
 import ICollectionNFTs from '../../../interfaces/ICollectionNFTs'
-import AccountDisplayCollection from './AccountDisplayCollection'
+import CollectionCard from '../card/CollectionCard'
 import DisplayItems from '../styles/DisplayItems'
 
 interface IProps {
@@ -21,7 +21,7 @@ const AccountDisplayCollections: React.FC<IProps> = ({ collectionNFTs }) => {
   return (
     <DisplayItems>
       {collectionNames.map((collectionName) => (
-        <AccountDisplayCollection
+        <CollectionCard
           collectionName={collectionName}
           NFTs={collectionNFTs[collectionName]}
         />

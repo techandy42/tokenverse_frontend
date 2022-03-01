@@ -12,10 +12,7 @@ interface IProps {
   NFTs: IItem[]
 }
 
-const AccountDisplayCollection: React.FC<IProps> = ({
-  collectionName,
-  NFTs,
-}) => {
+const CollectionCard: React.FC<IProps> = ({ collectionName, NFTs }) => {
   const formatCollectionName = (collectionName: string) => {
     if (collectionName.length > 14) {
       return collectionName.slice(0, 12) + '..'
@@ -33,19 +30,22 @@ const AccountDisplayCollection: React.FC<IProps> = ({
           alt='Image not found'
           sx={{ height: { xs: 120, sm: 160, md: 220 } }}
         />
-        <CardContent>
+        <CardContent sx={{ height: { xs: 60, sm: 80, md: 100 } }}>
           <Typography
-            gutterBottom
             variant='h6'
             component='div'
-            sx={{ fontWeight: 300, fontSize: { xs: 14, sm: 18, md: 24 } }}
+            sx={{
+              fontWeight: 400,
+              fontSize: { xs: 12, md: 20 },
+              paddingBottom: { xs: '0.12rem', md: '0.2rem' },
+            }}
           >
             {formatCollectionName(collectionName)}
           </Typography>
           <Typography
             variant='body2'
             color='text.secondary'
-            sx={{ fontSize: { xs: 12, sm: 14, md: 16 } }}
+            sx={{ fontSize: { xs: 10, md: 14 } }}
           >
             {NFTs.length} items
           </Typography>
@@ -55,4 +55,4 @@ const AccountDisplayCollection: React.FC<IProps> = ({
   )
 }
 
-export default AccountDisplayCollection
+export default CollectionCard
