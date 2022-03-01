@@ -22,7 +22,7 @@ export type AccountDataState = {
   role: UserRole
 }
 
-const initialState: AccountDataState = {
+export const initialState: AccountDataState = {
   email: '',
   address: emptyAddress,
   companyName: '',

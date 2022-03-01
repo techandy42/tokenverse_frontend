@@ -13,8 +13,6 @@ interface IProps {
 }
 
 const NFTCard: React.FC<IProps> = ({ NFT }) => {
-  console.log('NFT: ', NFT)
-
   const formatNFTName = (NFTName: string) => {
     if (NFTName.length > 14) {
       return NFTName.slice(0, 12) + '..'

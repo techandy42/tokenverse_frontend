@@ -7,7 +7,7 @@ export type CollectionsState = {
   collections: ICollection[]
 }
 
-const initialState: CollectionsState = {
+export const initialState: CollectionsState = {
   collections: new Array(),
 }
 

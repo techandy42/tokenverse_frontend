@@ -19,26 +19,14 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import IPersonalInfo from '../../../interfaces/IPersonalInfo'
 import AccountVerificationPopup from './AccountVerificationPopup'
 import Tooltip from '@mui/material/Tooltip'
-
-// Fetch the personal information of the back-end
-const fetchedPersonalInfo: IPersonalInfo = {
-  joinedDate: new Date(),
-  image: null,
-  userName: 'Andy Lee',
-  companyName: 'Tokenverse',
-  description:
-    'I am the founder of Tokenverse, which is an NFT and SFT trading platform for all virtual reality platforms and games.',
-  email: 'techandy42@email.com',
-
-  mainLink: 'https://google.com',
-  facebookLink: 'https://facebook.com',
-  instagramLink: 'https://instagram.com',
-  twitterLink: 'https://twitter.com',
-  linkedInLink: 'https://linkedin.com',
-
-  verified: true,
-  verificationDate: new Date(),
-}
+import { selectAccountInfo } from '../../redux/features/accountInfoSlice'
+import {
+  selectAccountData,
+  AccountDataState,
+  initialState as initialAccountDataState,
+} from '../../redux/features/accountDataSlice'
+import { useAppSelector } from '../../redux/app/hooks'
+import emptyAddress from '../../../constants/emptyAddress'
 
 const VerificationBoxUp750 = styled('div')(({ theme }) => ({
   display: 'none',
@@ -55,8 +43,6 @@ const VerificationBoxDown750 = styled('div')(({ theme }) => ({
 }))
 
 const DisplayPicture = styled('div')(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
   marginLeft: '24px',
   marginRight: '32px',
   [theme.breakpoints.up(BREAKPOINT_SMALL)]: {
@@ -70,34 +56,36 @@ const DisplayPicture = styled('div')(({ theme }) => ({
 }))
 
 const AccountInfo = () => {
-  const [accountInfo, setAccountInfo] = useState<IAccountInfo | null>(null)
+  // Fetching users' informations
+  const fetchedAccountInfo = useAppSelector(selectAccountInfo)
+  const fetchedAccountData = useAppSelector(selectAccountData)
+
+  const [fetchedPersonalInfo, setPersonalInfo] = useState<AccountDataState>(
+    initialAccountDataState,
+  )
   const [isAccountVerificationPopupOpen, setIsAccountVerificationPopupOpen] =
     useState<boolean>(false)
 
+  useEffect(() => {
+    if (fetchedAccountData.address !== emptyAddress) {
+      setPersonalInfo(fetchedAccountData)
+    }
+  }, [fetchedAccountData])
+
   const displayAccountInfo = () => {
-    if (accountInfo !== null) {
-      if (accountInfo.errorMessage === null) {
-        return (
-          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            <CopyToClipboardBar
-              label='Account'
-              value={accountInfo.accountAddress}
-            />
-            <CopyToClipboardBar
-              label='Balance'
-              value={accountInfo.etherBalance}
-            />
-          </Box>
-        )
-      } else {
-        return (
-          <>
-            <Typography sx={{ fontWeight: 200 }}>
-              {accountInfo.errorMessage}
-            </Typography>
-          </>
-        )
-      }
+    if (fetchedAccountInfo.account !== emptyAddress) {
+      return (
+        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+          <CopyToClipboardBar
+            label='Account'
+            value={fetchedAccountInfo.account}
+          />
+          <CopyToClipboardBar
+            label='Balance'
+            value={fetchedAccountInfo.etherBalance}
+          />
+        </Box>
+      )
     } else {
       return (
         <>
@@ -117,10 +105,6 @@ const AccountInfo = () => {
     }
   }
 
-  const handleImageFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Set the image file in the back-end
-  }
-
   const toggleAccountVerificationPopup = () => {
     if (!fetchedPersonalInfo.verified) return
     setIsAccountVerificationPopupOpen(!isAccountVerificationPopupOpen)
@@ -132,38 +116,25 @@ const AccountInfo = () => {
         <FlexSpace />
         {/* Displaying picture */}
         <DisplayPicture>
-          <label htmlFor='file-input'>
-            <img
-              src={
-                fetchedPersonalInfo.image === null
-                  ? default_account_image.src
-                  : fetchedPersonalInfo.image
-              }
-              style={{
-                borderRadius: '50%',
-                width: '10rem',
-                height: '10rem',
-                objectFit: 'cover',
-                cursor: 'pointer',
-              }}
-              alt='No Image Found'
-            />
-            <input
-              id='file-input'
-              type='file'
-              accept='image/*'
-              hidden
-              onChange={(e: any) => handleImageFile(e)}
-              onClick={(e: any) => {
-                e.target.value = null
-              }}
-            />
-          </label>
-          {fetchedPersonalInfo.image !== null && (
-            <Button disableRipple className='no-hover' sx={{ fontSize: 12 }}>
-              Remove
-            </Button>
-          )}
+          <Link href={'/account/edit'}>
+            <Tooltip placement='bottom' title='Edit'>
+              <img
+                src={
+                  fetchedPersonalInfo.image === null
+                    ? default_account_image.src
+                    : fetchedPersonalInfo.image
+                }
+                style={{
+                  borderRadius: '50%',
+                  width: '10rem',
+                  height: '10rem',
+                  objectFit: 'cover',
+                  cursor: 'pointer',
+                }}
+                alt='No Image Found'
+              />
+            </Tooltip>
+          </Link>
         </DisplayPicture>
         {/* Displaying information about the user */}
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
