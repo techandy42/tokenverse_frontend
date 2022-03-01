@@ -75,18 +75,6 @@ const AccountInfo = () => {
   const [isAccountVerificationPopupOpen, setIsAccountVerificationPopupOpen] =
     useState<boolean>(false)
 
-  /*
-  useEffect(() => {
-    const callAccount = async () => {
-      const accountInfo = await getAccount()
-      if (accountInfo !== undefined) {
-        setAccountInfo(accountInfo)
-      }
-    }
-    callAccount()
-  }, [])
-  */
-
   const displayAccountInfo = () => {
     if (accountInfo !== null) {
       if (accountInfo.errorMessage === null) {
