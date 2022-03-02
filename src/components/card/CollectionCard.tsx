@@ -28,7 +28,7 @@ const CollectionCard: React.FC<IProps> = ({ collectionName, NFTs }) => {
           component='img'
           src={NFTs.length === 0 ? default_photo_image.src : NFTs[0].fileUrl}
           alt='Image not found'
-          sx={{ height: { xs: 120, sm: 160, md: 220 } }}
+          sx={{ height: { xs: 120, sm: 160, md: 200 } }}
         />
         <CardContent sx={{ height: { xs: 60, sm: 80, md: 100 } }}>
           <Typography
