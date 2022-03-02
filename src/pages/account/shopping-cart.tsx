@@ -1,11 +1,9 @@
 import React from 'react'
+import Account from '../../components/account/Account'
+import { PageType } from '../../../enums/PageType'
 
 const shoppingCart = () => {
-  return (
-    <div>
-      <h1>Account Shopping Cart</h1>
-    </div>
-  )
+  return <Account pageType={PageType.CART} />
 }
 
 export default shoppingCart

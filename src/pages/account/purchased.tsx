@@ -1,11 +1,9 @@
 import React from 'react'
+import Account from '../../components/account/Account'
+import { PageType } from '../../../enums/PageType'
 
 const purchased = () => {
-  return (
-    <div>
-      <h1>Account Purchased</h1>
-    </div>
-  )
+  return <Account pageType={PageType.PURCHASED} />
 }
 
 export default purchased

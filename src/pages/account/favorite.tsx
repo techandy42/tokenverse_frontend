@@ -1,11 +1,9 @@
 import React from 'react'
+import Account from '../../components/account/Account'
+import { PageType } from '../../../enums/PageType'
 
 const favorite = () => {
-  return (
-    <div>
-      <h1>Favorite</h1>
-    </div>
-  )
+  return <Account pageType={PageType.FAVORITE} />
 }
 
 export default favorite

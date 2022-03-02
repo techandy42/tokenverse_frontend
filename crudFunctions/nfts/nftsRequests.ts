@@ -10,6 +10,7 @@ import {
   ProductKeyVirtualAssetCategory,
   ProductKeyAccessTokenCategory,
 } from '../../enums/nftMetadata'
+import encodeTokenIds from '../../helperFunctions/encodeTokenIds'
 
 export interface INft {
   address: string
@@ -104,3 +105,7 @@ export const nftsDelete = (tokenId: number) =>
 export const nftsGetAll = () => axios.get(urlNfts)
 export const nftsGetOne = (tokenId: number) =>
   axios.get(`${urlNfts}/${tokenId}`)
+export const nftsGetMultiple = (tokenIds: number[]) => {
+  const tokenIdsEncoded = encodeTokenIds(tokenIds)
+  return axios.get(`${urlNfts}/multiple/${tokenIdsEncoded}`)
+}

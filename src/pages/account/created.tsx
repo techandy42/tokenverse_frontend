@@ -1,11 +1,9 @@
 import React from 'react'
+import Account from '../../components/account/Account'
+import { PageType } from '../../../enums/PageType'
 
 const created = () => {
-  return (
-    <div>
-      <h1>Account Created</h1>
-    </div>
-  )
+  return <Account pageType={PageType.CREATED} />
 }
 
 export default created
