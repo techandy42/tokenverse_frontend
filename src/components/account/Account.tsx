@@ -47,6 +47,10 @@ const TextLoading = styled('p')(({ theme }) => ({
   },
 }))
 
+interface ICollectionUuidToName {
+  [key: string]: string
+}
+
 const Account: React.FC<IProps> = ({ pageType }) => {
   // To fetch accountInfo
   const accountInfo = useAppSelector(selectAccountInfo)
@@ -57,10 +61,6 @@ const Account: React.FC<IProps> = ({ pageType }) => {
   const [collectionNFTs, setCollectionNFTs] = useState<ICollectionNFTs>({})
   const [loadingState, setLoadingState] = useState(LoadingState.NOT_LOADED)
   const [displayMode, setDisplayMode] = useState(DisplayModeChoices.NFT)
-
-  interface ICollectionUuidToName {
-    [key: string]: string
-  }
 
   const renameNFTsCollectionUuidToName = (
     items: IItem[],
@@ -149,17 +149,13 @@ const Account: React.FC<IProps> = ({ pageType }) => {
       accountInfo.account !== emptyAddress &&
       fetchedCollections.length !== 0
     ) {
-      console.log('getNFTs() is called')
+      // resetting NFTs data
+      setNFTs([])
+      setCollectionNFTs({})
+      // fetching NFTs from smart contract
       getNFTs()
     }
   }, [accountInfo, fetchedCollections])
-
-  // Fix two bugs
-  // 1. getNfts() is being called 3 times, it should only be called once
-  // 2. when changing the account to a new account without any items, the items are not being updated
-  useEffect(() => {
-    console.log('accountInfo has changed')
-  }, [accountInfo])
 
   const getPageTypeIndex = (pageType: PageType) => {
     if (pageType === PageType.ALL) {
