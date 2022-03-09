@@ -137,6 +137,7 @@ const Account: React.FC<IProps> = ({ pageType }) => {
       } else {
         userItems = filterDuplicateItems(userCreatedItems, userOwnedItems)
       }
+      // group NFTs into collections
       if (userItems !== null) {
         const collectionUuidToNameItems: IItem[] =
           renameNFTsCollectionUuidToName(userItems, fetchedCollections)

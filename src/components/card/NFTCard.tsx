@@ -18,14 +18,56 @@ import {
 import { IUserInfo } from '../../../crudFunctions/users/usersRequests'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import FavoriteIcon from '@mui/icons-material/Favorite'
+import CardType from '../../../enums/CardType'
 
 interface IProps {
   NFT: IItem
+  size: CardType
 }
 
-const NFTCard: React.FC<IProps> = ({ NFT }) => {
+interface IBreakpoints {
+  xs?: number | string
+  sm?: number | string
+  md?: number | string
+  lg?: number | string
+  xl?: number | string
+}
+
+interface ISize {
+  cardMediaSize: IBreakpoints
+  cardContentSize: IBreakpoints
+  smallFont: IBreakpoints
+  largeFont: IBreakpoints
+  fontWeight: number
+  linePaddingBottom: IBreakpoints
+}
+
+const NFTCard: React.FC<IProps> = ({ NFT, size }) => {
   const accountInfo = useAppSelector(selectAccountInfo)
   const [likes, setLikes] = useState(0)
+
+  /* Initializing sizes code starts */
+  // intializing sizes as if size is CardType.SMALL
+  let sizes: ISize = {
+    cardMediaSize: { xs: 120 },
+    cardContentSize: { xs: 80 },
+    smallFont: { xs: 10 },
+    largeFont: { xs: 12 },
+    fontWeight: 400,
+    linePaddingBottom: { xs: '0.12rem' },
+  }
+  // change the size if size is CardType.LARGE
+  if (size === CardType.LARGE) {
+    sizes = {
+      cardMediaSize: { xs: 120, sm: 160, md: 200 },
+      cardContentSize: { xs: 80, sm: 80, md: 100 },
+      smallFont: { xs: 10, md: 12 },
+      largeFont: { xs: 12, md: 16 },
+      fontWeight: 400,
+      linePaddingBottom: { xs: '0.12rem', md: '0.2rem' },
+    }
+  }
+  /* Initializing sizes code ends */
 
   useEffect(() => {
     const getLikes = async () => {
@@ -56,24 +98,24 @@ const NFTCard: React.FC<IProps> = ({ NFT }) => {
           component='img'
           image={NFT.fileUrl}
           alt='Image not found'
-          sx={{ height: { xs: 120, sm: 160, md: 200 } }}
+          sx={{ height: sizes.cardMediaSize }}
         />
-        <CardContent sx={{ height: { xs: 80, sm: 80, md: 100 } }}>
+        <CardContent sx={{ height: sizes.cardContentSize }}>
           <FlexBox
             sx={{
-              paddingBottom: { xs: '0.12rem', md: '0.2rem' },
+              paddingBottom: sizes.linePaddingBottom,
             }}
           >
             <Typography
               color='text.secondary'
-              sx={{ fontSize: { xs: 10, md: 12 } }}
+              sx={{ fontSize: sizes.smallFont }}
             >
               {NFT.collection}
             </Typography>
             <FlexSpace />
             <Typography
               color='text.secondary'
-              sx={{ fontSize: { xs: 10, md: 12 } }}
+              sx={{ fontSize: sizes.smallFont }}
             >
               {NFT.isOnSale ? 'Price' : null}
             </Typography>
@@ -81,14 +123,14 @@ const NFTCard: React.FC<IProps> = ({ NFT }) => {
           <FlexBox>
             <Typography
               component='div'
-              sx={{ fontWeight: 400, fontSize: { xs: 12, md: 16 } }}
+              sx={{ fontWeight: sizes.fontWeight, fontSize: sizes.largeFont }}
             >
               {formatNFTName(NFT.name)}
             </Typography>
             <FlexSpace />
             <Typography
               component='div'
-              sx={{ fontWeight: 400, fontSize: { xs: 12, md: 16 } }}
+              sx={{ fontWeight: sizes.fontWeight, fontSize: sizes.largeFont }}
             >
               {NFT.isOnSale ? NFT.price : null}
             </Typography>
@@ -97,7 +139,7 @@ const NFTCard: React.FC<IProps> = ({ NFT }) => {
             <FlexSpace />
             <Typography
               component='div'
-              sx={{ fontWeight: 400, fontSize: { xs: 12, md: 16 } }}
+              sx={{ fontWeight: sizes.fontWeight, fontSize: sizes.largeFont }}
             >
               Likes {likes}
             </Typography>

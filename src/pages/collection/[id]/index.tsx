@@ -13,6 +13,12 @@ import {
   AccountInfoState,
 } from '../../../redux/features/accountInfoSlice'
 import emptyAddress from '../../../../constants/emptyAddress'
+import StyledWidePageBase from '../../../components/styles/StyledWidePageBase'
+import { Button, Typography } from '@mui/material'
+import CollectionPage from '../../../components/collection/CollectionPage'
+import fetchItemsByItemIds from '../../../../tokenFunctions/getters/fetchItemsByItemIds'
+import IItem from '../../../../interfaces/IItem'
+import INft from '../../../../interfaces/schema/INft'
 
 const initialCollectionData: ICollectionRelation = {
   ...initialCollection,
@@ -29,6 +35,9 @@ const collectionPage = () => {
   const [collectionData, setCollectionData] =
     useState<ICollectionRelation | null>(initialCollectionData)
   const [isCreator, setIsCreator] = useState(false)
+  const [nfts, setNfts] = useState<IItem[]>([])
+
+  console.log('collectionData: ', collectionData)
 
   useEffect(() => {
     const getCollection = async (id: string) => {
@@ -37,6 +46,18 @@ const collectionPage = () => {
       if (fetchedCollection.data !== null) {
         // collection exists
         setCollectionData(fetchedCollection.data)
+        const collectionNFTItemIds = fetchedCollection.data.nfts.map(
+          (nft: INft) => nft.itemId,
+        )
+        const collectionItems: IItem[] | null = await fetchItemsByItemIds(
+          collectionNFTItemIds,
+        )
+        for (const collectionItem of collectionItems) {
+          collectionItem.collection = fetchedCollection.data?.name
+        }
+        if (collectionItems !== null) {
+          setNfts(collectionItems)
+        }
       } else {
         // collection doesn't exist
         setCollectionData(null)
@@ -75,21 +96,45 @@ const collectionPage = () => {
   /* Remove starts */
   console.log('id: ', id)
   console.log('collectionData: ', collectionData)
-  /*
-  console.log('isCreator: ', isCreator)
-  console.log('accountInfo.account: ', accountInfo.account)
-  console.log('collectionData.user?.address: ', collectionData.user?.address)
-  */
   /* Remove ends */
 
   if (collectionData === null) {
-    return <div>Collection does not exist</div>
+    // if collection does not exist
+    return (
+      <StyledWidePageBase>
+        <Typography variant='h4' className='font-chakra'>
+          Collection does not exist
+        </Typography>
+        <Button onClick={() => router.back()}>Go Back</Button>
+      </StyledWidePageBase>
+    )
   } else if (collectionData.user?.address === emptyAddress) {
-    return <div>Collection has not loaded yet</div>
+    // if collection is loading
+    return (
+      <StyledWidePageBase>
+        <Typography variant='h4' className='font-chakra'>
+          Collection is loading...
+        </Typography>
+      </StyledWidePageBase>
+    )
   } else if (!isCreator) {
-    return <div>I'm not the creator</div>
+    // if collection is not owned by the user
+    return (
+      <CollectionPage
+        isCreator={false}
+        collectionData={collectionData}
+        nfts={nfts}
+      />
+    )
   } else {
-    return <div>I'm the creator</div>
+    // if collection is owned by the user
+    return (
+      <CollectionPage
+        isCreator={true}
+        collectionData={collectionData}
+        nfts={nfts}
+      />
+    )
   }
 }
 

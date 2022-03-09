@@ -106,10 +106,11 @@ export const nftsDelete = (tokenId: number) =>
 export const nftsGetAll = () => axios.get(urlNfts)
 export const nftsGetOne = (tokenId: number) =>
   axios.get(`${urlNfts}/${tokenId}`)
+/* Returns JSON data if tokenIds.length > 0, else returns null */
 export const nftsGetMultiple = (tokenIds: number[]) => {
+  if (tokenIds.length === 0) return null
   const tokenIdsEncoded = encodeTokenIds(tokenIds)
   return axios.get(`${urlNfts}/multiple/${tokenIdsEncoded}`)
-  // return tokenIdsEncoded
 }
 /* like functions routes starts */
 export const nftsGetLikes = (tokenId: number) =>
