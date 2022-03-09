@@ -1,4 +1,7 @@
 const encodeTokenIds = (tokenIds: number[]) => {
+  if (tokenIds.length === 0) {
+    return ''
+  }
   let encodedString = ''
   for (const tokenId of tokenIds) {
     encodedString += `id=${tokenId}&`

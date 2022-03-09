@@ -11,6 +11,7 @@ import {
   ProductKeyAccessTokenCategory,
 } from '../../enums/nftMetadata'
 import encodeTokenIds from '../../helperFunctions/encodeTokenIds'
+import { IUserInfo } from '../users/usersRequests'
 
 export interface INft {
   address: string
@@ -108,4 +109,13 @@ export const nftsGetOne = (tokenId: number) =>
 export const nftsGetMultiple = (tokenIds: number[]) => {
   const tokenIdsEncoded = encodeTokenIds(tokenIds)
   return axios.get(`${urlNfts}/multiple/${tokenIdsEncoded}`)
+  // return tokenIdsEncoded
 }
+/* like functions routes starts */
+export const nftsGetLikes = (tokenId: number) =>
+  axios.get(`${urlNfts}/likes/${tokenId}`)
+export const nftsPutLikes = (tokenId: number, userInfo: IUserInfo) =>
+  axios.put(`${urlNfts}/likes/${tokenId}`, userInfo)
+export const nftsPutUnlikes = (tokenId: number, userInfo: IUserInfo) =>
+  axios.put(`${urlNfts}/likes/${tokenId}`, userInfo)
+/* like functions routes ends */

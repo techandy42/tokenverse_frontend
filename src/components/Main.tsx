@@ -64,6 +64,8 @@ const Main: React.FC<IProps> = ({ children }) => {
       verified: userAccount.data.verified,
       verificationDate: userAccount.data.verificationDate,
       role: userAccount.data.role,
+      likedNfts: userAccount.data.likedNfts,
+      cartNfts: userAccount.data.cartNfts,
     }
 
     dispatch(updateAccountData(data))
@@ -92,6 +94,9 @@ const Main: React.FC<IProps> = ({ children }) => {
 
           // users' collections fetched
           const fetchedCollectionsData = await usersCollectionsGet(account)
+
+          console.log('fetchedCollectionsData: ', fetchedCollectionsData)
+
           const collections: ICollection[] =
             fetchedCollectionsData.data?.collections === undefined
               ? new Array()

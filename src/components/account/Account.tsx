@@ -17,6 +17,7 @@ import emptyAddress from '../../../constants/emptyAddress'
 import groupNFTsIntoCollections from '../../../helperFunctions/account/groupNFTsIntoCollections'
 import filterDuplicateItems from '../../../helperFunctions/account/filterDuplicateItems'
 import { selectCollections } from '../../redux/features/collectionsSlice'
+import { selectAccountData } from '../../redux/features/accountDataSlice'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Switch from '@mui/material/Switch'
 import AccountDisplayNFTs from '../../components/account/AccountDisplayNFTs'
@@ -54,6 +55,7 @@ interface ICollectionUuidToName {
 const Account: React.FC<IProps> = ({ pageType }) => {
   // To fetch accountInfo
   const accountInfo = useAppSelector(selectAccountInfo)
+  const accountData = useAppSelector(selectAccountData)
   const fetchedCollectionsData = useAppSelector(selectCollections)
   const fetchedCollections: ICollection[] = fetchedCollectionsData.collections
 
@@ -61,6 +63,8 @@ const Account: React.FC<IProps> = ({ pageType }) => {
   const [collectionNFTs, setCollectionNFTs] = useState<ICollectionNFTs>({})
   const [loadingState, setLoadingState] = useState(LoadingState.NOT_LOADED)
   const [displayMode, setDisplayMode] = useState(DisplayModeChoices.NFT)
+
+  console.log('accountData: ', accountData)
 
   const renameNFTsCollectionUuidToName = (
     items: IItem[],
@@ -97,40 +101,39 @@ const Account: React.FC<IProps> = ({ pageType }) => {
         userItems = userOwnedItems
       } else if (pageType === PageType.CART) {
         // fetch user cart items
-        const fetchedUserCartItems = await usersCartGet(accountInfo.account)
-        const fetchedUserCartItemsData: number[] =
-          fetchedUserCartItems === undefined ? null : fetchedUserCartItems.data
-        let fetchedCartNFTs = null
-        if (fetchedUserCartItemsData.length !== 0) {
-          fetchedCartNFTs = await nftsGetMultiple(fetchedUserCartItemsData)
+        console.log('accountData.cartNfts: ', accountData.cartNfts)
+        console.log('accountData.likedNfts: ', accountData.likedNfts)
+        console.log('accountData.address: ', accountData.address)
+        if (accountData.cartNfts.length === 0) {
+          userItems = null
+        } else {
+          let fetchedCartNFTs = await nftsGetMultiple(accountData.cartNfts)
+          console.log('fetchedCartNFTs: ', fetchedCartNFTs)
           fetchedCartNFTs =
             fetchedCartNFTs === undefined ? null : fetchedCartNFTs
+          userItems =
+            fetchedCartNFTs === null
+              ? null
+              : await fetchItemsByItemIds(
+                  fetchedCartNFTs.data.map((NFT: INftRelation) => NFT.itemId),
+                )
         }
-        userItems =
-          fetchedCartNFTs === null
-            ? null
-            : await fetchItemsByItemIds(
-                fetchedCartNFTs.data.map((NFT: INftRelation) => NFT.itemId),
-              )
       } else if (pageType === PageType.FAVORITE) {
         // fetch user liked items
-        const fetchedUserLikedItems = await usersLikedGet(accountInfo.account)
-        const fetchedUserLikedItemsData: number[] =
-          fetchedUserLikedItems === undefined
-            ? null
-            : fetchedUserLikedItems.data
-        let fetchedLikedNFTs = null
-        if (fetchedUserLikedItemsData.length !== 0) {
-          fetchedLikedNFTs = await nftsGetMultiple(fetchedUserLikedItemsData)
+        if (accountData.likedNfts.length === 0) {
+          userItems = null
+        } else {
+          let fetchedLikedNFTs = await nftsGetMultiple(accountData.likedNfts)
+          console.log('fetchedCartNFTs: ', fetchedLikedNFTs)
           fetchedLikedNFTs =
             fetchedLikedNFTs === undefined ? null : fetchedLikedNFTs
+          userItems =
+            fetchedLikedNFTs === null
+              ? null
+              : await fetchItemsByItemIds(
+                  fetchedLikedNFTs.data.map((NFT: INftRelation) => NFT.itemId),
+                )
         }
-        userItems =
-          fetchedLikedNFTs === null
-            ? null
-            : await fetchItemsByItemIds(
-                fetchedLikedNFTs.data.map((NFT: INftRelation) => NFT.itemId),
-              )
       } else {
         userItems = filterDuplicateItems(userCreatedItems, userOwnedItems)
       }
@@ -147,6 +150,7 @@ const Account: React.FC<IProps> = ({ pageType }) => {
     }
     if (
       accountInfo.account !== emptyAddress &&
+      accountData.address !== emptyAddress &&
       fetchedCollections.length !== 0
     ) {
       // resetting NFTs data
@@ -155,7 +159,7 @@ const Account: React.FC<IProps> = ({ pageType }) => {
       // fetching NFTs from smart contract
       getNFTs()
     }
-  }, [accountInfo, fetchedCollections])
+  }, [accountInfo, accountData, fetchedCollections])
 
   const getPageTypeIndex = (pageType: PageType) => {
     if (pageType === PageType.ALL) {
@@ -192,6 +196,8 @@ const Account: React.FC<IProps> = ({ pageType }) => {
         <TextLoading className='font-chakra'>Loading...</TextLoading>
       </StyledPageBase>
     )
+
+  console.log('account address: ', accountInfo.account)
 
   return (
     <StyledPageBase>

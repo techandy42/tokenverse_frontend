@@ -30,7 +30,7 @@ const CollectionCard: React.FC<IProps> = ({ collectionName, NFTs }) => {
           alt='Image not found'
           sx={{ height: { xs: 120, sm: 160, md: 200 } }}
         />
-        <CardContent sx={{ height: { xs: 60, sm: 80, md: 100 } }}>
+        <CardContent sx={{ height: { xs: 80, sm: 80, md: 100 } }}>
           <Typography
             variant='h6'
             component='div'

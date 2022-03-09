@@ -20,6 +20,8 @@ export type AccountDataState = {
   verified: boolean
   verificationDate: Date
   role: UserRole
+  likedNfts: number[]
+  cartNfts: number[]
 }
 
 export const initialState: AccountDataState = {
@@ -38,6 +40,8 @@ export const initialState: AccountDataState = {
   verified: false,
   verificationDate: new Date(0, 0, 0, 0, 0, 0),
   role: UserRole.USER,
+  likedNfts: new Array(),
+  cartNfts: new Array(),
 }
 
 export const accountDataSlice = createSlice({
@@ -60,6 +64,8 @@ export const accountDataSlice = createSlice({
       state.verified = action.payload.verified
       state.verificationDate = action.payload.verificationDate
       state.role = action.payload.role
+      state.likedNfts = action.payload.likedNfts
+      state.cartNfts = action.payload.cartNfts
     },
   },
 })
