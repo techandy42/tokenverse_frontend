@@ -27,33 +27,10 @@ import {
 } from '../../redux/features/accountDataSlice'
 import { useAppSelector } from '../../redux/app/hooks'
 import emptyAddress from '../../../constants/emptyAddress'
-
-const VerificationBoxUp750 = styled('div')(({ theme }) => ({
-  display: 'none',
-  [theme.breakpoints.up(BREAKPOINT_SMALL)]: {
-    display: 'block',
-  },
-}))
-
-const VerificationBoxDown750 = styled('div')(({ theme }) => ({
-  display: 'block',
-  [theme.breakpoints.up(BREAKPOINT_SMALL)]: {
-    display: 'none',
-  },
-}))
-
-const DisplayPicture = styled('div')(({ theme }) => ({
-  marginLeft: '24px',
-  marginRight: '32px',
-  [theme.breakpoints.up(BREAKPOINT_SMALL)]: {
-    marginLeft: '32px',
-    marginRight: '48px',
-  },
-  [theme.breakpoints.up(BREAKPOINT_LARGE)]: {
-    marginLeft: '48px',
-    marginRight: '64px',
-  },
-}))
+import DisplayPicture from '../styles/pageInformations/DisplayPicture'
+import VerificationBoxUp750 from '../styles/pageInformations/VerificationBoxUp750'
+import VerificationBoxDown750 from '../styles/pageInformations/VerificationBoxDown750'
+import formatPersonalInfoString from '../../../helperFunctions/formatPersonalInfoString'
 
 const AccountInfo = () => {
   // Fetching users' informations
@@ -92,17 +69,6 @@ const AccountInfo = () => {
           <Typography sx={{ fontWeight: 200 }}>No account info</Typography>
         </>
       )
-    }
-  }
-
-  const formatPersonalInfoString = (
-    fetchedPersonalInfoString: string,
-    limit: number,
-  ) => {
-    if (fetchedPersonalInfoString.length > limit) {
-      return fetchedPersonalInfoString.slice(0, limit - 2) + '..'
-    } else {
-      return fetchedPersonalInfoString
     }
   }
 

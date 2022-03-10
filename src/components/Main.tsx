@@ -1,5 +1,5 @@
 import { ReactElement, useEffect } from 'react'
-import { useAppDispatch, useAppSelector } from '../redux/app/hooks'
+import { useAppDispatch } from '../redux/app/hooks'
 import {
   updateAccount,
   updateEtherBalance,

@@ -67,11 +67,15 @@ export const accountDataSlice = createSlice({
       state.likedNfts = action.payload.likedNfts
       state.cartNfts = action.payload.cartNfts
     },
+    updateAccountDataLikedNfts: (state, action: PayloadAction<number[]>) => {
+      state.likedNfts = action.payload
+    },
   },
 })
 
 // export actions from slice
-export const { updateAccountData } = accountDataSlice.actions
+export const { updateAccountData, updateAccountDataLikedNfts } =
+  accountDataSlice.actions
 
 // export selector that allows access to actions above
 export const selectAccountData = (state: RootState) => state.accountData

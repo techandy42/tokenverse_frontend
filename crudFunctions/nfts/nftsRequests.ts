@@ -118,5 +118,5 @@ export const nftsGetLikes = (tokenId: number) =>
 export const nftsPutLikes = (tokenId: number, userInfo: IUserInfo) =>
   axios.put(`${urlNfts}/likes/${tokenId}`, userInfo)
 export const nftsPutUnlikes = (tokenId: number, userInfo: IUserInfo) =>
-  axios.put(`${urlNfts}/likes/${tokenId}`, userInfo)
+  axios.put(`${urlNfts}/unlikes/${tokenId}`, userInfo)
 /* like functions routes ends */

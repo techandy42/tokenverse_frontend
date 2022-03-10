@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography'
 import IItem from '../../../interfaces/IItem'
 import Link from 'next/link'
 import default_photo_image from '../../../images/default_photo_image.jpg'
+import formatPersonalInfoString from '../../../helperFunctions/formatPersonalInfoString'
 
 interface IProps {
   collectionName: string
@@ -13,14 +14,6 @@ interface IProps {
 }
 
 const CollectionCard: React.FC<IProps> = ({ collectionName, NFTs }) => {
-  const formatCollectionName = (collectionName: string) => {
-    if (collectionName.length > 14) {
-      return collectionName.slice(0, 12) + '..'
-    } else {
-      return collectionName
-    }
-  }
-
   return (
     <Link href={`/collection/${collectionName}`}>
       <Card sx={{ cursor: 'pointer' }}>
@@ -40,7 +33,7 @@ const CollectionCard: React.FC<IProps> = ({ collectionName, NFTs }) => {
               paddingBottom: { xs: '0.12rem', md: '0.2rem' },
             }}
           >
-            {formatCollectionName(collectionName)}
+            {formatPersonalInfoString(collectionName, 14)}
           </Typography>
           <Typography
             variant='body2'

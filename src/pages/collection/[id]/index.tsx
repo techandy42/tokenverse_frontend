@@ -36,6 +36,7 @@ const collectionPage = () => {
     useState<ICollectionRelation | null>(initialCollectionData)
   const [isCreator, setIsCreator] = useState(false)
   const [nfts, setNfts] = useState<IItem[]>([])
+  const [collectionId, setCollectionId] = useState<null | string>(null)
 
   console.log('collectionData: ', collectionData)
 
@@ -52,6 +53,8 @@ const collectionPage = () => {
         const collectionItems: IItem[] | null = await fetchItemsByItemIds(
           collectionNFTItemIds,
         )
+        // checks if collectionItems is null, which prevents it from being updated
+        if (collectionItems === null) return
         for (const collectionItem of collectionItems) {
           collectionItem.collection = fetchedCollection.data?.name
         }
@@ -65,12 +68,17 @@ const collectionPage = () => {
     }
 
     if (typeof id === 'string') {
+      // valid id
       getCollection(id)
+      setCollectionId(id)
     } else if (id === undefined) {
+      // invalid id
       // handle if id doesn't exist
       setCollectionData(null)
     } else {
+      // valid id
       getCollection(id[0])
+      setCollectionId(id[0])
     }
   }, [id])
 
@@ -122,6 +130,7 @@ const collectionPage = () => {
     return (
       <CollectionPage
         isCreator={false}
+        collectionId={collectionId}
         collectionData={collectionData}
         nfts={nfts}
       />
@@ -131,6 +140,7 @@ const collectionPage = () => {
     return (
       <CollectionPage
         isCreator={true}
+        collectionId={collectionId}
         collectionData={collectionData}
         nfts={nfts}
       />
