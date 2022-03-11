@@ -101,11 +101,6 @@ const collectionPage = () => {
     }
   }, [accountInfo, collectionData])
 
-  /* Remove starts */
-  console.log('id: ', id)
-  console.log('collectionData: ', collectionData)
-  /* Remove ends */
-
   if (collectionData === null) {
     // if collection does not exist
     return (

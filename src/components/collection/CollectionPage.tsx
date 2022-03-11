@@ -17,6 +17,7 @@ import { Divider } from '@mui/material'
 import DisplayPicture from '../styles/pageInformations/DisplayPicture'
 import VerificationBoxUp750 from '../styles/pageInformations/VerificationBoxUp750'
 import VerificationBoxDown750 from '../styles/pageInformations/VerificationBoxDown750'
+import formatPersonalInfoString from '../../../helperFunctions/formatPersonalInfoString'
 
 interface IProps {
   isCreator: boolean
@@ -31,6 +32,8 @@ const CollectionPage: React.FC<IProps> = ({
   collectionData,
   nfts,
 }) => {
+  console.log('collectionData: ', collectionData)
+
   return (
     <StyledWidePageBase>
       <FlexBox sx={{ alignItems: 'normal', marginBottom: '4rem' }}>
@@ -70,11 +73,11 @@ const CollectionPage: React.FC<IProps> = ({
               sx={{ marginRight: '2rem', fontSize: { xs: 18, sm: 26, md: 34 } }}
             >
               <span style={{ marginRight: '0.5rem' }}>
-                {collectionData.name}
+                {formatPersonalInfoString(collectionData.name, 40)}
               </span>
             </Typography>
             <VerificationBoxUp750>
-              <Link href='/account/edit'>
+              <Link href={`/collection/${collectionId}/edit`}>
                 <Button
                   variant='outlined'
                   size='small'
@@ -100,19 +103,6 @@ const CollectionPage: React.FC<IProps> = ({
               </Link>
             </VerificationBoxDown750>
           </FlexBox>
-        </Box>
-        {/* 
-          
-          <Typography
-            sx={{
-              marginBottom: '0.5rem',
-              fontWeight: 400,
-              display: { xs: 'none', sm: 'block' },
-            }}
-          >
-            {fetchedPersonalInfo.companyName !== '' &&
-              formatPersonalInfoString(fetchedPersonalInfo.companyName, 40)}
-          </Typography>
           <Typography
             sx={{
               marginBottom: '1rem',
@@ -120,72 +110,10 @@ const CollectionPage: React.FC<IProps> = ({
               display: { xs: 'none', sm: 'block' },
             }}
           >
-            {fetchedPersonalInfo.description !== '' &&
-              formatPersonalInfoString(fetchedPersonalInfo.description, 280)}
+            {collectionData.description !== '' &&
+              formatPersonalInfoString(collectionData.description, 280)}
           </Typography>
-          {fetchedPersonalInfo.mainLink !== '' && (
-            <WebsiteLink
-              link={fetchedPersonalInfo.mainLink}
-              title={
-                <FlexBox>
-                  <WebAssetIcon sx={{ fontSize: 16, marginRight: '0.25rem' }} />
-                  <span style={{ fontSize: 14 }}>
-                    {fetchedPersonalInfo.mainLink}
-                  </span>
-                </FlexBox>
-              }
-            />
-          )}
-          {fetchedPersonalInfo.facebookLink !== '' && (
-            <WebsiteLink
-              link={fetchedPersonalInfo.facebookLink}
-              title={
-                <FlexBox>
-                  <FacebookIcon sx={{ fontSize: 16, marginRight: '0.25rem' }} />
-                  <span style={{ fontSize: 14 }}>Facebook Account</span>
-                </FlexBox>
-              }
-            />
-          )}
-          {fetchedPersonalInfo.instagramLink !== '' && (
-            <WebsiteLink
-              link={fetchedPersonalInfo.instagramLink}
-              title={
-                <FlexBox>
-                  <InstagramIcon
-                    sx={{ fontSize: 16, marginRight: '0.25rem' }}
-                  />
-                  <span style={{ fontSize: 14 }}>Instagram Account</span>
-                </FlexBox>
-              }
-            />
-          )}
-          {fetchedPersonalInfo.twitterLink !== '' && (
-            <WebsiteLink
-              link={fetchedPersonalInfo.twitterLink}
-              title={
-                <FlexBox>
-                  <TwitterIcon sx={{ fontSize: 16, marginRight: '0.25rem' }} />
-                  <span style={{ fontSize: 14 }}>Twitter Account</span>
-                </FlexBox>
-              }
-            />
-          )}
-          {fetchedPersonalInfo.linkedInLink !== '' && (
-            <WebsiteLink
-              link={fetchedPersonalInfo.linkedInLink}
-              title={
-                <FlexBox>
-                  <LinkedInIcon sx={{ fontSize: 16, marginRight: '0.25rem' }} />
-                  <span style={{ fontSize: 14 }}>LinkedIn Account</span>
-                </FlexBox>
-              }
-              lastItem={true}
-            />
-          )}
-          {displayAccountInfo()}
         </Box>
-            <Box sx={{ flexGrow: 4 }} /> */}
       </FlexBox>
       <Divider sx={{ marginBottom: '2rem' }} />
       <CollectionDisplayNFTs NFTs={nfts} />

@@ -23,7 +23,6 @@ const CollectionDisplayNFTs: React.FC<IProps> = ({ NFTs }) => {
       const likedNfts = likedNftsRequestInfo.data.likedNfts
       setLikedNfts(likedNfts)
       setIsLikedNftsLoaded(true)
-      console.log('likedNfts: ', likedNfts)
     }
 
     if (accountInfo.account !== emptyAddress) {
