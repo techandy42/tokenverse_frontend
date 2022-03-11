@@ -15,17 +15,10 @@ import FlexBox from '../../components/styles/FlexBox'
 import FlexSpace from '../../components/styles/FlexSpace'
 import Link from 'next/link'
 import { useAppDispatch, useAppSelector } from '../../redux/app/hooks'
-import {
-  updateAccount,
-  updateEtherBalance,
-  updateNetworkId,
-  selectAccountInfo,
-  AccountInfoState,
-} from '../../redux/features/accountInfoSlice'
+import { selectAccountInfo } from '../../redux/features/accountInfoSlice'
 import {
   updateAccountData,
   selectAccountData,
-  AccountDataState,
 } from '../../redux/features/accountDataSlice'
 import {
   usersPut,
@@ -126,8 +119,6 @@ const edit = () => {
 
   const handleSubmit = async (e: React.FormEventHandler<HTMLFormElement>) => {
     e.preventDefault()
-    console.log('original userName: ', accountData.userName)
-    console.log('Modified userName: ', personalInfo.userName)
     try {
       /* pre-validation code */
       // get ipfs url for image
@@ -150,9 +141,7 @@ const edit = () => {
       const twitterLink = removeWhitespaces(personalInfo.twitterLink)
       const linkedInLink = removeWhitespaces(personalInfo.linkedInLink)
 
-      console.log(await doesUserNameExist(userName))
-
-      /* validation code for userName, email, and the links */
+      /* validation code for userName, email, and the links starts */
       let isFieldsValid = true
       if (accountData.userName === userName) {
         // userName hasn't changed
@@ -237,8 +226,10 @@ const edit = () => {
           modifiedPersonalInfoFields,
         )
 
+        // Display unserInfo
         console.log('userInfo: ', userInfo)
 
+        // Update accountData in Redux
         const data = {
           email: userInfo.data.email,
           address: userInfo.data.address,
@@ -262,6 +253,7 @@ const edit = () => {
         // push to account page
         router.push(`${currentUrl}/account`)
       } else {
+        // some of the fields invalid
         alert('Some of the input fields are invalid')
       }
     } catch (error) {

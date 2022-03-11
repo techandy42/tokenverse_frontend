@@ -1,6 +1,11 @@
 *** This is example code to plug into account related pages to show messages if MetaMask is not connected ***
 
+import { useAppSelector } from '../../redux/app/hooks'
+import { selectAccountInfo } from '../../redux/features/accountInfoSlice'
+import emptyAddress from '../../../constants/emptyAddress'
+
 /* MetaMask Connection Code Starts */
+const accountInfo = useAppSelector(selectAccountInfo)
 const [isMetaMaskConnected, setIsMetaMaskConnected] = useState<boolean>(true)
 const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true)
 
