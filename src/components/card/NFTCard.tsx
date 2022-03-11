@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
@@ -7,12 +7,8 @@ import IItem from '../../../interfaces/IItem'
 import Link from 'next/link'
 import FlexBox from '../styles/FlexBox'
 import FlexSpace from '../styles/FlexSpace'
-import { useAppSelector, useAppDispatch } from '../../redux/app/hooks'
+import { useAppSelector } from '../../redux/app/hooks'
 import { selectAccountInfo } from '../../redux/features/accountInfoSlice'
-import {
-  selectAccountData,
-  updateAccountDataLikedNfts,
-} from '../../redux/features/accountDataSlice'
 import emptyAddress from '../../../constants/emptyAddress'
 import {
   nftsGetLikes,
@@ -29,6 +25,9 @@ import { IUserInfo } from '../../../crudFunctions/users/usersRequests'
 interface IProps {
   NFT: IItem
   size: CardType
+  likedNfts: number[]
+  setLikedNfts: React.Dispatch<React.SetStateAction<number[]>>
+  isLikedNftsLoaded: boolean
 }
 
 interface IBreakpoints {
@@ -50,35 +49,24 @@ interface ISize {
   linePaddingBottom: IBreakpoints
 }
 
-const NFTCard: React.FC<IProps> = ({ NFT, size }) => {
-  const dispatch = useAppDispatch()
-
+const NFTCard: React.FC<IProps> = ({
+  NFT,
+  size,
+  likedNfts,
+  setLikedNfts,
+  isLikedNftsLoaded,
+}) => {
   const accountInfo = useAppSelector(selectAccountInfo)
-  const accountData = useAppSelector(selectAccountData)
 
   const [likes, setLikes] = useState(0)
   const [liked, setLiked] = useState(false)
-  const [initialLiked, setInitialLiked] = useState(false)
 
   // possible bug
   useEffect(() => {
-    if (accountData.address !== emptyAddress) {
-      setLiked(accountData.likedNfts.includes(NFT.tokenId))
-      setInitialLiked(accountData.likedNfts.includes(NFT.tokenId))
+    if (isLikedNftsLoaded) {
+      setLiked(likedNfts.includes(NFT.tokenId))
     }
-  }, [accountData])
-
-  useEffect(() => {
-    return () => {
-      console.log('initialLiked: ', initialLiked)
-      console.log('liked: ', liked)
-      if (initialLiked === false && liked === true) {
-        console.log('user liked')
-      } else if (initialLiked === true && liked === false) {
-        console.log('user unliked')
-      }
-    }
-  }, [])
+  }, [isLikedNftsLoaded])
 
   /* Initializing sizes code starts */
   // intializing sizes as if size is CardType.SMALL
@@ -117,47 +105,39 @@ const NFTCard: React.FC<IProps> = ({ NFT, size }) => {
     }
   }, [accountInfo])
 
-  console.log('initialLiked: ', initialLiked)
-  console.log('liked: ', liked)
+  // console.log('initialLiked: ', initialLiked)
+  // console.log('liked: ', liked)
 
   const handleLike = async () => {
+    // cannot like or unlike if the account info is not loaded
+    if (accountInfo.account === emptyAddress) return
     // cannot unlike a card with 0 or less likes
     if (liked && likes <= 0) return
 
     // set likes and liked
+    let newLikedNfts: number[] = []
     if (liked) {
       setLikes(likes - 1)
+      setLiked(false)
+      newLikedNfts = likedNfts.filter((tokenId) => tokenId != NFT.tokenId)
     } else {
       setLikes(likes + 1)
+      setLiked(true)
+      newLikedNfts = [...newLikedNfts, NFT.tokenId]
     }
-    setLiked(!liked)
+    setLikedNfts(newLikedNfts)
 
-    // let newLikedNfts = []
-    // if (liked) {
-    //   newLikedNfts = accountData.likedNfts.filter(
-    //     (tokenId) => tokenId !== NFT.tokenId,
-    //   )
-    // } else {
-    //   newLikedNfts = [...accountData.likedNfts, NFT.tokenId]
-    // }
-
-    // console.log('newLikedNfts: ', newLikedNfts)
-
-    // dispatch(updateAccountDataLikedNfts(newLikedNfts))
-
+    // send the change in like / unlike to database
     const userInfo: IUserInfo = {
-      address: accountData.address,
+      address: accountInfo.account,
     }
+
     if (liked) {
-      const result1 = await nftsPutUnlikes(NFT.tokenId, userInfo)
-      console.log('result1: ', result1)
+      const resultUnlikes = await nftsPutUnlikes(NFT.tokenId, userInfo)
     } else {
-      const result2 = await nftsPutLikes(NFT.tokenId, userInfo)
-      console.log('result2: ', result2)
+      const resultLikes = await nftsPutLikes(NFT.tokenId, userInfo)
     }
   }
-
-  // console.log('accountData: ', accountData)
 
   return (
     // Modify the link as needed

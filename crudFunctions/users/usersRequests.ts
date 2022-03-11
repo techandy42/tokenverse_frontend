@@ -44,3 +44,7 @@ export const usersCartPut = (
 ) => axios.put(`${urlUsers}/cart/${address}`, userCartInfo)
 export const usersPut = (address: string, userNewInfo: IUserNewInfo) =>
   axios.put(`${urlUsers}/${address}`, userNewInfo)
+export const usersGetLikedNfts = (address: string) =>
+  axios.get(`${urlUsers}/liked-nfts/${address}`)
+export const usersGetCartNfts = (address: string) =>
+  axios.get(`${urlUsers}/cart-nfts/${address}`)

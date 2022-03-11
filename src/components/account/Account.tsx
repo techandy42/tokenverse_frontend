@@ -27,8 +27,8 @@ import {
 } from '../../../enums/accountDisplayItem'
 import { PageType } from '../../../enums/PageType'
 import {
-  usersLikedGet,
-  usersCartGet,
+  usersGetLikedNfts,
+  usersGetCartNfts,
 } from '../../../crudFunctions/users/usersRequests'
 import { nftsGetMultiple } from '../../../crudFunctions/nfts/nftsRequests'
 import fetchItemsByItemIds from '../../../tokenFunctions/getters/fetchItemsByItemIds'
@@ -101,13 +101,12 @@ const Account: React.FC<IProps> = ({ pageType }) => {
         userItems = userOwnedItems
       } else if (pageType === PageType.CART) {
         // fetch user cart items
-        console.log('accountData.cartNfts: ', accountData.cartNfts)
-        console.log('accountData.likedNfts: ', accountData.likedNfts)
-        console.log('accountData.address: ', accountData.address)
-        if (accountData.cartNfts.length === 0) {
+        const cartNftsRequestInfo = await usersGetCartNfts(accountInfo.account)
+        const cartNfts = cartNftsRequestInfo.data.cartNfts
+        if (cartNfts.length === 0) {
           userItems = null
         } else {
-          let fetchedCartNFTs = await nftsGetMultiple(accountData.cartNfts)
+          let fetchedCartNFTs = await nftsGetMultiple(cartNfts)
           console.log('fetchedCartNFTs: ', fetchedCartNFTs)
           fetchedCartNFTs =
             fetchedCartNFTs === undefined ? null : fetchedCartNFTs
@@ -120,10 +119,14 @@ const Account: React.FC<IProps> = ({ pageType }) => {
         }
       } else if (pageType === PageType.FAVORITE) {
         // fetch user liked items
-        if (accountData.likedNfts.length === 0) {
+        const likedNftsRequestInfo = await usersGetLikedNfts(
+          accountInfo.account,
+        )
+        const likedNfts = likedNftsRequestInfo.data.likedNfts
+        if (likedNfts.length === 0) {
           userItems = null
         } else {
-          let fetchedLikedNFTs = await nftsGetMultiple(accountData.likedNfts)
+          let fetchedLikedNFTs = await nftsGetMultiple(likedNfts)
           console.log('fetchedCartNFTs: ', fetchedLikedNFTs)
           fetchedLikedNFTs =
             fetchedLikedNFTs === undefined ? null : fetchedLikedNFTs
