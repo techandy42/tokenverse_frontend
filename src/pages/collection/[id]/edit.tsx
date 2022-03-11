@@ -1,3 +1,12 @@
+/*
+ * Todos:
+ * update data with collection data
+ * authenticate if it is valid user
+ * authenticate as well for the collection page
+ * clean up code
+ * update AccountMetaMaskNotConnected for all pages that need it
+ */
+
 import React, { useState, useEffect } from 'react'
 import IPersonalInfo from '../../../../interfaces/IPersonalInfo'
 import StyledPageBase from '../../../components/styles/StyledPageBase'
