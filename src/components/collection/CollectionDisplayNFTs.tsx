@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import IItem from '../../../interfaces/IItem'
 import NFTCard from '../card/NFTCard'
-import DisplayItems from '../styles/DisplayItems'
+import DisplayWidePageItems from '../styles/DisplayWidePageItems'
 import CardType from '../../../enums/CardType'
 import { useAppSelector } from '../../redux/app/hooks'
 import { selectAccountInfo } from '../../redux/features/accountInfoSlice'
@@ -31,17 +31,17 @@ const CollectionDisplayNFTs: React.FC<IProps> = ({ NFTs }) => {
   }, [accountInfo])
 
   return (
-    <DisplayItems>
+    <DisplayWidePageItems>
       {NFTs.map((NFT) => (
         <NFTCard
           NFT={NFT}
-          size={CardType.LARGE}
+          size={CardType.SMALL}
           likedNfts={likedNfts}
           setLikedNfts={setLikedNfts}
           isLikedNftsLoaded={isLikedNftsLoaded}
         />
       ))}
-    </DisplayItems>
+    </DisplayWidePageItems>
   )
 }
 

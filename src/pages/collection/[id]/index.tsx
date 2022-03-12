@@ -126,6 +126,7 @@ const collectionPage = () => {
     return (
       <CollectionPage
         isCreator={false}
+        userName={collectionData.user?.userName}
         collectionId={collectionId}
         collectionData={collectionData}
         nfts={nfts}
@@ -136,6 +137,7 @@ const collectionPage = () => {
     return (
       <CollectionPage
         isCreator={true}
+        userName={collectionData.user?.userName}
         collectionId={collectionId}
         collectionData={collectionData}
         nfts={nfts}

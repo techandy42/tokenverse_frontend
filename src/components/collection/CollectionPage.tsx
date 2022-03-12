@@ -21,6 +21,7 @@ import formatPersonalInfoString from '../../../helperFunctions/formatPersonalInf
 
 interface IProps {
   isCreator: boolean
+  userName: string | undefined
   collectionId: null | string
   collectionData: ICollectionRelation
   nfts: IItem[]
@@ -28,11 +29,23 @@ interface IProps {
 
 const CollectionPage: React.FC<IProps> = ({
   isCreator,
+  userName,
   collectionId,
   collectionData,
   nfts,
 }) => {
   console.log('collectionData: ', collectionData)
+
+  const isUserNameValid = () => {
+    if (userName !== undefined) {
+      if (userName === '') {
+        return true
+      } else {
+        return false
+      }
+    }
+    return false
+  }
 
   return (
     <StyledWidePageBase>
@@ -128,6 +141,15 @@ const CollectionPage: React.FC<IProps> = ({
               </VerificationBoxDown750>
             )}
           </FlexBox>
+          <Typography
+            sx={{
+              marginBottom: '0.5rem',
+              fontWeight: 400,
+              display: { xs: 'none', sm: 'block' },
+            }}
+          >
+            {isUserNameValid() && formatPersonalInfoString(userName, 40)}
+          </Typography>
           <Typography
             sx={{
               marginBottom: '1rem',
