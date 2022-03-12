@@ -38,7 +38,7 @@ const CollectionPage: React.FC<IProps> = ({
 
   const isUserNameValid = () => {
     if (userName !== undefined) {
-      if (userName === '') {
+      if (userName !== '') {
         return true
       } else {
         return false
@@ -141,15 +141,31 @@ const CollectionPage: React.FC<IProps> = ({
               </VerificationBoxDown750>
             )}
           </FlexBox>
-          <Typography
-            sx={{
-              marginBottom: '0.5rem',
-              fontWeight: 400,
-              display: { xs: 'none', sm: 'block' },
-            }}
-          >
-            {isUserNameValid() && formatPersonalInfoString(userName, 40)}
-          </Typography>
+          {isUserNameValid() ? (
+            <Link href={`/user/${userName}`}>
+              <Tooltip placement='left' title='Account'>
+                <Typography
+                  sx={{
+                    marginBottom: '0.5rem',
+                    fontWeight: 400,
+                    display: { xs: 'none', sm: 'block' },
+                  }}
+                >
+                  {formatPersonalInfoString(userName, 40)}
+                </Typography>
+              </Tooltip>
+            </Link>
+          ) : (
+            <Typography
+              sx={{
+                marginBottom: '0.5rem',
+                fontWeight: 400,
+                display: { xs: 'none', sm: 'block' },
+              }}
+            >
+              No User Name
+            </Typography>
+          )}
           <Typography
             sx={{
               marginBottom: '1rem',

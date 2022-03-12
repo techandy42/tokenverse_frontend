@@ -3,6 +3,7 @@
  * go to Account Page in CollectionPage.tsx
  * clean up code
  * update AccountMetaMaskNotConnected for all pages that need it
+ * Fix the like button problem if the card does not exist in the SQL back-end
  */
 
 import React, { useState, useEffect } from 'react'
