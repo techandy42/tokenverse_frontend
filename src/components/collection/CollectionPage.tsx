@@ -39,25 +39,43 @@ const CollectionPage: React.FC<IProps> = ({
       <FlexBox sx={{ alignItems: 'normal', marginBottom: '4rem' }}>
         {/* Displaying picture */}
         <DisplayPicture>
-          <Link href={`/collection/${collectionId}/edit`}>
-            <Tooltip placement='bottom' title='Edit'>
-              <img
-                src={
-                  collectionData.image === null
-                    ? default_photo_image.src
-                    : collectionData.image
-                }
-                style={{
-                  borderRadius: '50%',
-                  width: '10rem',
-                  height: '10rem',
-                  objectFit: 'cover',
-                  cursor: 'pointer',
-                }}
-                alt='No Image Found'
-              />
-            </Tooltip>
-          </Link>
+          {isCreator ? (
+            <Link href={`/collection/${collectionId}/edit`}>
+              <Tooltip placement='bottom' title='Edit'>
+                <img
+                  src={
+                    collectionData.image === null
+                      ? default_photo_image.src
+                      : collectionData.image
+                  }
+                  style={{
+                    borderRadius: '50%',
+                    width: '10rem',
+                    height: '10rem',
+                    objectFit: 'cover',
+                    cursor: 'pointer',
+                  }}
+                  alt='No Image Found'
+                />
+              </Tooltip>
+            </Link>
+          ) : (
+            <img
+              src={
+                collectionData.image === null
+                  ? default_photo_image.src
+                  : collectionData.image
+              }
+              style={{
+                borderRadius: '50%',
+                width: '10rem',
+                height: '10rem',
+                objectFit: 'cover',
+                cursor: 'pointer',
+              }}
+              alt='No Image Found'
+            />
+          )}
         </DisplayPicture>
         {/* Displaying information about the user */}
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -70,38 +88,45 @@ const CollectionPage: React.FC<IProps> = ({
             <Typography
               className='font-chakra'
               variant='h4'
-              sx={{ marginRight: '2rem', fontSize: { xs: 18, sm: 26, md: 34 } }}
+              sx={{
+                marginRight: '2rem',
+                fontSize: { xs: 18, sm: 26, md: 34 },
+              }}
             >
               <span style={{ marginRight: '0.5rem' }}>
                 {formatPersonalInfoString(collectionData.name, 40)}
               </span>
             </Typography>
-            <VerificationBoxUp750>
-              <Link href={`/collection/${collectionId}/edit`}>
-                <Button
-                  variant='outlined'
-                  size='small'
-                  sx={{
-                    textTransform: 'none',
-                  }}
-                >
-                  Edit
-                </Button>
-              </Link>
-            </VerificationBoxUp750>
+            {isCreator && (
+              <VerificationBoxUp750>
+                <Link href={`/collection/${collectionId}/edit`}>
+                  <Button
+                    variant='outlined'
+                    size='small'
+                    sx={{
+                      textTransform: 'none',
+                    }}
+                  >
+                    Edit
+                  </Button>
+                </Link>
+              </VerificationBoxUp750>
+            )}
           </FlexBox>
           <FlexBox>
-            <VerificationBoxDown750>
-              <Link href={`/collection/${collectionId}/edit`}>
-                <Button
-                  variant='outlined'
-                  size='small'
-                  sx={{ textTransform: 'none', marginBottom: '1rem' }}
-                >
-                  Edit
-                </Button>
-              </Link>
-            </VerificationBoxDown750>
+            {isCreator && (
+              <VerificationBoxDown750>
+                <Link href={`/collection/${collectionId}/edit`}>
+                  <Button
+                    variant='outlined'
+                    size='small'
+                    sx={{ textTransform: 'none', marginBottom: '1rem' }}
+                  >
+                    Edit
+                  </Button>
+                </Link>
+              </VerificationBoxDown750>
+            )}
           </FlexBox>
           <Typography
             sx={{

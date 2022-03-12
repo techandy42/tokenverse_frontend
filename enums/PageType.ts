@@ -5,3 +5,8 @@ export enum PageType {
   CART = 'CART',
   FAVORITE = 'FAVORITE',
 }
+
+export enum PageWidth {
+  NARROW = 'NARROW',
+  WIDE = 'WIDE',
+}

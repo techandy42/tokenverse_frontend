@@ -1,8 +1,6 @@
 /*
  * Todos:
- * update data with collection data
- * authenticate if it is valid user
- * authenticate as well for the collection page
+ * go to Account Page in CollectionPage.tsx
  * clean up code
  * update AccountMetaMaskNotConnected for all pages that need it
  */
@@ -40,197 +38,125 @@ import { currentUrl } from '../../../../constants/currentUrl'
 import removeWhitespaces from '../../../../helperFunctions/removeWhitespaces'
 import emptyAddress from '../../../../constants/emptyAddress'
 import AccountMetaMaskNotConnected from '../../../components/account/AccountMetaMaskNotConnected'
+import { collectionsGet } from '../../../../crudFunctions/collections/collectionsRequests'
+import CollectionEdit from '../../../components/collection/CollectionEdit'
+import TextPage from '../../../components/miscellaneous/TextPage'
+import { PageWidth } from '../../../../enums/PageType'
 
-interface ICollectionInfo {
+export interface ICollectionInfo {
+  userAddress: string
   newName: string
   image: string | null
   description: string
 }
 
 const initialCollectionInfo: ICollectionInfo = {
+  userAddress: emptyAddress,
   newName: '',
   image: null,
   description: '',
 }
 
 const edit = () => {
-  const [collectionInfo, setCollectionInfo] = useState<ICollectionInfo>(
+  const router = useRouter()
+  const { id } = router.query
+  const accountInfo = useAppSelector(selectAccountInfo)
+
+  const [collectionInfo, setCollectionInfo] = useState<ICollectionInfo | null>(
     initialCollectionInfo,
   )
-  const [newNameValid, setNewNameValid] = useState<boolean>(true)
+  const [collectionId, setCollectionId] = useState<null | string>(null)
+  const [isCreator, setIsCreator] = useState(false)
 
-  const handleCollectionInfoChanges = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-  ) => {
-    setCollectionInfo({
-      ...collectionInfo,
-      [e.target.name]: e.target.value,
-    })
-  }
-
-  const handleSubmit = async (e: React.FormEventHandler<HTMLFormElement>) => {
-    e.preventDefault()
-    try {
-      /* pre-validation code */
-      // get ipfs url for image
-      let imageUrl = null
-      const image: any = collectionInfo.image
-      if (image instanceof File) {
-        imageUrl = await getFileUrl(collectionInfo.image)
-      } else {
-        imageUrl = collectionInfo.image
-      }
-      imageUrl = imageUrl === undefined ? null : imageUrl
-
-      // testing
-      console.log('imageUrl: ', imageUrl)
-
-      const newName = removeWhitespaces(collectionInfo.newName)
-      const description = removeWhitespaces(collectionInfo.description)
-
-      /* validation code for newName starts */
-      // let isFieldsValid = true
-      // if (collectionInfo.newName === newName) {
-      //   // newName hasn't changed
-      //   if (newName === '') {
-      //     // newName is empty (invalid)
-      //     console.log('newName invalid, newName unchanged')
-      //     isFieldsValid = false
-      //     setNewNameValid(false)
-      //   } else {
-      //     // newName is valid
-      //     console.log('newName valid, newName unchanged')
-      //     if (newNameValid === false) setNewNameValid(true)
-      //   }
-      // } else {
-      //   // newName has changed
-      //   if ((await doesNewNameExist(newName)) || newName === '') {
-      //     // newName exists or it is empty (invalid)
-      //     console.log('newName invalid, newName changed')
-      //     isFieldsValid = false
-      //     setNewNameValid(false)
-      //   } else {
-      //     // newName is valid
-      //     console.log('newName valid, newName changed')
-      //     if (newNameValid === false) setNewNameValid(true)
-      //   }
-      // }
-      /* validation code for newName ends */
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
+  console.log('id: ', id)
   console.log('collectionInfo: ', collectionInfo)
 
-  return (
-    <StyledPageBase>
-      <form onSubmit={handleSubmit}>
-        <FlexBox>
-          <Typography
-            variant='h4'
-            sx={{
-              marginTop: MARGIN_LARGE,
-              marginBottom: MARGIN_LARGE,
-              fontWeight: 200,
-            }}
-            className='font-chakra'
-          >
-            Edit Profile
-          </Typography>
-          <FlexSpace />
-          <Link href='/account'>
-            <Button className='btn'>Back</Button>
-          </Link>
-        </FlexBox>
-        {/* Display Picture and Remove Button */}
-        <Box sx={{ marginBottom: MARGIN_LARGE }}>
-          <Box sx={{ marginLeft: '2.5rem', marginBottom: MARGIN_SMALL }}>
-            <label htmlFor='file-input'>
-              <img
-                src={
-                  collectionInfo.image === null
-                    ? default_account_image.src
-                    : typeof collectionInfo.image === 'string'
-                    ? collectionInfo.image
-                    : URL.createObjectURL(collectionInfo.image)
-                }
-                style={{
-                  borderRadius: '50%',
-                  width: '10rem',
-                  height: '10rem',
-                  objectFit: 'cover',
-                  cursor: 'pointer',
-                }}
-                alt='No Image Found'
-              />
-              <input
-                id='file-input'
-                type='file'
-                accept='image/*'
-                hidden
-                onChange={(e: any) =>
-                  setCollectionInfo({
-                    ...collectionInfo,
-                    image: e.target.files[0],
-                  })
-                }
-                onClick={(e: any) => {
-                  e.target.value = null
-                }}
-              />
-            </label>
-          </Box>
-          <Box sx={{ marginLeft: '7.5rem' }}>
-            {collectionInfo.image !== null && (
-              <Button
-                className='btn'
-                sx={{ position: 'relative', transform: 'translateX(-50%)' }}
-                onClick={() =>
-                  setCollectionInfo({ ...collectionInfo, image: null })
-                }
-              >
-                Remove Image
-              </Button>
-            )}
-          </Box>
-        </Box>
-        <DividerMarginBottom />
-        <Typography variant='h5' sx={{ marginBottom: MARGIN_LARGE }}>
-          Collection Information
-        </Typography>
-        {!newNameValid && (
-          <Alert severity='error' sx={{ marginBottom: MARGIN_LARGE }}>
-            {collectionInfo.newName === ''
-              ? 'The NewName cannot be empty'
-              : 'The NewName Already Exists'}
-          </Alert>
-        )}
-        <TextField
-          sx={{ marginBottom: MARGIN_LARGE }}
-          fullWidth
-          label='Name'
-          name='newName'
-          value={collectionInfo.newName}
-          onChange={handleCollectionInfoChanges}
-          required
-        />
-        <TextField
-          sx={{ marginBottom: MARGIN_LARGE }}
-          fullWidth
-          label='Description'
-          name='description'
-          value={collectionInfo.description}
-          onChange={handleCollectionInfoChanges}
-          multiline
-        />
-        <DividerMarginBottom />
-        <Button className='btn' type='submit'>
-          Submit
-        </Button>
-      </form>
-    </StyledPageBase>
-  )
+  useEffect(() => {
+    const getCollection = async (id: string) => {
+      const fetchedCollection = await collectionsGet(id)
+      if (fetchedCollection.data !== null) {
+        // collection exists
+        const data: ICollectionInfo = {
+          userAddress: fetchedCollection.data.user?.address,
+          newName: fetchedCollection.data.name,
+          image: fetchedCollection.data.image,
+          description: fetchedCollection.data.description,
+        }
+        setCollectionInfo(data)
+      } else {
+        setCollectionInfo(null)
+      }
+    }
+
+    if (typeof id === 'string') {
+      // valid id
+      getCollection(id)
+      setCollectionId(id)
+    } else if (id === undefined) {
+      // invalid id
+      // handle if id doesn't exist
+      setCollectionInfo(null)
+    } else {
+      // valid id
+      getCollection(id[0])
+      setCollectionId(id[0])
+    }
+  }, [id])
+
+  useEffect(() => {
+    if (
+      accountInfo.account !== emptyAddress &&
+      collectionInfo !== null &&
+      collectionInfo.userAddress !== emptyAddress
+    ) {
+      /*
+       * accountInfo has been updated
+       * collection exists
+       * collectionData has been updated
+       */
+      if (accountInfo.account === collectionInfo?.userAddress) {
+        setIsCreator(true)
+      } else {
+        setIsCreator(false)
+      }
+    }
+  }, [accountInfo, collectionInfo])
+
+  if (collectionId === null || collectionInfo === null) {
+    // if collection does not exist
+    return (
+      <TextPage
+        pageWidth={PageWidth.NARROW}
+        hasBackButton={true}
+        message='Collection does not exist'
+      />
+    )
+  } else if (collectionInfo.userAddress === emptyAddress) {
+    return (
+      <TextPage
+        pageWidth={PageWidth.NARROW}
+        hasBackButton={false}
+        message='Collection is loading...'
+      />
+    )
+  } else if (!isCreator) {
+    return (
+      <TextPage
+        pageWidth={PageWidth.NARROW}
+        hasBackButton={true}
+        message='You do not own this collection'
+      />
+    )
+  } else {
+    return (
+      <CollectionEdit
+        collectionInfo={collectionInfo}
+        setCollectionInfo={setCollectionInfo}
+        collectionId={collectionId}
+        isCreator={isCreator}
+      />
+    )
+  }
 }
 
 export default edit

@@ -19,6 +19,8 @@ import CollectionPage from '../../../components/collection/CollectionPage'
 import fetchItemsByItemIds from '../../../../tokenFunctions/getters/fetchItemsByItemIds'
 import IItem from '../../../../interfaces/IItem'
 import INft from '../../../../interfaces/schema/INft'
+import TextPage from '../../../components/miscellaneous/TextPage'
+import { PageWidth } from '../../../../enums/PageType'
 
 const initialCollectionData: ICollectionRelation = {
   ...initialCollection,
@@ -104,21 +106,20 @@ const collectionPage = () => {
   if (collectionData === null) {
     // if collection does not exist
     return (
-      <StyledWidePageBase>
-        <Typography variant='h4' className='font-chakra'>
-          Collection does not exist
-        </Typography>
-        <Button onClick={() => router.back()}>Go Back</Button>
-      </StyledWidePageBase>
+      <TextPage
+        pageWidth={PageWidth.WIDE}
+        hasBackButton={true}
+        message='Collection does not exist'
+      />
     )
   } else if (collectionData.user?.address === emptyAddress) {
     // if collection is loading
     return (
-      <StyledWidePageBase>
-        <Typography variant='h4' className='font-chakra'>
-          Collection is loading...
-        </Typography>
-      </StyledWidePageBase>
+      <TextPage
+        pageWidth={PageWidth.WIDE}
+        hasBackButton={false}
+        message='Collection is loading...'
+      />
     )
   } else if (!isCreator) {
     // if collection is not owned by the user
