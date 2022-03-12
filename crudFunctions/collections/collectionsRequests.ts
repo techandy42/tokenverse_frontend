@@ -3,13 +3,11 @@
 import axios from 'axios'
 import { urlCollections } from '../crudUrls'
 
-export interface INewCollectionName {
-  newName: string
-}
 export interface INewCollectionInfo {
   newName: string
   image: string | null
   description: string
+  isSameName: boolean
 }
 
 export const collectionsPost = (address: string) =>

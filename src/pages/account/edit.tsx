@@ -226,7 +226,7 @@ const edit = () => {
           modifiedPersonalInfoFields,
         )
 
-        // Display unserInfo
+        // Display userInfo
         console.log('userInfo: ', userInfo)
 
         // Update accountData in Redux

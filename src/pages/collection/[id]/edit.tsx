@@ -1,9 +1,9 @@
 /*
  * Todos:
- * go to Account Page in CollectionPage.tsx
- * clean up code
- * update AccountMetaMaskNotConnected for all pages that need it
+ * doesCollectionExist function in helperFunctions
+ * update the collectionsSlice in handleSubmit in CollectionEdit.tsx
  * Fix the like button problem if the card does not exist in the SQL back-end
+ * update AccountMetaMaskNotConnected for all pages that need it
  */
 
 import React, { useState, useEffect } from 'react'
@@ -66,6 +66,9 @@ const edit = () => {
   const [collectionInfo, setCollectionInfo] = useState<ICollectionInfo | null>(
     initialCollectionInfo,
   )
+  const [originalCollectionName, setOriginalCollectionName] = useState<
+    null | string
+  >(null)
   const [collectionId, setCollectionId] = useState<null | string>(null)
   const [isCreator, setIsCreator] = useState(false)
 
@@ -84,8 +87,10 @@ const edit = () => {
           description: fetchedCollection.data.description,
         }
         setCollectionInfo(data)
+        setOriginalCollectionName(fetchedCollection.data.name)
       } else {
         setCollectionInfo(null)
+        setOriginalCollectionName(null)
       }
     }
 
@@ -123,7 +128,11 @@ const edit = () => {
     }
   }, [accountInfo, collectionInfo])
 
-  if (collectionId === null || collectionInfo === null) {
+  if (
+    collectionId === null ||
+    collectionInfo === null ||
+    originalCollectionName === null
+  ) {
     // if collection does not exist
     return (
       <TextPage
@@ -153,6 +162,7 @@ const edit = () => {
       <CollectionEdit
         collectionInfo={collectionInfo}
         setCollectionInfo={setCollectionInfo}
+        originalCollectionName={originalCollectionName}
         collectionId={collectionId}
         isCreator={isCreator}
       />

@@ -26,18 +26,26 @@ import {
 import { useRouter } from 'next/router'
 import getFileUrl from '../../../tokenFunctions/getters/getFileUrl'
 import { currentUrl } from '../../../constants/currentUrl'
-// import doesNewNameExist from '../../../helperFunctions/doesNewNameExist'
 import removeWhitespaces from '../../../helperFunctions/removeWhitespaces'
 import emptyAddress from '../../../constants/emptyAddress'
 import AccountMetaMaskNotConnected from '../../components/account/AccountMetaMaskNotConnected'
-import { collectionsGet } from '../../../crudFunctions/collections/collectionsRequests'
+import {
+  collectionsGet,
+  collectionsChangeInfoPut,
+  INewCollectionInfo,
+} from '../../../crudFunctions/collections/collectionsRequests'
 import { ICollectionInfo } from '../../pages/collection/[id]/edit'
+import {
+  selectCollections,
+  updateCollections,
+} from '../../redux/features/collectionsSlice'
 
 interface IProps {
   collectionInfo: ICollectionInfo
   setCollectionInfo: React.Dispatch<
     React.SetStateAction<ICollectionInfo | null>
   >
+  originalCollectionName: string | null
   collectionId: string
   isCreator: boolean
 }
@@ -45,10 +53,19 @@ interface IProps {
 const CollectionEdit: React.FC<IProps> = ({
   collectionInfo,
   setCollectionInfo,
+  originalCollectionName,
   collectionId,
   isCreator,
 }) => {
+  const router = useRouter()
+  const dispatch = useAppDispatch()
+
+  const collectionsState = useAppSelector(selectCollections)
+  const collections = collectionsState.collections
+
   const [newNameValid, setNewNameValid] = useState<boolean>(true)
+
+  console.log('collections: ', collections)
 
   const handleCollectionInfoChanges = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
@@ -60,7 +77,11 @@ const CollectionEdit: React.FC<IProps> = ({
   }
 
   const handleSubmit = async (e: React.FormEventHandler<HTMLFormElement>) => {
-    if (collectionInfo === null) return
+    if (collectionInfo === null || originalCollectionName === null) {
+      console.log('Error fetching some collection info')
+      return
+    }
+    // validate if it is valid user
     e.preventDefault()
     try {
       /* pre-validation code */
@@ -81,33 +102,61 @@ const CollectionEdit: React.FC<IProps> = ({
       const description = removeWhitespaces(collectionInfo.description)
 
       /* validation code for newName starts */
-      // let isFieldsValid = true
-      // if (collectionInfo.newName === newName) {
-      //   // newName hasn't changed
-      //   if (newName === '') {
-      //     // newName is empty (invalid)
-      //     console.log('newName invalid, newName unchanged')
-      //     isFieldsValid = false
-      //     setNewNameValid(false)
-      //   } else {
-      //     // newName is valid
-      //     console.log('newName valid, newName unchanged')
-      //     if (newNameValid === false) setNewNameValid(true)
-      //   }
-      // } else {
-      //   // newName has changed
-      //   if ((await doesNewNameExist(newName)) || newName === '') {
-      //     // newName exists or it is empty (invalid)
-      //     console.log('newName invalid, newName changed')
-      //     isFieldsValid = false
-      //     setNewNameValid(false)
-      //   } else {
-      //     // newName is valid
-      //     console.log('newName valid, newName changed')
-      //     if (newNameValid === false) setNewNameValid(true)
-      //   }
-      // }
+      let isFieldsValid = true
+      let isSameName = true
+      if (collectionInfo.newName === newName) {
+        // newName hasn't changed
+        if (newName === '') {
+          // newName is empty (invalid)
+          console.log('newName invalid, newName unchanged')
+          isFieldsValid = false
+          setNewNameValid(false)
+        } else {
+          // newName is valid
+          console.log('newName valid, newName unchanged')
+          if (newNameValid === false) setNewNameValid(true)
+        }
+      } else {
+        // newName has changed
+        isSameName = false
+        if ((await doesCollectionExist(newName)) || newName === '') {
+          // newName exists or it is empty (invalid)
+          console.log('newName invalid, newName changed')
+          isFieldsValid = false
+          setNewNameValid(false)
+        } else {
+          // newName is valid
+          console.log('newName valid, newName changed')
+          if (newNameValid === false) setNewNameValid(true)
+        }
+      }
       /* validation code for newName ends */
+
+      if (isFieldsValid) {
+        const modifiedCollectionInfoFields: INewCollectionInfo = {
+          newName: collectionInfo.newName,
+          image: imageUrl,
+          description: collectionInfo.description,
+          isSameName,
+        }
+
+        const newCollectionInfo = await collectionsChangeInfoPut(
+          originalCollectionName,
+          modifiedCollectionInfoFields,
+        )
+
+        // update the collections
+        dispatch(updateCollections(collections))
+
+        // Display newCollectionInfo
+        console.log('collectionInfo: ', newCollectionInfo)
+
+        // push to current collection page
+        router.push(`${currentUrl}/collection/${newName}`)
+      } else {
+        // the name field is invalid
+        alert('The name field is invalid')
+      }
     } catch (error) {
       console.log(error)
     }
