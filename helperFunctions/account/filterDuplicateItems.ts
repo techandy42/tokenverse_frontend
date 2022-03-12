@@ -11,10 +11,15 @@ const filterDuplicateItems = (
   } else if (userOwnedItems === null) {
     return userCreatedItems
   } else {
-    const joinedItems = [...userCreatedItems, ...userOwnedItems]
-    const setItems = new Set(joinedItems)
-    const filteredItems = Array.from(setItems)
-    return filteredItems
+    // do combination
+    const combinationMap = new Map(
+      [...userCreatedItems, ...userOwnedItems].map((item) => [
+        item.tokenId,
+        item,
+      ]),
+    ) // map of unique items in [tokenId, item] format
+    const combination = Array.from(combinationMap)
+    return combination
   }
 }
 
