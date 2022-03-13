@@ -7,6 +7,7 @@ interface IProps {
 }
 
 const Layout: React.FC<IProps> = ({ children }) => {
+  console.log('children: ', children)
   return (
     <>
       <Meta />

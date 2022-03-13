@@ -73,7 +73,6 @@ a {
   font-size: 20px;
 }
 
-/* Popup style */
 .popup-box {
   position: fixed;
   background: #00000050;
@@ -112,4 +111,87 @@ a {
   text-align: center;
   border: 1px solid #999;
   font-size: 20px;
+}
+/* Popup style ends */
+
+/* Spinning Cube Code Starts */
+.cube {
+  -webkit-transform-style: preserve-3d;
+  -webkit-animation: spin 40s infinite linear;
+  position: relative;
+  width: 250px;
+  height: 250px;
+  top: 50%;
+  left: 50%;
+  margin-left: 200px;
+  margin-top: -225px;
+}
+
+.cube div {
+  width: 250px;
+  height: 250px;
+  line-height: 250px;
+  text-align: center;
+  box-shadow: inset 0px 0px 0px 1px rgba(10, 0, 0, 0.8);
+  display: block;
+  position: absolute;
+  font-size: 3rem;
+  font-family: 'Chakra Petch', sans-serif;
+}
+
+.cube div.top {
+  -webkit-transform: rotateX(90deg);
+  margin-top: -125px;
+  background: rgba(2, 136, 209, 0.9);
+}
+
+.cube div.right {
+  -webkit-transform: rotateY(90deg);
+  margin-left: 125px;
+  background: rgba(156, 204, 101, 0.9);
+}
+
+.cube div.bottom {
+  -webkit-transform: rotateX(-90deg);
+  margin-top: 125px;
+  background: rgba(2, 136, 209, 0.9);
+}
+
+.cube div.left {
+  -webkit-transform: rotateY(-90deg);
+  margin-left: -125px;
+}
+
+.cube div.front {
+  -webkit-transform: translateZ(125px);
+  background: rgba(255, 167, 38, 0.9);
+}
+
+.cube div.back {
+  -webkit-transform: translateZ(-125px) rotateY(180deg);
+  background: rgba(236, 64, 122, 0.9);
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotateX(-20deg) rotateY(20deg);
+  }
+  100% {
+    -webkit-transform: rotateX(-20deg) rotateY(740deg);
+  }
+}
+/* Spinning Cube Code Ends */
+
+/* Home Page Background Starts */
+.top-background {
+  width: 100%;
+  height: 40rem;
+  /* background-image: linear-gradient(
+    to right,
+    rgba(49, 27, 146, 0.2),
+    rgb(30, 0, 46)
+  ); */
+  /* background-color: rgba(41, 182, 246, 1); */
+  /* background-color: #81d4fa; */
+  background-image: linear-gradient(to right, #ffa726, #29b6f6);
 }
