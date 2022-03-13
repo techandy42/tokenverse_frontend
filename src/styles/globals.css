@@ -115,22 +115,30 @@ a {
 /* Popup style ends */
 
 /* Spinning Cube Code Starts */
+:root {
+  --cube-len: 250px;
+  --cube-half-len: 125px;
+  --cube-neg-half-len: -125px;
+  --cube-margin-left: 200px;
+  --cube-margin-top: -225px;
+}
+
 .cube {
   -webkit-transform-style: preserve-3d;
   -webkit-animation: spin 40s infinite linear;
   position: relative;
-  width: 250px;
-  height: 250px;
+  width: var(--cube-len);
+  height: var(--cube-len);
   top: 50%;
   left: 50%;
-  margin-left: 200px;
-  margin-top: -225px;
+  margin-left: var(--cube-margin-left);
+  margin-top: var(--cube-margin-top);
 }
 
 .cube div {
-  width: 250px;
-  height: 250px;
-  line-height: 250px;
+  width: var(--cube-len);
+  height: var(--cube-len);
+  line-height: var(--cube-len);
   text-align: center;
   box-shadow: inset 0px 0px 0px 1px rgba(10, 0, 0, 0.8);
   display: block;
@@ -141,25 +149,25 @@ a {
 
 .cube div.top {
   -webkit-transform: rotateX(90deg);
-  margin-top: -125px;
+  margin-top: var(--cube-neg-half-len);
   background: rgba(2, 136, 209, 0.9);
 }
 
 .cube div.right {
   -webkit-transform: rotateY(90deg);
-  margin-left: 125px;
+  margin-left: var(--cube-half-len);
   background: rgba(156, 204, 101, 0.9);
 }
 
 .cube div.bottom {
   -webkit-transform: rotateX(-90deg);
-  margin-top: 125px;
+  margin-top: var(--cube-half-len);
   background: rgba(2, 136, 209, 0.9);
 }
 
 .cube div.left {
   -webkit-transform: rotateY(-90deg);
-  margin-left: -125px;
+  margin-left: var(--cube-neg-half-len);
 }
 
 .cube div.front {

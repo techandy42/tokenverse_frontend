@@ -16,7 +16,7 @@ const home = () => {
           style={{
             position: 'absolute',
             marginTop: '17.5rem',
-            marginLeft: '2.5rem',
+            marginLeft: '5rem',
           }}
         >
           <FlexBox>
