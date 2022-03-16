@@ -191,15 +191,6 @@ a {
 /* Spinning Cube Code Ends */
 
 /* Home Page Background Starts */
-.top-background {
-  width: 100%;
-  height: 40rem;
-  /* background-image: linear-gradient(
-    to right,
-    rgba(49, 27, 146, 0.2),
-    rgb(30, 0, 46)
-  ); */
-  /* background-color: rgba(41, 182, 246, 1); */
-  /* background-color: #81d4fa; */
+.background-gradient {
   background-image: linear-gradient(to right, #ffa726, #29b6f6);
 }
