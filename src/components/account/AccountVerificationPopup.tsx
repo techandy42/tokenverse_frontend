@@ -5,6 +5,7 @@ import WebAssetIcon from '@mui/icons-material/WebAsset'
 import FlexBox from '../styles/FlexBox'
 import WebsiteLink from './AccountInfo/WebsiteLink'
 import Box from '@mui/material/Box'
+import styles from './accountVerificationPopup/popup.module.css'
 
 interface IProps {
   userName: string
@@ -23,9 +24,9 @@ const AccountVerificationPopup: React.FC<IProps> = ({
   )
 
   return (
-    <div className='popup-box'>
-      <div className='box'>
-        <span className='close-icon' onClick={handleClose}>
+    <div className={styles.popupbox}>
+      <div className={styles.box}>
+        <span className={styles.closeicon} onClick={handleClose}>
           X
         </span>
         <Typography

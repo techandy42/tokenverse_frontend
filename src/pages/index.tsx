@@ -5,6 +5,7 @@ import FlexBox from '../components/styles/FlexBox'
 import Button from '@mui/material/Button'
 import Link from 'next/link'
 import Box from '@mui/material/Box'
+import styles from './index/index.module.css'
 
 // Note (order):
 // front -> left -> back -> right
@@ -15,7 +16,7 @@ const home = () => {
       {/* Full Screen */}
       <Box /*sx={{ display: { xs: 'none', lg: 'block' } }}*/>
         <Box
-          className='background-gradient'
+          className={styles.backgroundgradient}
           style={{ width: '100%', height: '40rem' }}
         >
           <Box
@@ -61,17 +62,17 @@ const home = () => {
             </FlexBox>
           </Box>
           <Box sx={{ display: { xs: 'none', lg: 'inline' } }}>
-            <div className='cube'>
-              <div className='top'></div>
-              <div className='right'>Tokenverse</div>
-              <div className='bottom'></div>
-              <div className='left'>Create</div>
-              <div className='front'>Design</div>
-              <div className='back'>Trade</div>
+            <div className={styles.cube}>
+              <div className={styles.top}></div>
+              <div className={styles.right}>Tokenverse</div>
+              <div className={styles.bottom}></div>
+              <div className={styles.left}>Create</div>
+              <div className={styles.front}>Design</div>
+              <div className={styles.back}>Trade</div>
             </div>
           </Box>
           <Box sx={{ display: { xs: 'block', lg: 'none' } }}>
-            <div className='cube' />
+            <div className={styles.cube} />
           </Box>
         </Box>
       </Box>
