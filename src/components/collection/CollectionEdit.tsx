@@ -39,6 +39,7 @@ import {
   selectCollections,
   updateCollections,
 } from '../../redux/features/collectionsSlice'
+import doesCollectionExist from '../../../helperFunctions/doesCollectionExist'
 
 interface IProps {
   collectionInfo: ICollectionInfo
@@ -104,7 +105,7 @@ const CollectionEdit: React.FC<IProps> = ({
       /* validation code for newName starts */
       let isFieldsValid = true
       let isSameName = true
-      if (collectionInfo.newName === newName) {
+      if (originalCollectionName === newName) {
         // newName hasn't changed
         if (newName === '') {
           // newName is empty (invalid)
@@ -114,12 +115,14 @@ const CollectionEdit: React.FC<IProps> = ({
         } else {
           // newName is valid
           console.log('newName valid, newName unchanged')
-          if (newNameValid === false) setNewNameValid(true)
+          setNewNameValid(true)
         }
       } else {
         // newName has changed
         isSameName = false
-        if ((await doesCollectionExist(newName)) || newName === '') {
+        const existingName = await doesCollectionExist(newName)
+        console.log('existingName: ', existingName)
+        if (existingName || newName === '') {
           // newName exists or it is empty (invalid)
           console.log('newName invalid, newName changed')
           isFieldsValid = false
@@ -127,7 +130,7 @@ const CollectionEdit: React.FC<IProps> = ({
         } else {
           // newName is valid
           console.log('newName valid, newName changed')
-          if (newNameValid === false) setNewNameValid(true)
+          setNewNameValid(true)
         }
       }
       /* validation code for newName ends */
@@ -161,6 +164,8 @@ const CollectionEdit: React.FC<IProps> = ({
       console.log(error)
     }
   }
+
+  console.log('newNameValid: ', newNameValid)
 
   return (
     <StyledPageBase>
