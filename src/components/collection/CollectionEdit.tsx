@@ -37,9 +37,11 @@ import {
 import { ICollectionInfo } from '../../pages/collection/[id]/edit'
 import {
   selectCollections,
-  updateCollections,
+  updateOneCollection,
+  ICollectionUpdateData,
 } from '../../redux/features/collectionsSlice'
 import doesCollectionExist from '../../../helperFunctions/doesCollectionExist'
+import ICollection from '../../../interfaces/schema/ICollection'
 
 interface IProps {
   collectionInfo: ICollectionInfo
@@ -65,8 +67,6 @@ const CollectionEdit: React.FC<IProps> = ({
   const collections = collectionsState.collections
 
   const [newNameValid, setNewNameValid] = useState<boolean>(true)
-
-  console.log('collections: ', collections)
 
   const handleCollectionInfoChanges = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
@@ -97,8 +97,6 @@ const CollectionEdit: React.FC<IProps> = ({
       imageUrl = imageUrl === undefined ? null : imageUrl
 
       // testing
-      console.log('imageUrl: ', imageUrl)
-
       const newName = removeWhitespaces(collectionInfo.newName)
       const description = removeWhitespaces(collectionInfo.description)
 
@@ -148,8 +146,21 @@ const CollectionEdit: React.FC<IProps> = ({
           modifiedCollectionInfoFields,
         )
 
-        // update the collections
-        dispatch(updateCollections(collections))
+        // Testing
+        console.log('imageUrl: ', imageUrl)
+
+        // updating the collection
+        const newCollectionUpdateData: ICollectionUpdateData = {
+          name: collectionInfo.newName,
+          image: imageUrl,
+          description: collectionInfo.description,
+          originalName: originalCollectionName,
+        }
+
+        // Testing
+        console.log('newCollectionUpdateData: ', newCollectionUpdateData)
+
+        dispatch(updateOneCollection(newCollectionUpdateData))
 
         // Display newCollectionInfo
         console.log('collectionInfo: ', newCollectionInfo)
@@ -164,8 +175,6 @@ const CollectionEdit: React.FC<IProps> = ({
       console.log(error)
     }
   }
-
-  console.log('newNameValid: ', newNameValid)
 
   return (
     <StyledPageBase>

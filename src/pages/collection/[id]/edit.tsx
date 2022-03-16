@@ -1,7 +1,6 @@
 /*
  * Todos:
- * doesCollectionExist function in helperFunctions
- * update the collectionsSlice in handleSubmit in CollectionEdit.tsx
+ * Fix user and collection image not being able to be taken down
  * Fix the like button problem if the card does not exist in the SQL back-end
  * update AccountMetaMaskNotConnected for all pages that need it
  */
