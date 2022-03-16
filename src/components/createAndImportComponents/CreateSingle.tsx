@@ -76,6 +76,8 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
   // creates a new collection if no collection exists for the user
   useEffect(() => {
     const createNewCollection = async () => {
+      if (userAddress === emptyAddress) return
+
       // check if accountInfo exists
       const newCollectionData = await collectionsPost(userAddress)
       const newCollection: ICollection = {
