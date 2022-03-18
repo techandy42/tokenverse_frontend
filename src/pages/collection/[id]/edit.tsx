@@ -1,8 +1,3 @@
-/*
- * Todos:
- * update AccountMetaMaskNotConnected for all pages that need it
- */
-
 import React, { useState, useEffect } from 'react'
 import { useAppSelector } from '../../../redux/app/hooks'
 import { selectAccountInfo } from '../../../redux/features/accountInfoSlice'

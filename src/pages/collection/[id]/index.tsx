@@ -4,17 +4,9 @@ import { useRouter } from 'next/router'
 import ICollectionRelation from '../../../../interfaces/schemaRelations/ICollectionRelation'
 import initialCollection from '../../../../initialData/schema/initialCollection'
 import initialUser from '../../../../initialData/schema/initialUser'
-import { useAppDispatch, useAppSelector } from '../../../redux/app/hooks'
-import {
-  updateAccount,
-  updateEtherBalance,
-  updateNetworkId,
-  selectAccountInfo,
-  AccountInfoState,
-} from '../../../redux/features/accountInfoSlice'
+import { useAppSelector } from '../../../redux/app/hooks'
+import { selectAccountInfo } from '../../../redux/features/accountInfoSlice'
 import emptyAddress from '../../../../constants/emptyAddress'
-import StyledWidePageBase from '../../../components/styles/StyledWidePageBase'
-import { Button, Typography } from '@mui/material'
 import CollectionPage from '../../../components/collection/CollectionPage'
 import fetchItemsByItemIds from '../../../../tokenFunctions/getters/fetchItemsByItemIds'
 import IItem from '../../../../interfaces/IItem'
@@ -28,7 +20,6 @@ const initialCollectionData: ICollectionRelation = {
 }
 
 const collectionPage = () => {
-  const dispatch = useAppDispatch()
   // To fetch accountInfo
   const accountInfo = useAppSelector(selectAccountInfo)
 
@@ -39,8 +30,6 @@ const collectionPage = () => {
   const [isCreator, setIsCreator] = useState(false)
   const [nfts, setNfts] = useState<IItem[]>([])
   const [collectionId, setCollectionId] = useState<null | string>(null)
-
-  console.log('collectionData: ', collectionData)
 
   useEffect(() => {
     const getCollection = async (id: string) => {
