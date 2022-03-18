@@ -4,38 +4,10 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import IPersonalInfo from '../../../../interfaces/IPersonalInfo'
-import StyledPageBase from '../../../components/styles/StyledPageBase'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
-import Alert from '@mui/material/Alert'
-import { MARGIN_LARGE, MARGIN_SMALL } from '../../../../constants'
-import DividerMarginBottom from '../../../components/styles/DividerMarginBottom'
-import default_account_image from '../../../../images/default_account_image.jpg'
-import isEmailValid from '../../../../helperFunctions/isEmailValid'
-import isUrlValid from '../../../../helperFunctions/isUrlValid'
-import FlexBox from '../../../components/styles/FlexBox'
-import FlexSpace from '../../../components/styles/FlexSpace'
-import Link from 'next/link'
-import { useAppDispatch, useAppSelector } from '../../../redux/app/hooks'
+import { useAppSelector } from '../../../redux/app/hooks'
 import { selectAccountInfo } from '../../../redux/features/accountInfoSlice'
-import {
-  updateAccountData,
-  selectAccountData,
-} from '../../../redux/features/accountDataSlice'
-import {
-  usersPut,
-  IUserNewInfo,
-} from '../../../../crudFunctions/users/usersRequests'
 import { useRouter } from 'next/router'
-import getFileUrl from '../../../../tokenFunctions/getters/getFileUrl'
-import { currentUrl } from '../../../../constants/currentUrl'
-// import doesNewNameExist from '../../../../helperFunctions/doesNewNameExist'
-import removeWhitespaces from '../../../../helperFunctions/removeWhitespaces'
 import emptyAddress from '../../../../constants/emptyAddress'
-import AccountMetaMaskNotConnected from '../../../components/account/AccountMetaMaskNotConnected'
 import { collectionsGet } from '../../../../crudFunctions/collections/collectionsRequests'
 import CollectionEdit from '../../../components/collection/CollectionEdit'
 import TextPage from '../../../components/miscellaneous/TextPage'
