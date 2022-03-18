@@ -16,6 +16,10 @@ import { useAppSelector } from '../../../redux/app/hooks'
 import { selectAccountInfo } from '../../../redux/features/accountInfoSlice'
 import IUser from '../../../../interfaces/schema/IUser'
 import initialUserData from '../../../../initialData/schema/initialUser'
+import UserAccount from '../../../components/user/UserAccount'
+import { PageType, PageWidth } from '../../../../enums/PageType'
+import TextPage from '../../../components/miscellaneous/TextPage'
+import emptyAddress from '../../../../constants/emptyAddress'
 
 interface IProps {
   article: any
@@ -30,9 +34,22 @@ const userPage = () => {
   const [userData, setUserData] = useState<null | IUser>(initialUserData)
 
   const { id } = router.query
-  console.log('id: ', id)
 
+  console.log('id: ', id)
   console.log('userData: ', userData)
+
+  useEffect(() => {
+    if (
+      userData?.address !== emptyAddress &&
+      accountInfo?.account !== emptyAddress &&
+      userData?.address === accountInfo?.account
+    ) {
+      // if it is the current user's page
+      // redirect to their account
+      console.log('%ccurrent user', 'color:red;font-size:2.5rem')
+      router.push('/account')
+    }
+  }, [userData, accountInfo])
 
   useEffect(() => {
     const getUser = async (id: string) => {
@@ -57,13 +74,28 @@ const userPage = () => {
     }
   }, [id])
 
-  return (
-    <div>
-      <h3>{id}</h3>
-      <br />
-      <Link href='/'>Go Back</Link>
-    </div>
-  )
+  if (userData === null) {
+    // if user info does not exist
+    return (
+      <TextPage
+        pageWidth={PageWidth.WIDE}
+        hasBackButton={true}
+        message='User Info does not exist'
+      />
+    )
+  } else if (userData.address === emptyAddress) {
+    // if user info is loading
+    return (
+      <TextPage
+        pageWidth={PageWidth.WIDE}
+        hasBackButton={false}
+        message='User Info is loading...'
+      />
+    )
+  } else {
+    // if user page is not the current user's
+    return <UserAccount pageType={PageType.ALL} />
+  }
 }
 
 export default userPage

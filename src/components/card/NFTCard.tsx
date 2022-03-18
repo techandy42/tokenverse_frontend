@@ -67,8 +67,6 @@ const NFTCard: React.FC<IProps> = ({
     }
   }, [isLikedNftsLoaded])
 
-  console.log('likedNfts: ', likedNfts)
-
   /* Initializing sizes code starts */
   // intializing sizes as if size is CardType.SMALL
   let sizes: ISize = {
