@@ -15,14 +15,14 @@ interface IProps {
 const AccountDisplayNFTs: React.FC<IProps> = ({ NFTs }) => {
   const accountInfo = useAppSelector(selectAccountInfo)
   const [likedNfts, setLikedNfts] = useState<number[]>([])
-  const [isLikedNftsLoaded, setIsLikedNftsLoaded] = useState(false)
+  const [isLikedNftsLoaded, setIsLikedNftsLoaded] = useState(0)
 
   useEffect(() => {
     const getLikedNfts = async () => {
       const likedNftsRequestInfo = await usersGetLikedNfts(accountInfo.account)
       const likedNfts = likedNftsRequestInfo.data.likedNfts
       setLikedNfts(likedNfts)
-      setIsLikedNftsLoaded(true)
+      setIsLikedNftsLoaded(isLikedNftsLoaded + 1)
     }
 
     if (accountInfo.account !== emptyAddress) {

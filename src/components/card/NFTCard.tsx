@@ -27,7 +27,7 @@ interface IProps {
   size: CardType
   likedNfts: number[]
   setLikedNfts: React.Dispatch<React.SetStateAction<number[]>>
-  isLikedNftsLoaded: boolean
+  isLikedNftsLoaded: number
 }
 
 interface IBreakpoints {
@@ -58,15 +58,16 @@ const NFTCard: React.FC<IProps> = ({
 }) => {
   const accountInfo = useAppSelector(selectAccountInfo)
 
-  const [likes, setLikes] = useState(0)
+  const [likes, setLikes] = useState<null | number>(null)
   const [liked, setLiked] = useState(false)
 
-  // possible bug
   useEffect(() => {
     if (isLikedNftsLoaded) {
       setLiked(likedNfts.includes(NFT.tokenId))
     }
   }, [isLikedNftsLoaded])
+
+  console.log('likedNfts: ', likedNfts)
 
   /* Initializing sizes code starts */
   // intializing sizes as if size is CardType.SMALL
@@ -97,8 +98,9 @@ const NFTCard: React.FC<IProps> = ({
   useEffect(() => {
     const getLikes = async () => {
       const fetchedNumLikes = await nftsGetLikes(NFT.tokenId)
-      const numLikes = fetchedNumLikes?.data?.likes
-      setLikes(numLikes ?? 0)
+      let numLikes = fetchedNumLikes?.data?.likes
+      numLikes = numLikes === undefined ? null : numLikes
+      setLikes(numLikes)
     }
     if (accountInfo.account !== emptyAddress) {
       getLikes()
@@ -109,6 +111,8 @@ const NFTCard: React.FC<IProps> = ({
   // console.log('liked: ', liked)
 
   const handleLike = async () => {
+    // cannot like or unlike if likes is null
+    if (likes === null) return
     // cannot like or unlike if the account info is not loaded
     if (accountInfo.account === emptyAddress) return
     // cannot unlike a card with 0 or less likes
@@ -215,7 +219,7 @@ const NFTCard: React.FC<IProps> = ({
                 <FavoriteBorderIcon sx={{ fontSize: sizes.iconFont }} />
               )}
             </IconButton>
-            <Typography>{likes}</Typography>
+            <Typography>{likes !== null ? likes : '?'}</Typography>
           </FlexBox>
         </CardContent>
       </Card>
