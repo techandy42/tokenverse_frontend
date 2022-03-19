@@ -31,11 +31,13 @@ import fetchItemsByItemIds from '../../../tokenFunctions/getters/fetchItemsByIte
 import INftRelation from '../../../interfaces/schemaRelations/INftsRelation'
 import IUser from '../../../interfaces/schema/IUser'
 import UserInfo from './UserInfo'
+import { AccountNavType } from '../../../enums/PageType'
 
 interface IProps {
   userData: null | IUser
   fetchedCollections: ICollection[]
   pageType: PageType
+  id: string | string[] | undefined
 }
 
 const TextLoading = styled('p')(({ theme }) => ({
@@ -56,6 +58,7 @@ const UserAccount: React.FC<IProps> = ({
   userData,
   fetchedCollections,
   pageType,
+  id,
 }) => {
   const [NFTs, setNFTs] = useState<IItem[]>([])
   const [collectionNFTs, setCollectionNFTs] = useState<ICollectionNFTs>({})
@@ -197,31 +200,37 @@ const UserAccount: React.FC<IProps> = ({
     }
   }
 
-  if (loadingState === LoadingState.NOT_LOADED)
-    return (
-      <StyledPageBase>
-        <UserInfo userData={userData} />
-        <Divider sx={{ marginBottom: '1rem' }} />
-        <AccountNav index={getPageTypeIndex(pageType)} />
-        <TextLoading className='font-chakra'>Loading...</TextLoading>
-      </StyledPageBase>
-    )
-
   return (
     <StyledPageBase>
       <UserInfo userData={userData} />
-      <FormControlLabel
-        control={<Switch onClick={() => handleDisplayMode()} />}
-        label='Collection'
-      />
+      {loadingState !== LoadingState.NOT_LOADED && (
+        <>
+          <FormControlLabel
+            control={<Switch onClick={() => handleDisplayMode()} />}
+            label='Collection'
+          />
+        </>
+      )}
       <Divider sx={{ marginBottom: '1rem' }} />
-      <AccountNav index={getPageTypeIndex(pageType)} />
-      {displayMode === DisplayModeChoices.NFT ? (
-        <AccountDisplayNFTs NFTs={NFTs} />
-      ) : displayMode === DisplayModeChoices.COLLECTION ? (
-        <AccountDisplayCollections collectionNFTs={collectionNFTs} />
+      <AccountNav
+        index={getPageTypeIndex(pageType)}
+        accountNavType={AccountNavType.USER_ACCOUNT}
+        id={id}
+      />
+      {loadingState === LoadingState.NOT_LOADED ? (
+        <>
+          <TextLoading className='font-chakra'>Loading...</TextLoading>
+        </>
       ) : (
-        <AccountDisplayNFTs NFTs={NFTs} />
+        <>
+          {displayMode === DisplayModeChoices.NFT ? (
+            <AccountDisplayNFTs NFTs={NFTs} />
+          ) : displayMode === DisplayModeChoices.COLLECTION ? (
+            <AccountDisplayCollections collectionNFTs={collectionNFTs} />
+          ) : (
+            <AccountDisplayNFTs NFTs={NFTs} />
+          )}
+        </>
       )}
     </StyledPageBase>
   )

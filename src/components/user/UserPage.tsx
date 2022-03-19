@@ -96,6 +96,7 @@ const UserPage: React.FC<IProps> = ({ id, pageType }) => {
         userData={userData}
         fetchedCollections={fetchedCollections}
         pageType={pageType}
+        id={id}
       />
     )
   }

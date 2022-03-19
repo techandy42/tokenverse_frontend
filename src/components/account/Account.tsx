@@ -33,6 +33,7 @@ import {
 import { nftsGetMultiple } from '../../../crudFunctions/nfts/nftsRequests'
 import fetchItemsByItemIds from '../../../tokenFunctions/getters/fetchItemsByItemIds'
 import INftRelation from '../../../interfaces/schemaRelations/INftsRelation'
+import { AccountNavType } from '../../../enums/PageType'
 
 interface IProps {
   pageType: PageType
@@ -198,33 +199,36 @@ const Account: React.FC<IProps> = ({ pageType }) => {
     }
   }
 
-  if (loadingState === LoadingState.NOT_LOADED)
-    return (
-      <StyledPageBase>
-        <AccountInfo />
-        <Divider sx={{ marginBottom: '1rem' }} />
-        <AccountNav index={getPageTypeIndex(pageType)} />
-        <TextLoading className='font-chakra'>Loading...</TextLoading>
-      </StyledPageBase>
-    )
-
-  console.log('account address: ', accountInfo.account)
-
   return (
     <StyledPageBase>
       <AccountInfo />
-      <FormControlLabel
-        control={<Switch onClick={() => handleDisplayMode()} />}
-        label='Collection'
-      />
+      {loadingState !== LoadingState.NOT_LOADED && (
+        <>
+          <FormControlLabel
+            control={<Switch onClick={() => handleDisplayMode()} />}
+            label='Collection'
+          />
+        </>
+      )}
       <Divider sx={{ marginBottom: '1rem' }} />
-      <AccountNav index={getPageTypeIndex(pageType)} />
-      {displayMode === DisplayModeChoices.NFT ? (
-        <AccountDisplayNFTs NFTs={NFTs} />
-      ) : displayMode === DisplayModeChoices.COLLECTION ? (
-        <AccountDisplayCollections collectionNFTs={collectionNFTs} />
+      <AccountNav
+        index={getPageTypeIndex(pageType)}
+        accountNavType={AccountNavType.OWN_ACCOUNT}
+      />
+      {loadingState === LoadingState.NOT_LOADED ? (
+        <>
+          <TextLoading className='font-chakra'>Loading...</TextLoading>
+        </>
       ) : (
-        <AccountDisplayNFTs NFTs={NFTs} />
+        <>
+          {displayMode === DisplayModeChoices.NFT ? (
+            <AccountDisplayNFTs NFTs={NFTs} />
+          ) : displayMode === DisplayModeChoices.COLLECTION ? (
+            <AccountDisplayCollections collectionNFTs={collectionNFTs} />
+          ) : (
+            <AccountDisplayNFTs NFTs={NFTs} />
+          )}
+        </>
       )}
     </StyledPageBase>
   )

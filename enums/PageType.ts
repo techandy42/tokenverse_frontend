@@ -6,6 +6,11 @@ export enum PageType {
   FAVORITE = 'FAVORITE',
 }
 
+export enum AccountNavType {
+  OWN_ACCOUNT = 'OWN_ACCOUNT',
+  USER_ACCOUNT = 'USER_ACCOUNT',
+}
+
 export enum PageWidth {
   NARROW = 'NARROW',
   WIDE = 'WIDE',
