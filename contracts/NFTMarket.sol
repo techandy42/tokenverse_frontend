@@ -49,41 +49,6 @@ contract NFTMarket is ReentrancyGuard {
     mapping(address => uint256[]) internal creatorTokenIds; // address --> msg.sender address | uint256[] --> tokenIds
     mapping(address => uint256[]) internal ownerTokenIds; // address --> msg.sender address | uint256 --> tokenIds
     mapping(uint256 => address) internal allowance; // uint256 --> tokenid | address --> msg.sender address
- 
-    /*
- 
-
-    event MarketItemCreated (
-        uint256 indexed itemId,
-        address indexed nftContract,
-        uint256 indexed tokenId,
-        address creator,
-        address seller,
-        address owner,
-        uint256 price,
-        bool isOnSale,
-        bool isOnLease,
-        bool isOnAuction,
-        uint256 startSaleDate,
-        uint256 endSaleDate
-    );
-    
-    event MarketItemsCreated (
-        uint256[] indexed itemIds,
-        address[] indexed nftContracts,
-        uint256[] indexed tokenIds,
-        address[] creator,
-        address[] seller,
-        address[] owner,
-        uint256[] price,
-        bool[] isOnSale,
-        bool[] isOnLease,
-        bool[] isOnAuction,
-        uint256[] startSaleDate,
-        uint256[] endSaleDate
-    );
-    */
-
     event MarketItemCreated (
         address indexed nftContract,
         uint256 indexed tokenId,
@@ -254,23 +219,6 @@ contract NFTMarket is ReentrancyGuard {
             tokenId,
             msg.sender
         );
-
-        /*
-        emit MarketItemCreated(
-            itemId,
-            nftContract,
-            tokenId,
-            msg.sender,
-            msg.sender,
-            address(0),
-            0,
-            false,
-            false,
-            false,
-            0,
-            0
-        );
-        */
     }
 
     /* Mints multiple token */
@@ -278,27 +226,11 @@ contract NFTMarket is ReentrancyGuard {
         address nftContract,
         uint256[] memory tokenIds
     ) public payable nonReentrant {
-        // loop over the params
-        // store them in list to emit 
-        // uint256[] memory itemIds = new uint256[](tokenIds.length);
-        // address[] memory nftContracts = new address[](tokenIds.length);
-        // address[] memory msgSenders = new address[](tokenIds.length);
-        // address[] memory addressZeroes = new address[](tokenIds.length);
-        // uint256[] memory zeroes = new uint256[](tokenIds.length);
-        // bool[] memory falses = new bool[](tokenIds.length);
 
         for (uint256 i = 0; i < tokenIds.length; i++) {
             _itemIds.increment();
             uint256 itemId = _itemIds.current();
             uint256 tokenId = tokenIds[i];
-
-            // fill the arrays with values
-            // itemIds[i] = itemId;
-            // nftContracts[i] = nftContract;
-            // msgSenders[i] = msg.sender;
-            // addressZeroes[i] = address(0);
-            // zeroes[i] = 0;
-            // falses[i] = false; 
 
             MarketItem memory item = MarketItem(
                 itemId,
@@ -330,23 +262,6 @@ contract NFTMarket is ReentrancyGuard {
             tokenIds,
             msg.sender
         );
-
-        /*        
-        emit MarketItemsCreated(
-            itemIds,
-            nftContracts,
-            tokenIds,
-            msgSenders,
-            msgSenders,
-            addressZeroes,
-            zeroes,
-            falses,
-            falses,
-            falses,
-            zeroes,
-            zeroes
-        );
-        */
     }
 
     /* Puts the token on sale / lease / auction */

@@ -1,0 +1,157 @@
+1) change metadata to the following:
+{
+  image: url,
+  animation_url: url,
+  external_url: url,
+  youtube_url: url,
+  description: string,
+  name: string,
+  attributes: attributes[],
+}
+
+2) change the schema of backend from (1) to (2):
+(1):
+model NFT {
+  id                 Int        @id @default(autoincrement())
+  uuid               String     @unique @default(uuid())
+  createdAt          DateTime   @default(now()) @map("created_at")
+  updatedAt          DateTime   @updatedAt @map("updated_at")
+  name               String     
+  blockchainType     BlockchainType     @map("blockchain_type")
+  fileUrl            String     @map("file_url")
+  // File     
+  multimediaFileUrl  String?    @map("multimedia_file_url")    
+  price              Int        @default(0)
+  isOnSale           Boolean    @default(false) @map("is_on_sale")
+  isOnLease          Boolean    @default(false) @map("is_on_lease")
+  isOnAuction        Boolean    @default(false) @map("is_on_auction")
+  isMetadataFrozen   Boolean    @default(false) @map("is_metadata_frozen")
+  tokenId            Int        @unique @map("token_id")
+  itemId             Int        @unique @map("item_id")
+  userId             Int        @map("user_id")
+  collectionId       Int        @map("collection_id")
+  creatorId          Int        @map("creator_id")
+  collection         Collection @relation(fields: [collectionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  user               User       @relation("user", fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  creator            User       @relation("creator", fields: [creatorId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  startSaleDate      DateTime   @default(now()) @map("start_sale_date")
+  endSaleDate        DateTime   @default(now()) @map("end_sale_date")
+  saleType           SaleType   @default(COLLECTIBLE) @map("sale_type")
+  collectibleCategory CollectibleCategory   @default(MISCELLANEOUS) @map("collectible_category")
+  productKeyAccessTokenCategory ProductKeyAccessTokenCategory   @default(MISCELLANEOUS) @map("product_key_access_token_category")
+  productKeyVirtualAssetCategory ProductKeyVirtualAssetCategory   @default(MISCELLANEOUS) @map("product_key_virtual_asset_category")
+  isSensitiveContent Boolean    @default(false) @map("is_sensitive_content")
+  ercType            ErcType    @map("erc_type")
+  likes              Int        @default(0)
+  descriptions       String[]
+  propertiesKey      String[]
+  propertiesValue    String[]
+  imagesKey          String[]
+  imagesValue        String[]
+  levelsKey          String[]
+  levelsValueNum     Int[]
+  levelsValueDen     Int[]
+  reviews            Review[]   
+  @@map("nfts")
+}
+
+(2):
+model NFT {
+  id                 Int        @id @default(autoincrement())
+  uuid               String     @unique @default(uuid())
+  createdAt          DateTime   @default(now()) @map("created_at")
+  updatedAt          DateTime   @updatedAt @map("updated_at")
+  blockchainType     BlockchainType     @map("blockchain_type")
+  price              Int        @default(0)
+  isOnSale           Boolean    @default(false) @map("is_on_sale")
+  isOnLease          Boolean    @default(false) @map("is_on_lease")
+  isOnAuction        Boolean    @default(false) @map("is_on_auction")
+  isMetadataFrozen   Boolean    @default(false) @map("is_metadata_frozen")
+  tokenId            Int        @unique @map("token_id")
+  itemId             Int        @unique @map("item_id")
+  userId             Int        @map("user_id")
+  collectionId       Int        @map("collection_id")
+  creatorId          Int        @map("creator_id")
+  collection         Collection @relation(fields: [collectionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  user               User       @relation("user", fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  creator            User       @relation("creator", fields: [creatorId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  startSaleDate      DateTime   @default(now()) @map("start_sale_date")
+  endSaleDate        DateTime   @default(now()) @map("end_sale_date")
+  saleType           SaleType   @default(COLLECTIBLE) @map("sale_type")
+  collectibleCategory CollectibleCategory   @default(MISCELLANEOUS) @map("collectible_category")
+  productKeyAccessTokenCategory ProductKeyAccessTokenCategory   @default(MISCELLANEOUS) @map("product_key_access_token_category")
+  productKeyVirtualAssetCategory ProductKeyVirtualAssetCategory   @default(MISCELLANEOUS) @map("product_key_virtual_asset_category")
+  isSensitiveContent Boolean    @default(false) @map("is_sensitive_content")
+  ercType            ErcType    @map("erc_type")
+  likes              Int        @default(0)
+  // additional images for the NFT
+  images             String[]
+  // additional descriptions for the NFT
+  descriptions       String[]
+  reviews            Review[]
+
+  // metadata info
+  image             String      
+  animationUrl      String?    @map("animation_url")
+  externalUrl       String     @default("") @map("external_url")
+  youtubeUrl        String     @default("") @map("youtube_url")
+  description       String     @default("") 
+  name              String     
+  attributes        JSON       @default("{}")      
+  @@map("nfts")
+}
+
+3) add collection (uuid) field to contract
+
+4) add tokenId => item map / collection (uuid) => item map to contract
+
+5) change fetch by tokenId functions
+
+6) add fetch by collection (uuid)
+
+7) add metadata freezing to contract
+
+8) refractor solidity code
+
+9) reset all hardhat accounts
+
+10) fix bug in the front-end
+
+Reference Infos:
+1) IItem interface
+interface IItem {
+  // token information
+  itemId: number
+  tokenId: number
+  nftContract: string
+  creator: string
+  seller: string
+  owner: string
+  price: string
+  isOnSale: boolean
+  isOnLease: boolean
+  isOnAuction: boolean
+  startSaleDate: Date
+  endSaleDate: Date
+  tokenURI: string
+  // token metadata information
+  name: string
+  collection: string
+  blockchainType: BlockchainType
+  fileUrl: string
+  multimedia: string | null
+  saleType: SaleType
+  collectibleCategory: CollectibleCategory
+  productKeyAccessTokenCategory: ProductKeyAccessTokenCategory
+  productKeyVirtualAssetCategory: ProductKeyVirtualAssetCategory
+  isSensitiveContent: boolean
+  ercType: ErcType
+  descriptions: string[]
+  propertiesKey: string[]
+  propertiesValue: string[]
+  imagesKey: string[]
+  imagesValue: string[]
+  levelsKey: string[]
+  levelsValueNum: number[]
+  levelsValueDen: number[]
+}
