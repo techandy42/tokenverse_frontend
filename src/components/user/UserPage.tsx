@@ -15,7 +15,7 @@ interface IProps {
   pageType: PageType
 }
 
-const userPage: React.FC<IProps> = ({ id, pageType }) => {
+const UserPage: React.FC<IProps> = ({ id, pageType }) => {
   // fetch user info
   const accountInfo = useAppSelector(selectAccountInfo)
   const router = useRouter()
@@ -86,4 +86,4 @@ const userPage: React.FC<IProps> = ({ id, pageType }) => {
   }
 }
 
-export default userPage
+export default UserPage
