@@ -138,9 +138,6 @@ export default function PrimarySearchAppBar() {
       <Link href='/account/edit'>
         <MenuItem onClick={handleMenuClose}>Edit</MenuItem>
       </Link>
-      <Link href='/'>
-        <MenuItem onClick={handleMenuClose}>Log Out</MenuItem>
-      </Link>
     </Menu>
   )
 
