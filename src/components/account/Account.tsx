@@ -84,6 +84,13 @@ const Account: React.FC<IProps> = ({ pageType }) => {
 
   useEffect(() => {
     const getNFTs = async () => {
+      if (
+        accountInfo.account === emptyAddress ||
+        accountData.address === emptyAddress ||
+        fetchedCollections.length === 0
+      )
+        return
+
       let userCreatedItems: IItem[] | null = null
       let userOwnedItems: IItem[] | null = null
       let userItems: IItem[] | null = null

@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { usersGetByUserName } from '../../../crudFunctions/users/usersRequests'
+import {
+  usersGetByUserName,
+  usersCollectionsGet,
+} from '../../../crudFunctions/users/usersRequests'
 import { useAppSelector } from '../../redux/app/hooks'
 import { selectAccountInfo } from '../../redux/features/accountInfoSlice'
 import IUser from '../../../interfaces/schema/IUser'
+import ICollection from '../../../interfaces/schema/ICollection'
 import initialUserData from '../../../initialData/schema/initialUser'
 import UserAccount from '../../components/user/UserAccount'
 import { PageType, PageWidth } from '../../../enums/PageType'
@@ -20,11 +24,10 @@ const UserPage: React.FC<IProps> = ({ id, pageType }) => {
   const accountInfo = useAppSelector(selectAccountInfo)
   const router = useRouter()
 
-  const [userId, setUserId] = useState<null | string>(null)
   const [userData, setUserData] = useState<null | IUser>(initialUserData)
-
-  console.log('id: ', id)
-  console.log('userData: ', userData)
+  const [fetchedCollections, setFetchedCollections] = useState<ICollection[]>(
+    [],
+  )
 
   useEffect(() => {
     if (
@@ -34,23 +37,30 @@ const UserPage: React.FC<IProps> = ({ id, pageType }) => {
     ) {
       // if it is the current user's page
       // redirect to their account
-      console.log('%ccurrent user', 'color:red;font-size:2.5rem')
       router.push('/account')
     }
   }, [userData, accountInfo])
 
   useEffect(() => {
     const getUser = async (id: string) => {
+      // get user data
       const fetchedUser = await usersGetByUserName(id)
-      const fetchedUserData = fetchedUser && fetchedUser.data
+      const fetchedUserData: null | IUser = fetchedUser && fetchedUser.data
       setUserData(fetchedUserData)
+
+      if (fetchedUserData === null) return
+
+      // get user collection data if userData is not null
+      const collections = await usersCollectionsGet(fetchedUserData.address)
+      let collectionsData: null | ICollection[] =
+        collections && collections.data && collections.data.collections
+      collectionsData = collectionsData === null ? [] : collectionsData
+      setFetchedCollections(collectionsData)
     }
 
-    console.log('this is called')
     if (typeof id === 'string') {
       // valid id
       getUser(id)
-      setUserId(id)
     } else if (id === undefined) {
       // invalid id
       // handle if id doesn't exist
@@ -58,7 +68,6 @@ const UserPage: React.FC<IProps> = ({ id, pageType }) => {
     } else {
       // valid id
       getUser(id[0])
-      setUserId(id[0])
     }
   }, [id])
 
@@ -82,7 +91,13 @@ const UserPage: React.FC<IProps> = ({ id, pageType }) => {
     )
   } else {
     // if user page is not the current user's
-    return <UserAccount pageType={pageType} />
+    return (
+      <UserAccount
+        userData={userData}
+        fetchedCollections={fetchedCollections}
+        pageType={pageType}
+      />
+    )
   }
 }
 

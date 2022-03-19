@@ -34,8 +34,6 @@ const CollectionPage: React.FC<IProps> = ({
   collectionData,
   nfts,
 }) => {
-  console.log('collectionData: ', collectionData)
-
   const isUserNameValid = () => {
     if (userName !== undefined) {
       if (userName !== '') {
