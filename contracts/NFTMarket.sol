@@ -548,7 +548,8 @@ contract NFTMarket is ReentrancyGuard {
         uint256[] memory itemIds = collectionToIds[collection];
         Item[] memory items = new Item[](itemIds.length);
         for (uint256 i = 0; i < itemIds.length; i++) {
-            Item memory item = idToItem[i];
+            uint256 itemId = itemIds[i];
+            Item memory item = idToItem[itemId];
             items[i] = item;
         }
         return items;
@@ -560,7 +561,8 @@ contract NFTMarket is ReentrancyGuard {
         uint256[] memory itemIds = creatorToIds[user];
         Item[] memory items = new Item[](itemIds.length);
         for (uint256 i = 0; i < itemIds.length; i++) {
-            Item memory item = idToItem[i];
+            uint256 itemId = itemIds[i];
+            Item memory item = idToItem[itemId];
             items[i] = item;
         }
         return items;
@@ -572,7 +574,8 @@ contract NFTMarket is ReentrancyGuard {
         uint256[] memory itemIds = ownerToIds[user];
         Item[] memory items = new Item[](itemIds.length);
         for (uint256 i = 0; i < itemIds.length; i++) {
-            Item memory item = idToItem[i];
+            uint256 itemId = itemIds[i];
+            Item memory item = idToItem[itemId];
             items[i] = item;
         }
         return items;

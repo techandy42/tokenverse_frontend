@@ -70,6 +70,7 @@ describe('NFTMarket', function () {
         isOnAuction: i.isOnAuction,
         startSaleDate: i.startSaleDate.toString(),
         endSaleDate: i.endSaleDate.toString(),
+        collection: i.collection,
         tokenURI,
       }
       console.log(`item (fetched using ${idType}): `, item)
@@ -101,6 +102,8 @@ describe('NFTMarket', function () {
             isOnAuction: i.isOnAuction,
             startSaleDate: i.startSaleDate.toString(),
             endSaleDate: i.endSaleDate.toString(),
+            collection: i.collection,
+
             tokenURI,
           }
           return item
@@ -135,6 +138,7 @@ describe('NFTMarket', function () {
             isOnAuction: i.isOnAuction,
             startSaleDate: i.startSaleDate.toString(),
             endSaleDate: i.endSaleDate.toString(),
+            collection: i.collection,
             tokenURI,
           }
           return item
@@ -165,6 +169,7 @@ describe('NFTMarket', function () {
             isOnAuction: i.isOnAuction,
             startSaleDate: i.startSaleDate.toString(),
             endSaleDate: i.endSaleDate.toString(),
+            collection: i.collection,
             tokenURI,
           }
           return item
@@ -195,6 +200,7 @@ describe('NFTMarket', function () {
             isOnAuction: i.isOnAuction,
             startSaleDate: i.startSaleDate.toString(),
             endSaleDate: i.endSaleDate.toString(),
+            collection: i.collection,
             tokenURI,
           }
           return item
@@ -236,6 +242,10 @@ describe('NFTMarket', function () {
       tokenIds.slice(2, 5),
       uuid1,
     )
+
+    /* Fetched creator of the tokens */
+    const user1 = getCreator()
+    const user2 = buyerAddress.address
 
     /* Change metadata of the token */
     await nft.changeTokenURI(tokenIds[2], tokenURIs10[2])
@@ -306,10 +316,6 @@ describe('NFTMarket', function () {
       buyerAddress.address,
     )
     await nft.connect(buyerAddress).changeAllowanceToNullAddress(tokenIds[2])
-
-    /* Fetched creator of the tokens */
-    const user1 = getCreator()
-    const user2 = buyerAddress.address
 
     /* Fetching Item on Market using itemId */
     getItemById(itemIds[2], IdType.itemId)
