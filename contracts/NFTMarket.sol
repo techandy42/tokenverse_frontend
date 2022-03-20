@@ -196,7 +196,8 @@ contract NFTMarket is ReentrancyGuard {
     /* Mints one token */
     function createMintMarketItem(
         address nftContract,
-        uint256 tokenId
+        uint256 tokenId,
+        string memory collection
     ) public payable nonReentrant {
         _itemIds.increment();
         uint256 itemId = _itemIds.current();
@@ -235,7 +236,8 @@ contract NFTMarket is ReentrancyGuard {
     /* Mints multiple token */
     function createMintMarketItems(
         address nftContract,
-        uint256[] memory tokenIds
+        uint256[] memory tokenIds,
+        string memory collection
     ) public payable nonReentrant {
 
         for (uint256 i = 0; i < tokenIds.length; i++) {
@@ -285,8 +287,10 @@ contract NFTMarket is ReentrancyGuard {
         uint256 startSaleDate,
         uint256 endSaleDate
     ) public payable nonReentrant {
-        require(price > 0, "price 0 or less");
-        require(msg.value == listingRatioNum, "price not same as listed ratio num");
+        // price 0 or less
+        require(price > 0, "p0ol");
+        // price not same as listed ratio num
+        require(msg.value == listingRatioNum, "pnsalrn");
 
         // Modifies the token's data
         idToItem[itemId].price = price;
@@ -336,9 +340,12 @@ contract NFTMarket is ReentrancyGuard {
         address originalOwner = idToItem[itemId].owner;
 
         // Validation
-        require(idToItem[itemId].isOnSale != true, "item on sale");
-        require(idToItem[itemId].isOnLease != true, "item on Lease");
-        require(idToItem[itemId].isOnAuction != true, "item on Auction");
+        // item on sale
+        require(idToItem[itemId].isOnSale != true, "ios");
+        // item on lease
+        require(idToItem[itemId].isOnLease != true, "iol");
+        // item on auction
+        require(idToItem[itemId].isOnAuction != true, "ioa");
 
         // Transferring ownership
         IERC721(nftContract).transferFrom(address(this), receiver, tokenId);
@@ -397,9 +404,12 @@ contract NFTMarket is ReentrancyGuard {
         address originalOwner = idToItem[itemId].owner;
 
         // Validation
-        require(msg.value == price, "value incorrect");
-        require(idToItem[itemId].isOnSale == true, "item not on sale");
-        require(getMarketValid(itemId, currentDate), "not on market");
+        // value incorrect
+        require(msg.value == price, "vi");
+        // item not on sale
+        require(idToItem[itemId].isOnSale == true, "inos");
+        // not on market
+        require(getMarketValid(itemId, currentDate), "nom");
 
         // Transfer ownership
         idToItem[itemId].seller.transfer(msg.value);

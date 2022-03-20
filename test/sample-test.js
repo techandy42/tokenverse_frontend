@@ -25,6 +25,8 @@ describe('NFTMarket', function () {
     const startSaleDate = 1000
     const currentDate = 10000
     const endSaleDate = 100000
+    const uuid1 = '16267d85-e6a3-4ce8-bd00-7395473e2b18'
+    const uuid2 = '17dc7a67-9067-4683-817c-ea35c25e116d'
 
     /* Mutable variables */
     let item = null
@@ -63,10 +65,10 @@ describe('NFTMarket', function () {
 
     await nft.createTokens(tokenURIs)
 
-    await market.createMintMarketItem(nftContractAddress, tokenId1)
-    await market.createMintMarketItem(nftContractAddress, tokenId2)
+    await market.createMintMarketItem(nftContractAddress, tokenId1, uuid1)
+    await market.createMintMarketItem(nftContractAddress, tokenId2, uuid2)
 
-    await market.createMintMarketItems(nftContractAddress, tokenIds345)
+    await market.createMintMarketItems(nftContractAddress, tokenIds345, uuid1)
 
     /* Change metadata of the token */
     await nft.changeTokenURI(tokenId1, tokenURI10, true)
