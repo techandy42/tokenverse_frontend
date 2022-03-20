@@ -1,4 +1,8 @@
 describe('NFTMarket', function () {
+  // resets the hardhat nodes
+  beforeEach(async function () {
+    await hre.network.provider.send('hardhat_reset')
+  })
   it('Should create and execute market sales', async function () {
     /* Constant Values for testing */
     const emptyNftAddress = '0x0000000000000000000000000000000000000000'
