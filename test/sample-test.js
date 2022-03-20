@@ -116,7 +116,7 @@ describe('NFTMarket', function () {
 
     /* Burning (deleting) token */
     await nft.connect(buyerAddress).burnToken(tokenId1)
-    await market.connect(buyerAddress).deleteItem(itemId1, tokenId1)
+    await market.connect(buyerAddress).deleteItem(itemId1)
 
     /* Making ownership transfer (non-sale) */
     await market.createTransferOwnership(
@@ -176,63 +176,8 @@ describe('NFTMarket', function () {
     /* Fetched creator of the tokens */
     const creator = item.creator
 
-    /* Only for initial testing starts */
-
     /* Fetching Item on Market using tokenId */
-    /*
     i = await market.fetchItemByTokenId(tokenId2)
-    i = validateItemsNftContract([i])[0]
-    tokenURI = await nft.tokenURI(i.tokenId)
-    item = {
-      itemId: i.itemId.toString(),
-      nftContract: i.nftContract,
-      tokenId: i.tokenId.toString(),
-      creator: i.creator,
-      seller: i.seller,
-      owner: i.owner,
-      price: i.price.toString(),
-      isOnSale: i.isOnSale,
-      isOnLease: i.isOnLease,
-      isOnAuction: i.isOnAuction,
-      startSaleDate: i.startSaleDate.toString(),
-      endSaleDate: i.endSaleDate.toString(),
-      tokenURI,
-    }
-    console.log('item (fetched using tokenId): ', item)
-    */
-
-    /* Fetching Items on Market using tokenIds */
-    /*
-    items = await market.fetchItemsByTokenIds(tokenIds345)
-    items = validateItemsNftContract(items)
-    items = await Promise.all(
-      items.map(async (i) => {
-        const tokenURI = await nft.tokenURI(i.tokenId)
-        let item = {
-          itemId: i.itemId.toString(),
-          nftContract: i.nftContract,
-          tokenId: i.tokenId.toString(),
-          creator: i.creator,
-          seller: i.seller,
-          owner: i.owner,
-          price: i.price.toString(),
-          isOnSale: i.isOnSale,
-          isOnLease: i.isOnLease,
-          isOnAuction: i.isOnAuction,
-          startSaleDate: i.startSaleDate.toString(),
-          endSaleDate: i.endSaleDate.toString(),
-          tokenURI,
-        }
-        return item
-      }),
-    )
-    console.log('items (fetched using tokenIds): ', items)
-    */
-
-    /* Only for initial testing ends */
-
-    /* Fetching Item on Market using tokenId and creator address */
-    i = await market.fetchItemByTokenIdAndCreatorAddress(tokenId2, creator)
     i = validateItemsNftContract([i])[0]
     tokenURI = await nft.tokenURI(i.tokenId)
     item = {
@@ -252,11 +197,8 @@ describe('NFTMarket', function () {
     }
     console.log('item (fetched using tokenId and creator address): ', item)
 
-    /* Fetching Items on Market using tokenIds and creator address */
-    items = await market.fetchItemsByTokenIdsAndCreatorAddress(
-      tokenIds345,
-      creator,
-    )
+    /* Fetching Items on Market using tokenIds */
+    items = await market.fetchItemsByTokenIds(tokenIds345)
     items = validateItemsNftContract(items)
     items = await Promise.all(
       items.map(async (i) => {

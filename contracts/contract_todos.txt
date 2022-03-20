@@ -115,7 +115,9 @@ model NFT {
 
 9) reset all hardhat accounts
 
-10) fix bug in the front-end
+10) optimize all the maps
+
+11) fix bug in the front-end
 
 Reference Infos:
 1) IItem interface

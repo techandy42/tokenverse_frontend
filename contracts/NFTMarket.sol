@@ -24,6 +24,8 @@ contract NFTMarket is ReentrancyGuard {
     uint256 constant ether_unit = 1e18; 
     uint256 constant listingRatioNum = 25;
     uint256 constant listingRatioDen = 1000;
+    string constant emptyCollection = "00000000-0000-0000-0000-000000000000"; // empty uuid
+    enum ItemType{ CREATE, EMPTY }
 
     address payable owner;
 
@@ -35,7 +37,7 @@ contract NFTMarket is ReentrancyGuard {
         uint256 itemId;
         address nftContract;
         uint256 tokenId;
-        // string collection;
+        string collection;
         address payable creator;
         address payable seller;
         address payable owner;
@@ -49,15 +51,11 @@ contract NFTMarket is ReentrancyGuard {
  
     mapping(uint256 => Item) internal idToItem; // uint256 --> itemId
 
-    /* handle inserting / deleting tokens starts */
-    mapping(uint256 => Item) internal tokenIdToItem; // uint256 --> tokenId
-    mapping(string => mapping(uint256 => Item)) internal collectionToTokenIdToItem; // string --> collection (uuid) | uint256 --> tokenId
-    /* handle inserting / deleting tokens ends */
-    
-    mapping(address => mapping(uint256 => Item)) internal creatorToTokenIdToItem; // address --> msg.sender address | uint256 --> tokenId
-    mapping(address => mapping(uint256 => Item)) internal ownerToTokenIdToItem; // address --> msg.sender address | uint256 --> tokenId
-    mapping(address => uint256[]) internal creatorTokenIds; // address --> msg.sender address | uint256[] --> tokenIds
-    mapping(address => uint256[]) internal ownerTokenIds; // address --> msg.sender address | uint256 --> tokenIds
+    mapping(uint256 => uint256) internal tokenIdToId; // uint256 --> tokenId | uint256 --> itemId
+    mapping(string => uint256[]) internal collectionToIds; // string --> collection (uuid) | uint256[] --> itemId[]
+    mapping(address => uint256[]) internal creatorToIds; // address --> msg.sender address | uint256[] --> itemId[]
+    mapping(address => uint256[]) internal ownerToIds; // address --> msg.sender address | uint256[] --> itemId[]
+
     mapping(uint256 => address) internal allowance; // uint256 --> tokenid | address --> msg.sender address
 
     event ItemCreated (
@@ -125,6 +123,50 @@ contract NFTMarket is ReentrancyGuard {
         }
     }
 
+    /* returns item */
+    function getItem(
+        uint256 itemId,
+        address nftContract,
+        uint256 tokenId,
+        string memory collection,
+        ItemType itemType
+    ) private view returns (Item memory) {
+        if (itemType == ItemType.CREATE) {
+            return Item(
+                itemId,
+                nftContract,
+                tokenId,
+                collection,
+                payable(msg.sender),
+                payable(msg.sender),
+                payable(address(0)),
+                0,
+                false,
+                false,
+                false,
+                0,
+                0
+            );
+        } else {
+            // ItemType.empty
+            return Item(
+                itemId,
+                address(0),
+                tokenId,
+                collection,
+                payable(address(0)),
+                payable(address(0)),
+                payable(address(0)),
+                0,
+                false,
+                false,
+                false,
+                0,
+                0
+            );
+        }
+    }
+
     /* Clears the price, isOnSale, isOnLease, isOnAuction, startSaleDate, endSaleDate of the given item */
     function clearItem(uint256 itemId) private {
         idToItem[itemId].price = 0;
@@ -135,62 +177,91 @@ contract NFTMarket is ReentrancyGuard {
         idToItem[itemId].endSaleDate = 0;
     }
 
-    /* Add a tokenId to a address in creatorTokenIds */
-    function creatorTokenIdsAddTokenId(
-        address creator,
-        uint256 tokenId
+    /* Add a itemId to a address in creatorToIds */
+    function collectionToIdsAddId(
+        string memory collection,
+        uint256 itemId
     ) private {
-        uint256[] storage tokenIds = creatorTokenIds[creator];
-        tokenIds.push(tokenId);
-        creatorTokenIds[creator] = tokenIds;
+        uint256[] storage itemIds = collectionToIds[collection];
+        itemIds.push(itemId);
+        collectionToIds[collection] = itemIds;
     }
     
-    /* Remove a tokenId to a address in creatorTokenIds (sets it to 0) */
-    function creatorTokenIdsRemoveTokenId(
-        address creator,
-        uint256 tokenId
+    /* Remove a itemId to a address in collectionToIds (sets it to 0) */
+    function collectionToIdsRemoveId(
+        string memory collection,
+        uint256 itemId
     ) private {
-        uint256[] storage tokenIds = creatorTokenIds[creator];
-        uint256 index = tokenIds.length; 
-        for (uint256 i = 0; i < tokenIds.length; i++) {
-            if (tokenIds[i] == tokenId) {
+        uint256[] storage itemIds = collectionToIds[collection];
+        uint256 index = itemIds.length; 
+        for (uint256 i = 0; i < itemIds.length; i++) {
+            if (itemIds[i] == itemId) {
                 index = i;
             }
         }
-        if (index != tokenIds.length) {
-            tokenIds[index] = tokenIds[tokenIds.length - 1];
-            tokenIds.pop();
+        if (index != itemIds.length) {
+            itemIds[index] = itemIds[itemIds.length - 1];
+            itemIds.pop();
         }
-        creatorTokenIds[creator] = tokenIds;
+        collectionToIds[collection] = itemIds;
+    }
+
+    /* Add a itemId to a address in creatorToIds */
+    function creatorToIdsAddId(
+        address creator,
+        uint256 itemId
+    ) private {
+        uint256[] storage itemIds = creatorToIds[creator];
+        itemIds.push(itemId);
+        creatorToIds[creator] = itemIds;
     }
     
-    /* Add a tokenId to a address in ownerTokenIds */
-    function ownerTokenIdsAddTokenId(
-        address tokenOwner,
-        uint256 tokenId
+    /* Remove a itemId to a address in creatorToIds (sets it to 0) */
+    function creatorToIdsRemoveId(
+        address creator,
+        uint256 itemId
     ) private {
-        uint256[] storage tokenIds = ownerTokenIds[tokenOwner];
-        tokenIds.push(tokenId);
-        ownerTokenIds[tokenOwner] = tokenIds;        
-    }
-    
-    /* Remove a tokenId to a address in ownerTokenIds (sets it to 0) */
-    function ownerTokenIdsRemoveTokenId(
-        address tokenOwner,
-        uint256 tokenId
-    ) private {
-        uint256[] storage tokenIds = ownerTokenIds[tokenOwner];
-        uint256 index = tokenIds.length; 
-        for (uint256 i = 0; i < tokenIds.length; i++) {
-            if (tokenIds[i] == tokenId) {
+        uint256[] storage itemIds = creatorToIds[creator];
+        uint256 index = itemIds.length; 
+        for (uint256 i = 0; i < itemIds.length; i++) {
+            if (itemIds[i] == itemId) {
                 index = i;
             }
         }
-        if (index != tokenIds.length) {
-            tokenIds[index] = tokenIds[tokenIds.length - 1];
-            tokenIds.pop();
+        if (index != itemIds.length) {
+            itemIds[index] = itemIds[itemIds.length - 1];
+            itemIds.pop();
         }
-        ownerTokenIds[tokenOwner] = tokenIds;
+        creatorToIds[creator] = itemIds;
+    }
+    
+    /* Add a itemId to a address in ownerToIds */
+    function ownerToIdsAddId(
+        address tokenOwner,
+        uint256 itemId
+    ) private {
+        uint256[] storage itemIds = ownerToIds[tokenOwner];
+        itemIds.push(itemId);
+        ownerToIds[tokenOwner] = itemIds;        
+    }
+    
+    /* Remove a itemId to a address in ownerToIds (sets it to 0) */
+    function ownerToIdsRemoveId(
+        address tokenOwner,
+        uint256 itemId
+    ) private {
+        uint256[] storage itemIds = ownerToIds[tokenOwner];
+        uint256 index = itemIds.length; 
+        for (uint256 i = 0; i < itemIds.length; i++) {
+            if (itemIds[i] == itemId) {
+                index = i;
+            }
+        }
+        if (index != itemIds.length) {
+            itemIds[index] = itemIds[itemIds.length - 1];
+            itemIds.pop();
+        }
+        ownerToIds[tokenOwner] = itemIds;
     }
 
     /* Mints one token */
@@ -202,25 +273,13 @@ contract NFTMarket is ReentrancyGuard {
         _itemIds.increment();
         uint256 itemId = _itemIds.current();
  
-        Item memory item = Item(
-            itemId,
-            nftContract,
-            tokenId,
-            payable(msg.sender),
-            payable(msg.sender),
-            payable(address(0)),
-            0,
-            false,
-            false,
-            false,
-            0,
-            0
-        );
+        Item memory item = getItem(itemId, nftContract, tokenId, collection, ItemType.CREATE);
 
         idToItem[itemId] = item;
  
-        creatorToTokenIdToItem[msg.sender][tokenId] = item;
-        creatorTokenIdsAddTokenId(msg.sender, tokenId);
+        tokenIdToId[tokenId] = itemId;
+        collectionToIdsAddId(collection, itemId);
+        creatorToIdsAddId(msg.sender, itemId);
 
         IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
  
@@ -245,25 +304,13 @@ contract NFTMarket is ReentrancyGuard {
             uint256 itemId = _itemIds.current();
             uint256 tokenId = tokenIds[i];
 
-            Item memory item = Item(
-                itemId,
-                nftContract,
-                tokenId,
-                payable(msg.sender),
-                payable(msg.sender),
-                payable(address(0)),
-                0,
-                false,
-                false,
-                false,
-                0,
-                0
-            );
+            Item memory item = getItem(itemId, nftContract, tokenId, collection, ItemType.CREATE);
 
             idToItem[itemId] = item;
 
-            creatorToTokenIdToItem[msg.sender][tokenId] = item;
-            creatorTokenIdsAddTokenId(msg.sender, tokenId);
+            tokenIdToId[tokenId] = itemId;
+            collectionToIdsAddId(collection, itemId);            
+            creatorToIdsAddId(msg.sender, itemId);
     
             IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
 
@@ -351,29 +398,11 @@ contract NFTMarket is ReentrancyGuard {
         IERC721(nftContract).transferFrom(address(this), receiver, tokenId);
         idToItem[itemId].owner = payable(receiver);
 
-        // Updating ownerToTokenIdToItem nested mapping
-        Item storage item = idToItem[itemId];
-        // handle originalOwner
         if (originalOwner != address(0)) {
-            ownerToTokenIdToItem[originalOwner][tokenId] = Item(
-                itemId,
-                address(0),
-                tokenId,
-                payable(address(0)),
-                payable(address(0)),
-                payable(address(0)),
-                0,
-                false,
-                false,
-                false,
-                0,
-                0
-            );
-            ownerTokenIdsRemoveTokenId(originalOwner, tokenId);
+            ownerToIdsRemoveId(originalOwner, itemId);
         }
-        // handle msg.sender
-        ownerToTokenIdToItem[receiver][tokenId] = item;
-        ownerTokenIdsAddTokenId(receiver, tokenId);
+
+        ownerToIdsAddId(receiver, itemId);
 
         // Clear allowance to creator
         clearItem(itemId);
@@ -424,29 +453,11 @@ contract NFTMarket is ReentrancyGuard {
             allowance[tokenId] = address(0);
         }
 
-        // Updating ownerToTokenIdToItem nested mapping
-        Item storage item = idToItem[itemId];
-        // handle originalOwner
         if (originalOwner != address(0)) {
-            ownerToTokenIdToItem[originalOwner][tokenId] = Item(
-                itemId,
-                address(0),
-                tokenId,
-                payable(address(0)),
-                payable(address(0)),
-                payable(address(0)),
-                0,
-                false,
-                false,
-                false,
-                0,
-                0
-            );
-            ownerTokenIdsRemoveTokenId(originalOwner, tokenId);
+            ownerToIdsRemoveId(originalOwner, itemId);
         }
-        // handle msg.sender
-        ownerToTokenIdToItem[msg.sender][tokenId] = item;
-        ownerTokenIdsAddTokenId(originalOwner, tokenId);
+
+        ownerToIdsAddId(msg.sender, itemId);
 
         // Clear allowance to creator
         clearItem(itemId);
@@ -467,42 +478,26 @@ contract NFTMarket is ReentrancyGuard {
 
     /* Deletes the token */
     function deleteItem(
-        uint256 itemId,
-        uint256 tokenId
+        uint256 itemId
     ) public payable nonReentrant {
+        uint256 tokenId = idToItem[itemId].tokenId;
         address creator = idToItem[itemId].creator;
         address tokenOwner = idToItem[itemId].owner;
-        
+        string memory collection = idToItem[itemId].collection;
+
         // Validation
         require( tokenOwner == msg.sender || allowance[tokenId] == msg.sender );
 
-        Item memory emptyItem = Item(
-            itemId,
-            address(0),
-            tokenId,
-            payable(address(0)),
-            payable(address(0)),
-            payable(address(0)),
-            0,
-            false,
-            false,
-            false,
-            0,
-            0
-        );
+        Item memory emptyItem = getItem(itemId, address(0), tokenId, emptyCollection, ItemType.EMPTY);
 
         // Set item in idToItem to non-existing address
         idToItem[itemId] = emptyItem;
 
-        // Set item in creatorToTokenIdToItem to non-existing address
-        creatorToTokenIdToItem[creator][tokenId] = emptyItem;
-        creatorTokenIdsRemoveTokenId(creator, tokenId);
+        collectionToIdsRemoveId(collection, itemId);
+        creatorToIdsRemoveId(creator, itemId);
 
-        // Execute the following code only if the owner of the token exists
         if (tokenOwner != address(0)) {
-            // Set item in ownerToTokenIdToItem to non-existing address
-            ownerToTokenIdToItem[tokenOwner][tokenId] = emptyItem;
-            ownerTokenIdsRemoveTokenId(tokenOwner, tokenId);
+            ownerToIdsRemoveId(tokenOwner, itemId);
         }
     }
 
@@ -527,33 +522,45 @@ contract NFTMarket is ReentrancyGuard {
         return items;
     }
 
-    function fetchItemByTokenIdAndCreatorAddress(
-        uint256 tokenId,
-        address creator
+    function fetchItemByTokenId(
+        uint256 tokenId
     ) public view returns (Item memory) {
-        Item memory item = creatorToTokenIdToItem[creator][tokenId];
+        uint256 itemId = tokenIdToId[tokenId];
+        Item memory item = idToItem[itemId];
         return item;        
     }
 
-    function fetchItemsByTokenIdsAndCreatorAddress(
-        uint256[] memory tokenIds,
-        address creator
+    function fetchItemsByTokenIds(
+        uint256[] memory tokenIds
     ) public view returns (Item[] memory) {
         Item[] memory items = new Item[](tokenIds.length);
         for (uint256 i = 0; i < tokenIds.length; i++) {
-            Item memory item = creatorToTokenIdToItem[creator][tokenIds[i]];
+            uint256 itemId = tokenIdToId[tokenIds[i]];
+            Item memory item = idToItem[itemId];
             items[i] = item;
-        } 
+        }
+        return items;
+    }
+
+    function fetchCollectionItems(
+        string memory collection
+    ) public view returns (Item[] memory) {        
+        uint256[] memory itemIds = collectionToIds[collection];
+        Item[] memory items = new Item[](itemIds.length);
+        for (uint256 i = 0; i < itemIds.length; i++) {
+            Item memory item = idToItem[i];
+            items[i] = item;
+        }
         return items;
     }
 
     function fetchUserCreatedItems(
         address user
     ) public view returns (Item[] memory) {        
-        uint256[] memory tokenIds = creatorTokenIds[user];
-        Item[] memory items = new Item[](tokenIds.length);
-        for (uint256 i = 0; i < tokenIds.length; i++) {
-            Item memory item = creatorToTokenIdToItem[user][tokenIds[i]];
+        uint256[] memory itemIds = creatorToIds[user];
+        Item[] memory items = new Item[](itemIds.length);
+        for (uint256 i = 0; i < itemIds.length; i++) {
+            Item memory item = idToItem[i];
             items[i] = item;
         }
         return items;
@@ -562,10 +569,10 @@ contract NFTMarket is ReentrancyGuard {
     function fetchUserOwnedItems(
         address user
     ) public view returns (Item[] memory) {
-        uint256[] memory tokenIds = ownerTokenIds[user];
-        Item[] memory items = new Item[](tokenIds.length);
-        for (uint256 i = 0; i < tokenIds.length; i++) {
-            Item memory item = ownerToTokenIdToItem[user][tokenIds[i]];
+        uint256[] memory itemIds = ownerToIds[user];
+        Item[] memory items = new Item[](itemIds.length);
+        for (uint256 i = 0; i < itemIds.length; i++) {
+            Item memory item = idToItem[i];
             items[i] = item;
         }
         return items;
