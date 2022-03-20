@@ -29,6 +29,11 @@ contract NFT is ERC721URIStorage {
         uint256 indexed tokenId
     );
 
+    event PermanentURI(
+        string _value,
+        uint256 indexed _id
+    );
+
     /* Returns if the item is burned */
     function getIsBurned(
         uint256 itemId
@@ -76,13 +81,18 @@ contract NFT is ERC721URIStorage {
         require(isCurrentlyMetadataFrozen == false, 'The metadata of the token is frozen');
         if (isMetadataFrozen == false) {
             _setTokenURI(tokenId, newTokenURI);
+            emit ItemChangeTokenURI(
+                tokenId,
+                newTokenURI
+            );
         } else {
             metadataFrozenMarketItem[tokenId] = true;
+            emit PermanentURI(
+                newTokenURI,
+                tokenId
+            );
         }
-        emit ItemChangeTokenURI(
-          tokenId,
-          newTokenURI
-        );
+        
     }
 
     /* Set allowance at tokenId to null address */

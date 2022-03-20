@@ -6,6 +6,10 @@
  * Fetching
  */
 
+/*
+ * collection (uuid): 36 character string
+*/
+
 // SPDX-License-Identifier: MIT OR Apache-2.0
 pragma solidity ^0.8.3;
  
@@ -31,6 +35,7 @@ contract NFTMarket is ReentrancyGuard {
         uint256 itemId;
         address nftContract;
         uint256 tokenId;
+        // string collection;
         address payable creator;
         address payable seller;
         address payable owner;
@@ -46,7 +51,7 @@ contract NFTMarket is ReentrancyGuard {
 
     /* handle inserting / deleting tokens starts */
     mapping(uint256 => Item) internal tokenIdToItem; // uint256 --> tokenId
-    mapping(byte32 => mapping(uint256 => Item)) internal collectionToTokenIdToItem; // byte32 --> collection (uuid) | uint256 --> tokenId
+    mapping(string => mapping(uint256 => Item)) internal collectionToTokenIdToItem; // string --> collection (uuid) | uint256 --> tokenId
     /* handle inserting / deleting tokens ends */
     
     mapping(address => mapping(uint256 => Item)) internal creatorToTokenIdToItem; // address --> msg.sender address | uint256 --> tokenId
