@@ -59,42 +59,42 @@ contract NFTMarket is ReentrancyGuard {
     mapping(uint256 => address) internal allowance; // uint256 --> tokenid | address --> msg.sender address
 
     event ItemCreated (
-        address indexed nftContract,
-        uint256 indexed tokenId,
-        address creator
+        address indexed _nftContract,
+        uint256 indexed _tokenId,
+        address _creator
     );
 
     event ItemsCreated (
-        address indexed nftContract,
-        uint256[] indexed tokenIds,
-        address creator
+        address indexed _nftContract,
+        uint256[] indexed _tokenIds,
+        address _creator
     );
 
     event ItemPurchaseTransaction (
-        uint256 tokenId,
-        address seller,
-        address buyer,
-        uint256 price
+        uint256 _tokenId,
+        address _seller,
+        address _buyer,
+        uint256 _price
     );
 
     event ItemNonPurchaseTransaction (
-        uint256 tokenId,
-        address seller,
-        address buyer
+        uint256 _tokenId,
+        address _seller,
+        address _buyer
     );
  
     event ItemOnMarket(
-        uint256 tokenId,
-        uint256 price,
-        bool isOnSale,
-        bool isOnLease,
-        bool isOnAuction,
-        uint256 startSaleDate,
-        uint256 endSaleDate
+        uint256 _tokenId,
+        uint256 _price,
+        bool _isOnSale,
+        bool _isOnLease,
+        bool _isOnAuction,
+        uint256 _startSaleDate,
+        uint256 _endSaleDate
     );
 
     event ItemOffMarket(
-        uint256 tokenId
+        uint256 _tokenId
     );
 
     /* Returns the listing ratio's numerator of the contract */
@@ -138,7 +138,7 @@ contract NFTMarket is ReentrancyGuard {
                 tokenId,
                 collection,
                 payable(msg.sender),
-                payable(msg.sender),
+                payable(address(0)),
                 payable(address(0)),
                 0,
                 false,
@@ -542,7 +542,7 @@ contract NFTMarket is ReentrancyGuard {
         return items;
     }
 
-    function fetchCollectionItems(
+    function fetchItemsByCollection(
         string memory collection
     ) public view returns (Item[] memory) {        
         uint256[] memory itemIds = collectionToIds[collection];

@@ -21,12 +21,12 @@ contract NFT is ERC721URIStorage {
     mapping(uint256 => bool) internal metadataFrozenMarketItem;
 
     event ItemChangeTokenURI (
-        uint256 indexed tokenId,
-        string tokenURI
+        uint256 indexed _tokenId,
+        string _tokenURI
     );
 
     event ItemBurned (
-        uint256 indexed tokenId
+        uint256 indexed _tokenId
     );
 
     event PermanentURI(
@@ -72,28 +72,28 @@ contract NFT is ERC721URIStorage {
     }
 
     /* Changes the TokenURI of the token */
-    function changeTokenURI(uint256 tokenId, string memory newTokenURI, bool isMetadataFrozen) public {
+    function changeTokenURI(uint256 tokenId, string memory newTokenURI) public {
         // This function will be modified to support frozen tokens through decentralized metadata storage
         // The function currently validates using a map
         address owner = ownerOf(tokenId);
         bool isCurrentlyMetadataFrozen = metadataFrozenMarketItem[tokenId];
         require(owner == msg.sender || allowance[tokenId] == msg.sender, 'The owner must be the message sender or the message sender must be approved');
         require(isCurrentlyMetadataFrozen == false, 'The metadata of the token is frozen');
-        if (isMetadataFrozen == false) {
-            _setTokenURI(tokenId, newTokenURI);
-            emit ItemChangeTokenURI(
-                tokenId,
-                newTokenURI
-            );
-        } else {
-            metadataFrozenMarketItem[tokenId] = true;
-            emit PermanentURI(
-                newTokenURI,
-                tokenId
-            );
-        }
-        
+        _setTokenURI(tokenId, newTokenURI);
+        emit ItemChangeTokenURI(
+            tokenId,
+            newTokenURI
+        );
     }
+
+    function freezeTokenURI(uint256 tokenId, string memory tokenURI) public {
+        metadataFrozenMarketItem[tokenId] = true;
+        emit PermanentURI(
+            tokenURI,
+            tokenId
+        );
+    }
+
 
     /* Set allowance at tokenId to null address */
     function changeAllowanceToNullAddress(uint256 tokenId) public {
