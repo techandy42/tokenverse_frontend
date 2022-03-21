@@ -10,7 +10,7 @@ import formatItem from '../../helperFunctions/tokenFunctions/formatItem'
 
 /* Fetches the tokens using the given itemIds */
 /* returns null if there is an error or no token has been found */
-const fetchItemByItemIds = async (itemIds: number[]) => {
+const fetchItemsByItemIds = async (itemIds: number[]) => {
   try {
     const web3Modal = new Web3Modal({
       network: 'mainnet',
@@ -44,4 +44,4 @@ const fetchItemByItemIds = async (itemIds: number[]) => {
   return null
 }
 
-export default fetchItemByItemIds
+export default fetchItemsByItemIds

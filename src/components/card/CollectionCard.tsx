@@ -19,7 +19,7 @@ const CollectionCard: React.FC<IProps> = ({ collectionName, NFTs }) => {
       <Card sx={{ cursor: 'pointer' }}>
         <CardMedia
           component='img'
-          src={NFTs.length === 0 ? default_photo_image.src : NFTs[0].fileUrl}
+          src={NFTs.length === 0 ? default_photo_image.src : NFTs[0].image}
           alt='Image not found'
           sx={{ height: { xs: 120, sm: 160, md: 200 } }}
         />

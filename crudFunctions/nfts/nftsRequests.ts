@@ -12,6 +12,7 @@ import {
 } from '../../enums/nftMetadata'
 import encodeTokenIds from '../../helperFunctions/encodeTokenIds'
 import { IUserInfo } from '../users/usersRequests'
+import Attribute from '../../types/Attribute'
 
 export interface INft {
   address: string
@@ -52,19 +53,19 @@ export interface INftMarketInfo {
   productKeyVirtualAssetCategory: ProductKeyVirtualAssetCategory
   isSensitiveContent: boolean
   descriptions: string[]
-  propertiesKey: string[]
-  propertiesValue: string[]
-  imagesKey: string[]
-  imagesValue: string[]
-  levelsKey: string[]
-  levelsValueNum: number[]
-  levelsValueDen: number[]
+  // newly added fields
+  images: string[]
+  externalUrl: string
+  youtubeUrl: string
+  description: string
+  attributes: Attribute[]
+  //
 }
 
 export interface INftEditInfo {
   name: string
-  fileUrl: string
-  multimediaFileUrl: string | null
+  image: string
+  animationUrl: string | null
   isMetadataFrozen: boolean
   collection: string
   saleType: SaleType
@@ -73,13 +74,13 @@ export interface INftEditInfo {
   productKeyVirtualAssetCategory: ProductKeyVirtualAssetCategory
   isSensitiveContent: boolean
   descriptions: string[]
-  propertiesKey: string[]
-  propertiesValue: string[]
-  imagesKey: string[]
-  imagesValue: string[]
-  levelsKey: string[]
-  levelsValueNum: number[]
-  levelsValueDen: number[]
+  // newly added fields
+  images: string[]
+  externalUrl: string
+  youtubeUrl: string
+  description: string
+  attributes: Attribute[]
+  //
 }
 
 export interface INftAddressInfo {

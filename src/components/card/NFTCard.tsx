@@ -148,7 +148,7 @@ const NFTCard: React.FC<IProps> = ({
         <Link href={`/assets/${NFT.tokenId}`}>
           <CardMedia
             component='img'
-            image={NFT.fileUrl}
+            image={NFT.image}
             alt='Image not found'
             sx={{ height: sizes.cardMediaSize }}
           />

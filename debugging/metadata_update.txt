@@ -1,4 +1,5 @@
 1) update all interfaces and tokenFunctions <-- check
-2) update all helperFunctions and initialData
-3) update createSingle and createMultiple                 
-4) update all other functions
+2) update all helperFunctions and initialData and crudFunction <-- check
+3) update createSingle and createMultiple <-- check
+4) handle all parameter changes <-- check
+5) update all IItem fields
