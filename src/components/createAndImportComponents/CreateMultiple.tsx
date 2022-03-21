@@ -296,7 +296,7 @@ const CreateMultiple: React.FC<IProps> = ({
           throw { error: `Invalid tokenIds: ${errorTokenIdsMsg}` }
 
         // fetch tokens
-        items = await fetchItemsByTokenIds(tokenIds, accountInfo.account)
+        items = await fetchItemsByTokenIds(tokenIds)
       } else if (typeCheckedErcType === ErcType.ERC_1155) {
         // handle ERC_1155 functions
       } else {

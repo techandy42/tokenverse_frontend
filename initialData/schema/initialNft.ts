@@ -12,8 +12,10 @@ const initialNft: INft = {
   createdAt: new Date(0, 0, 0, 0, 0, 0),
   name: '',
   blockchainType: BlockchainType.POLYGON,
-  fileUrl: null,
-  multimediaFileUrl: null,
+  // fileUrl --> image
+  // multimediaFileUrl --> animationUrl
+  image: null,
+  animationUrl: null,
   price: 0,
   isOnSale: false,
   isOnLease: false,
@@ -31,13 +33,13 @@ const initialNft: INft = {
   ercType: ErcType.ERC_721,
   likes: 0,
   descriptions: new Array(),
-  propertiesKey: new Array(),
-  propertiesValue: new Array(),
-  imagesKey: new Array(),
-  imagesValue: new Array(),
-  levelsKey: new Array(),
-  levelsValueNum: new Array(),
-  levelsValueDen: new Array(),
+  // newly added fields
+  images: new Array(),
+  externalUrl: '',
+  youtubeUrl: '',
+  description: '',
+  attributes: new Array(),
+  //
 }
 
 export default initialNft

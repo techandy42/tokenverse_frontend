@@ -1,4 +1,4 @@
-1) change metadata to the following:
+1) change metadata to the following: <-- check
 {
   image: url,
   animation_url: url,
@@ -9,7 +9,7 @@
   attributes: attributes[],
 }
 
-2) change the schema of backend from (1) to (2):
+2) change the schema of backend from (1) to (2): <-- check
 (1):
 model NFT {
   id                 Int        @id @default(autoincrement())
@@ -102,11 +102,11 @@ model NFT {
   @@map("nfts")
 }
 
-3) add collection (uuid) field to contract
+3) add collection (uuid) field to contract <-- check
 
-4) add tokenId => item map / collection (uuid) => item map to contract
+4) add tokenId => item map / collection (uuid) => item map to contract <-- check
 
-5) change fetch by tokenId functions
+5) change fetch by tokenId functions <-- check
 
 6) add fetch by collection (uuid) <-- check
 

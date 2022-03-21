@@ -264,7 +264,7 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
         if (tokenId < 1) throw { error: `Invalid tokenId: ${tokenId}` }
 
         // fetch token
-        item = await fetchItemByTokenId(tokenId, accountInfo.account)
+        item = await fetchItemByTokenId(tokenId)
       } else if (typeCheckedErcType === ErcType.ERC_1155) {
         // handle ERC_1155 functions
       } else {
