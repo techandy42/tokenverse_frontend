@@ -61,7 +61,10 @@ model NFT {
   uuid               String     @unique @default(uuid())
   createdAt          DateTime   @default(now()) @map("created_at")
   updatedAt          DateTime   @updatedAt @map("updated_at")
+  name               String     
   blockchainType     BlockchainType     @map("blockchain_type")
+  image              String      
+  animationUrl       String?    @map("animation_url")
   price              Int        @default(0)
   isOnSale           Boolean    @default(false) @map("is_on_sale")
   isOnLease          Boolean    @default(false) @map("is_on_lease")
@@ -84,20 +87,18 @@ model NFT {
   isSensitiveContent Boolean    @default(false) @map("is_sensitive_content")
   ercType            ErcType    @map("erc_type")
   likes              Int        @default(0)
+  reviews            Review[]
+  descriptions       String[]
+
   // additional images for the NFT
   images             String[]
   // additional descriptions for the NFT
-  descriptions       String[]
-  reviews            Review[]
 
   // metadata info
-  image             String      
-  animationUrl      String?    @map("animation_url")
   externalUrl       String     @default("") @map("external_url")
   youtubeUrl        String     @default("") @map("youtube_url")
   description       String     @default("") 
-  name              String     
-  attributes        JSON       @default("{}")      
+  attributes        Json       @default("{}")      
   @@map("nfts")
 }
 
@@ -107,15 +108,15 @@ model NFT {
 
 5) change fetch by tokenId functions
 
-6) add fetch by collection (uuid)
+6) add fetch by collection (uuid) <-- check
 
-7) add metadata freezing to contract
+7) add metadata freezing to contract <-- check
 
-8) refractor solidity code
+8) refractor solidity code <-- check
 
-9) reset all hardhat accounts
+9) reset all hardhat accounts <-- may work
 
-10) optimize all the maps
+10) optimize all the maps <-- check
 
 11) fix bug in the front-end
 
@@ -156,4 +157,21 @@ interface IItem {
   levelsKey: string[]
   levelsValueNum: number[]
   levelsValueDen: number[]
+}
+
+2) interface IItem {
+  // token information
+  itemId: number
+  tokenId: number
+  nftContract: string
+  creator: string
+  seller: string
+  owner: string
+  price: string
+  isOnSale: boolean
+  isOnLease: boolean
+  isOnAuction: boolean
+  startSaleDate: Date
+  endSaleDate: Date
+  tokenURI: string
 }
