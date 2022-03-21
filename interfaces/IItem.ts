@@ -6,6 +6,7 @@ import {
   ProductKeyAccessTokenCategory,
   ProductKeyVirtualAssetCategory,
 } from '../enums/nftMetadata'
+import Attribute from '../types/Attribute'
 
 interface IItem {
   // token information
@@ -26,8 +27,10 @@ interface IItem {
   name: string
   collection: string
   blockchainType: BlockchainType
-  fileUrl: string
-  multimedia: string | null
+  // fileUrl --> image
+  // multimedia --> animationUrl
+  image: string
+  animationUrl: string | null
   saleType: SaleType
   collectibleCategory: CollectibleCategory
   productKeyAccessTokenCategory: ProductKeyAccessTokenCategory
@@ -35,13 +38,12 @@ interface IItem {
   isSensitiveContent: boolean
   ercType: ErcType
   descriptions: string[]
-  propertiesKey: string[]
-  propertiesValue: string[]
-  imagesKey: string[]
-  imagesValue: string[]
-  levelsKey: string[]
-  levelsValueNum: number[]
-  levelsValueDen: number[]
+  // new fields added
+  images: string[]
+  externalUrl: string
+  youtubeUrl: string
+  description: string
+  attributes: Attribute[]
 }
 
 export default IItem
