@@ -25,12 +25,17 @@ const fetchItemByTokenId = async (tokenId: number) => {
     )
     const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
     let i = await marketContract.fetchItemByTokenId(tokenId)
+    console.log('i (fetchItemByTokenId): ', i)
     const validatedI = validateItemsNftContract([i])
     if (validatedI.length === 0) return null
     i = validatedI[0]
     const tokenURI = await tokenContract.tokenURI(i.tokenId)
     const meta = await axios.get(tokenURI)
     let price = ethers.utils.formatUnits(i.price.toString(), 'ether')
+    console.log(
+      'item (fetchItemByTokenId):',
+      formatItem(i, meta, price, tokenURI),
+    )
     return formatItem(i, meta, price, tokenURI)
   } catch (error) {
     console.log('Error fetching item: ', error)

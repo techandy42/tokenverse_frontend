@@ -14,7 +14,7 @@ const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 //
 
 /* Creates a token item */
-const createItem = async (dataFields: IData) => {
+const createItem = async (dataFields: IData, collection: string) => {
   try {
     if (!isUrlValid(dataFields.image) || dataFields.name.length === 0)
       throw { error: 'dataFields fields are invalid' }
@@ -29,14 +29,14 @@ const createItem = async (dataFields: IData) => {
     })
     const added = await client.add(data)
     const url = `https://ipfs.infura.io/ipfs/${added.path}`
-    return createMintMarketItem(url)
+    return createMintMarketItem(url, collection)
   } catch (error) {
     console.log(`Error uploading file: `, error)
   }
 }
 
 /* Helper function to mint the token */
-const createMintMarketItem = async (url: string) => {
+const createMintMarketItem = async (url: string, collection: string) => {
   try {
     const web3Modal = new Web3Modal()
     const connection = await web3Modal.connect()
@@ -49,7 +49,11 @@ const createMintMarketItem = async (url: string) => {
     let value = event.args[2]
     let tokenId = value.toNumber()
     contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
-    transaction = await contract.createMintMarketItem(nftaddress, tokenId)
+    transaction = await contract.createMintMarketItem(
+      nftaddress,
+      tokenId,
+      collection,
+    )
     await transaction.wait()
     return tokenId
   } catch (error) {

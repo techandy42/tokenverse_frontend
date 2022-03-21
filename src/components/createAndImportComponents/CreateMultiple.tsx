@@ -231,9 +231,10 @@ const CreateMultiple: React.FC<IProps> = ({
 
       // format data (and set appropriate type(s))
       const typeCheckedBlockchainType: BlockchainType =
-        BlockchainType.POLYGON === blockchainType
+        blockchainType === BlockchainType.POLYGON
           ? BlockchainType.POLYGON
           : BlockchainType.POLYGON
+
       const typeCheckedErcType: ErcType =
         ErcType.ERC_721 === ercType
           ? ErcType.ERC_721
@@ -277,7 +278,7 @@ const CreateMultiple: React.FC<IProps> = ({
       if (typeCheckedErcType === ErcType.ERC_721) {
         // handle createItems and fetchItemsByTokenIds
         // create items
-        tokenIds = await createItems(dataFieldsList)
+        tokenIds = await createItems(dataFieldsList, uuid)
 
         if (!tokenIds || tokenIds === undefined) {
           throw { error: 'Token ids are invalid' }
@@ -331,13 +332,13 @@ const CreateMultiple: React.FC<IProps> = ({
       const crudItems: INfts = {
         address: items[0]?.creator.toLowerCase(),
         names: fetchedNames,
-        blockchainType: items[0]?.blockchainType,
+        blockchainType: typeCheckedBlockchainType,
         images: fetchedFileUrls,
         animationUrls: fetchedMultimediaFiles,
         tokenIds: fetchedTokenIds,
         itemIds: fetchedItemIds,
         collection,
-        ercType: items[0]?.ercType,
+        ercType: typeCheckedErcType,
       }
 
       // send data to back-end

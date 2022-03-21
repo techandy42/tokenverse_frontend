@@ -220,13 +220,14 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
 
       // format data (and set appropriate type(s))
       const typeCheckedBlockchainType: BlockchainType =
-        BlockchainType.POLYGON === blockchainType
+        blockchainType === BlockchainType.POLYGON
           ? BlockchainType.POLYGON
           : BlockchainType.POLYGON
+
       const typeCheckedErcType: ErcType =
-        ErcType.ERC_721 === ercType
+        ercType === ErcType.ERC_721
           ? ErcType.ERC_721
-          : ErcType.ERC_1155 === ercType
+          : ercType === ErcType.ERC_721
           ? ErcType.ERC_1155
           : ErcType.ERC_721
 
@@ -260,7 +261,7 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
       let item: IItem | null = null
       if (typeCheckedErcType === ErcType.ERC_721) {
         // create item
-        tokenId = await createItem(dataFields)
+        tokenId = await createItem(dataFields, uuid)
 
         // validate tokenId
         if (tokenId < 1) throw { error: `Invalid tokenId: ${tokenId}` }
@@ -284,13 +285,13 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
       const crudItem: INft = {
         address: item?.creator.toLowerCase(),
         name: item?.name,
-        blockchainType: item?.blockchainType,
+        blockchainType: typeCheckedBlockchainType,
         image: item?.image,
         animationUrl: item?.animationUrl,
         tokenId: item?.tokenId,
         itemId: item?.itemId,
         collection,
-        ercType: item?.ercType,
+        ercType: typeCheckedErcType,
       }
 
       // send data to back-end

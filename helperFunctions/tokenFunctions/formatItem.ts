@@ -18,26 +18,24 @@ const formatItem = (i: any, meta: any, price: string, tokenURI: string) => {
     endSaleDate: new Date(i.endSaleDate.toNumber()),
     tokenURI,
     // token metadata information
-    name: meta.data.name,
-    blockchainType: meta.data.blockchainType,
-    // fileUrl --> image
-    // multimedia --> animationUrl
     image: meta.data.image,
-    animationUrl: meta.data.animationUrl,
-    saleType: meta.data.saleType,
-    collectibleCategory: meta.data.collectibleCategory,
-    productKeyAccessTokenCategory: meta.data.productKeyAccessTokenCategory,
-    productKeyVirtualAssetCategory: meta.data.productKeyVirtualAssetCategory,
-    isSensitiveContent: meta.data.isSensitiveContent,
-    ercType: meta.data.ercType,
-    descriptions: meta.data.descriptions,
-    // newly added fields
-    images: meta.data.images,
+    animationUrl:
+      meta.data.animationUrl !== undefined ? meta.data.animationUrl : null,
     externalUrl: meta.data.externalUrl,
     youtubeUrl: meta.data.youtubeUrl,
     description: meta.data.description,
-    attributes: JSON.parse(meta.data.attributes),
-    //
+    name: meta.data.name,
+    attributes: meta.data.attributes,
+    // back-end data, initially set as null
+    blockchainType: null,
+    saleType: null,
+    collectibleCategory: null,
+    productKeyAccessTokenCategory: null,
+    productKeyVirtualAssetCategory: null,
+    isSensitiveContent: null,
+    ercType: null,
+    descriptions: null,
+    images: null,
   }
   return item
 }
