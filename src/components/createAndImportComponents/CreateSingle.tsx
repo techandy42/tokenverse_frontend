@@ -246,13 +246,15 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
       }
 
       // format dataFields
+      // updated with new fields
       const dataFields: IData = formatDataFields(
-        name,
-        uuid,
-        typeCheckedBlockchainType,
-        typeCheckedErcType,
         fileUrl,
         multimediaFileUrl,
+        '',
+        '',
+        '',
+        name,
+        new Array(),
       )
       let tokenId = 0
       let item: IItem | null = null
@@ -278,12 +280,13 @@ const CreateSingle: React.FC<IProps> = ({ clearCounter, setClearCounter }) => {
         throw { error: 'Item cannot be null' }
       }
 
+      // updated with new fields
       const crudItem: INft = {
         address: item?.creator.toLowerCase(),
         name: item?.name,
         blockchainType: item?.blockchainType,
-        fileUrl: item?.fileUrl,
-        multimediaFileUrl: item?.multimedia,
+        image: item?.image,
+        animationUrl: item?.animationUrl,
         tokenId: item?.tokenId,
         itemId: item?.itemId,
         collection,

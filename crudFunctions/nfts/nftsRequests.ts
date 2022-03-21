@@ -17,8 +17,8 @@ export interface INft {
   address: string
   name: string
   blockchainType: BlockchainType
-  fileUrl: string
-  multimediaFileUrl: string | null
+  image: string
+  animationUrl: string | null
   tokenId: number
   itemId: number
   collection: string
@@ -29,8 +29,8 @@ export interface INfts {
   address: string
   names: string[]
   blockchainType: BlockchainType
-  fileUrls: string[]
-  multimediaFileUrls: (string | null)[]
+  images: string[]
+  animationUrls: (string | null)[]
   tokenIds: number[]
   itemIds: number[]
   collection: string

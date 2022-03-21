@@ -260,12 +260,13 @@ const CreateMultiple: React.FC<IProps> = ({
       const dataFieldsList: IData[] = []
       for (let i = 0; i < dataLength; i++) {
         const dataFields: IData = formatDataFields(
-          names[i],
-          uuid,
-          typeCheckedBlockchainType,
-          typeCheckedErcType,
           fileUrls[i],
           multimedias[i],
+          '',
+          '',
+          '',
+          names[i],
+          new Array(),
         )
         dataFieldsList.push(dataFields)
       }
@@ -320,8 +321,8 @@ const CreateMultiple: React.FC<IProps> = ({
       const fetchedItemIds = []
       for (const item of items) {
         fetchedNames.push(item.name)
-        fetchedFileUrls.push(item.fileUrl)
-        const fetchedMultimediaFile = item.multimedia
+        fetchedFileUrls.push(item.image)
+        const fetchedMultimediaFile = item.animationUrl
         fetchedMultimediaFiles.push(fetchedMultimediaFile)
         fetchedTokenIds.push(item.tokenId)
         fetchedItemIds.push(item.itemId)
@@ -331,8 +332,8 @@ const CreateMultiple: React.FC<IProps> = ({
         address: items[0]?.creator.toLowerCase(),
         names: fetchedNames,
         blockchainType: items[0]?.blockchainType,
-        fileUrls: fetchedFileUrls,
-        multimediaFileUrls: fetchedMultimediaFiles,
+        images: fetchedFileUrls,
+        animationUrls: fetchedMultimediaFiles,
         tokenIds: fetchedTokenIds,
         itemIds: fetchedItemIds,
         collection,
