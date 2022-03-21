@@ -5,6 +5,7 @@ import { nftaddress, nftmarketaddress } from '../../config'
 import NFT from '../../artifacts/contracts/NFT.sol/NFT.json'
 import Market from '../../artifacts/contracts/NFTMarket.sol/NFTMarket.json'
 import IData from '../../interfaces/IData'
+import isUrlValid from '../../helperFunctions/isUrlValid'
 
 /* Modify the dataFields */
 
@@ -15,34 +16,16 @@ const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 /* Creates a token item */
 const createItem = async (dataFields: IData) => {
   try {
-    if (
-      !dataFields.name ||
-      !dataFields.collection ||
-      !dataFields.blockchainType ||
-      !dataFields.fileUrl ||
-      !dataFields.ercType
-    )
+    if (!isUrlValid(dataFields.image) || dataFields.name.length === 0)
       throw { error: 'dataFields fields are invalid' }
     const data = JSON.stringify({
+      image: dataFields.image,
+      animation_url: dataFields.animation_url,
+      external_url: dataFields.external_url,
+      youtube_url: dataFields.youtube_url,
+      description: dataFields.description,
       name: dataFields.name,
-      collection: dataFields.collection,
-      blockchainType: dataFields.blockchainType,
-      fileUrl: dataFields.fileUrl,
-      multimedia: dataFields.multimedia,
-      saleType: dataFields.saleType,
-      collectibleCategory: dataFields.collectibleCategory,
-      productKeyAccessTokenCategory: dataFields.productKeyAccessTokenCategory,
-      productKeyVirtualAssetCategory: dataFields.productKeyVirtualAssetCategory,
-      isSensitiveContent: dataFields.isSensitiveContent,
-      ercType: dataFields.ercType,
-      descriptions: dataFields.descriptions,
-      propertiesKey: dataFields.propertiesKey,
-      propertiesValue: dataFields.propertiesValue,
-      imagesKey: dataFields.imagesKey,
-      imagesValue: dataFields.imagesValue,
-      levelsKey: dataFields.levelsKey,
-      levelsValueNum: dataFields.levelsValueNum,
-      levelsValueDen: dataFields.levelsValueDen,
+      attributes: dataFields.attributes,
     })
     const added = await client.add(data)
     const url = `https://ipfs.infura.io/ipfs/${added.path}`

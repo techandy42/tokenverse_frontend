@@ -6,13 +6,16 @@ import {
   ProductKeyVirtualAssetCategory,
   ErcType,
 } from '../../enums/nftMetadata'
+import Attribute from '../../types/Attribute'
 
 export default interface INft {
   createdAt: Date
   name: string
   blockchainType: BlockchainType
-  fileUrl: string | null
-  multimediaFileUrl: string | null
+  // fileUrl --> image
+  // multimediaFileUrl --> animationUrl
+  image: string | null
+  animationUrl: string | null
   price: number
   isOnSale: boolean
   isOnLease: boolean
@@ -30,11 +33,11 @@ export default interface INft {
   ercType: ErcType
   likes: number
   descriptions: string[]
-  propertiesKey: string[]
-  propertiesValue: string[]
-  imagesKey: string[]
-  imagesValue: string[]
-  levelsKey: string[]
-  levelsValueNum: number[]
-  levelsValueDen: number[]
+  // newly added fields
+  images: string[]
+  externalUrl: string
+  youtubeUrl: string
+  description: string
+  attributes: Attribute[]
+  //
 }

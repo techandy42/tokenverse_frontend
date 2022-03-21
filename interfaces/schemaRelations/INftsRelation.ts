@@ -9,13 +9,16 @@ import {
 import IUser from '../schema/IUser'
 import ICollection from '../schema/ICollection'
 import IReview from '../schema/IReview'
+import Attribute from '../../types/Attribute'
 
 export default interface INftRelation {
   createdAt: Date
   name: string
   blockchainType: BlockchainType
-  fileUrl: string | null
-  multimediaFileUrl: string | null
+  // fileUrl --> image
+  // multimediaFileUrl --> animationUrl
+  image: string | null
+  animationUrl: string | null
   price: number
   isOnSale: boolean
   isOnLease: boolean
@@ -33,13 +36,13 @@ export default interface INftRelation {
   ercType: ErcType
   likes: number
   descriptions: string[]
-  propertiesKey: string[]
-  propertiesValue: string[]
-  imagesKey: string[]
-  imagesValue: string[]
-  levelsKey: string[]
-  levelsValueNum: number[]
-  levelsValueDen: number[]
+  // newly added fields
+  images: string[]
+  externalUrl: string
+  youtubeUrl: string
+  description: string
+  attributes: Attribute[]
+  //
   user?: IUser
   creator?: IUser
   collection?: ICollection

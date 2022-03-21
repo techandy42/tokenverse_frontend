@@ -4,8 +4,8 @@ import Web3Modal from 'web3modal'
 import { nftmarketaddress, nftaddress } from '../../config'
 import Market from '../../artifacts/contracts/NFTMarket.sol/NFTMarket.json'
 import NFT from '../../artifacts/contracts/NFT.sol/NFT.json'
-import IItem from '../../interfaces/IItem'
 import validateItemsNftContract from '../../helperFunctions/tokenFunctions/validateItemsNftContract'
+import formatItem from '../../helperFunctions/tokenFunctions/formatItem'
 
 /* Fetches the token using the given itemId */
 /* returns null if there is an error or no token has been found */
@@ -31,45 +31,7 @@ const fetchItemByItemId = async (itemId: number) => {
     const tokenURI = await tokenContract.tokenURI(i.tokenId)
     const meta = await axios.get(tokenURI)
     let price = ethers.utils.formatUnits(i.price.toString(), 'ether')
-    let item: IItem = {
-      // token information
-      itemId: i.itemId.toNumber(),
-      tokenId: i.tokenId.toNumber(),
-      nftContract: i.nftContract,
-      creator: i.creator,
-      seller: i.seller,
-      owner: i.owner,
-      price,
-      isOnSale: i.isOnSale,
-      isOnLease: i.isOnLease,
-      isOnAuction: i.isOnAuction,
-      collection: i.collection,
-      startSaleDate: new Date(i.startSaleDate.toNumber()),
-      endSaleDate: new Date(i.endSaleDate.toNumber()),
-      tokenURI,
-      // token metadata information
-      name: meta.data.name,
-      blockchainType: meta.data.blockchainType,
-      // fileUrl --> image
-      // multimedia --> animationUrl
-      image: meta.data.image,
-      animationUrl: meta.data.animationUrl,
-      saleType: meta.data.saleType,
-      collectibleCategory: meta.data.collectibleCategory,
-      productKeyAccessTokenCategory: meta.data.productKeyAccessTokenCategory,
-      productKeyVirtualAssetCategory: meta.data.productKeyVirtualAssetCategory,
-      isSensitiveContent: meta.data.isSensitiveContent,
-      ercType: meta.data.ercType,
-      descriptions: meta.data.descriptions,
-      // newly added fields
-      images: meta.data.images,
-      externalUrl: meta.data.externalUrl,
-      youtubeUrl: meta.data.youtubeUrl,
-      description: meta.data.description,
-      attributes: JSON.parse(meta.data.attributes),
-      //
-    }
-    return item
+    return formatItem(i, meta, price, tokenURI)
   } catch (error) {
     console.log('Error fetching item: ', error)
   }
