@@ -43,15 +43,17 @@ const fetchItemByItemId = async (itemId: number) => {
       isOnSale: i.isOnSale,
       isOnLease: i.isOnLease,
       isOnAuction: i.isOnAuction,
+      collection: i.collection,
       startSaleDate: new Date(i.startSaleDate.toNumber()),
       endSaleDate: new Date(i.endSaleDate.toNumber()),
       tokenURI,
       // token metadata information
       name: meta.data.name,
-      collection: meta.data.collection,
       blockchainType: meta.data.blockchainType,
-      fileUrl: meta.data.fileUrl,
-      multimedia: meta.data.multimedia,
+      // fileUrl --> image
+      // multimedia --> animationUrl
+      image: meta.data.image,
+      animationUrl: meta.data.animationUrl,
       saleType: meta.data.saleType,
       collectibleCategory: meta.data.collectibleCategory,
       productKeyAccessTokenCategory: meta.data.productKeyAccessTokenCategory,
@@ -59,13 +61,13 @@ const fetchItemByItemId = async (itemId: number) => {
       isSensitiveContent: meta.data.isSensitiveContent,
       ercType: meta.data.ercType,
       descriptions: meta.data.descriptions,
-      propertiesKey: meta.data.propertiesKey,
-      propertiesValue: meta.data.propertiesValue,
-      imagesKey: meta.data.imagesKey,
-      imagesValue: meta.data.imagesValue,
-      levelsKey: meta.data.levelsKey,
-      levelsValueNum: meta.data.levelsValueNum,
-      levelsValueDen: meta.data.levelsValueDen,
+      // newly added fields
+      images: meta.data.images,
+      externalUrl: meta.data.externalUrl,
+      youtubeUrl: meta.data.youtubeUrl,
+      description: meta.data.description,
+      attributes: JSON.parse(meta.data.attributes),
+      //
     }
     return item
   } catch (error) {
