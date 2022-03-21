@@ -8,6 +8,12 @@ import {
 } from '../enums/nftMetadata'
 import Attribute from '../types/Attribute'
 
+/*
+ * Note:
+ * Must use snake casing for OpenSea to
+ * recognize the fields in the metadata
+ */
+
 export default interface IData {
   image: string
   animation_url: string | null
