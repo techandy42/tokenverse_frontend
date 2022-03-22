@@ -1,0 +1,2 @@
+1) make sure collection is updated right away when the create pages are clicked on
+2) make sure all account related pages have metamask not connected page
