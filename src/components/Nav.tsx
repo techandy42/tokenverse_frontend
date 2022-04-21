@@ -81,6 +81,7 @@ export default function PrimarySearchAppBar() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null)
+  const [searchValue, setSearchValue] = React.useState('')
 
   const isMenuOpen = Boolean(anchorEl)
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
@@ -182,20 +183,30 @@ export default function PrimarySearchAppBar() {
             <StyledInputBase
               placeholder='Search…'
               inputProps={{ 'aria-label': 'search' }}
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  window.location.href = `/categories?q=${searchValue}`
+                }
+              }}
             />
           </Search>
+          <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <Button
-              className='nav-button'
-              sx={{
-                color: 'inherit',
-                textTransform: 'none',
-                fontSize: 16,
-              }}
-            >
-              Categories
-            </Button>
-            <Link href='/entrance'>
+            <Link href='/categories'>
+              <Button
+                className='nav-button'
+                sx={{
+                  color: 'inherit',
+                  textTransform: 'none',
+                  fontSize: 16,
+                }}
+              >
+                Categories
+              </Button>
+            </Link>
+            {/* <Link href='/entrance'>
               <Button
                 className='nav-button'
                 sx={{
@@ -206,8 +217,8 @@ export default function PrimarySearchAppBar() {
               >
                 Entrance
               </Button>
-            </Link>
-            <Link href='/design'>
+            </Link> */}
+            {/* <Link href='/design'>
               <Button
                 className='nav-button'
                 sx={{
@@ -218,7 +229,7 @@ export default function PrimarySearchAppBar() {
               >
                 Design
               </Button>
-            </Link>
+            </Link> */}
             <Link href='/create'>
               <Button
                 className='nav-button'
@@ -233,25 +244,27 @@ export default function PrimarySearchAppBar() {
             </Link>
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-            <Tooltip title='Categories'>
-              <IconButton
-                size='large'
-                edge='end'
-                aria-label='categories'
-                aria-controls={menuId}
-                aria-haspopup='true'
-                color='inherit'
-                disableRipple
-              >
-                <ListAltOutlinedIcon />
-              </IconButton>
-            </Tooltip>
-            <Link href='/entrance'>
-              <Tooltip title='Entrance'>
+            <Link href='/categories'>
+              <Tooltip title='Categories'>
                 <IconButton
                   size='large'
                   edge='end'
                   aria-label='categories'
+                  aria-controls={menuId}
+                  aria-haspopup='true'
+                  color='inherit'
+                  disableRipple
+                >
+                  <ListAltOutlinedIcon />
+                </IconButton>
+              </Tooltip>
+            </Link>
+            {/* <Link href='/entrance'>
+              <Tooltip title='Entrance'>
+                <IconButton
+                  size='large'
+                  edge='end'
+                  aria-label='entrance'
                   aria-controls={menuId}
                   aria-haspopup='true'
                   color='inherit'
@@ -275,7 +288,7 @@ export default function PrimarySearchAppBar() {
                   <AddPhotoAlternateOutlinedIcon />
                 </IconButton>
               </Tooltip>
-            </Link>
+            </Link> */}
             <Link href='/create'>
               <Tooltip title='Create'>
                 <IconButton
@@ -312,7 +325,7 @@ export default function PrimarySearchAppBar() {
                 </IconButton>
               </Tooltip>
             </Link>
-            <Tooltip title='Wallet'>
+            {/* <Tooltip title='Wallet'>
               <IconButton
                 size='large'
                 edge='end'
@@ -328,7 +341,7 @@ export default function PrimarySearchAppBar() {
               >
                 <AccountBalanceWalletOutlinedIcon />
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
             <IconButton
               size='large'
               edge='end'
@@ -366,7 +379,7 @@ export default function PrimarySearchAppBar() {
                 </IconButton>
               </Tooltip>
             </Link>
-            <Tooltip title='Wallet'>
+            {/* <Tooltip title='Wallet'>
               <IconButton
                 size='large'
                 edge='end'
@@ -382,7 +395,7 @@ export default function PrimarySearchAppBar() {
               >
                 <AccountBalanceWalletOutlinedIcon />
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
             <IconButton
               size='large'
               edge='end'

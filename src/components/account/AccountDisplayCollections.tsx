@@ -9,6 +9,7 @@ interface IProps {
 
 const AccountDisplayCollections: React.FC<IProps> = ({ collectionNFTs }) => {
   const getCollectionNames = () => {
+    console.log(collectionNFTs)
     const collectionNames = []
     for (const collectionName in collectionNFTs) {
       collectionNames.push(collectionName)
@@ -20,7 +21,7 @@ const AccountDisplayCollections: React.FC<IProps> = ({ collectionNFTs }) => {
 
   return (
     <DisplayItems>
-      {collectionNames.map((collectionName) => (
+      {collectionNames.map((collectionName: string) => (
         <CollectionCard
           collectionName={collectionName}
           NFTs={collectionNFTs[collectionName]}

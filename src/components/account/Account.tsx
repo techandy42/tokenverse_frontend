@@ -65,8 +65,6 @@ const Account: React.FC<IProps> = ({ pageType }) => {
   const [loadingState, setLoadingState] = useState(LoadingState.NOT_LOADED)
   const [displayMode, setDisplayMode] = useState(DisplayModeChoices.NFT)
 
-  console.log('accountData: ', accountData)
-
   const renameNFTsCollectionUuidToName = (
     items: IItem[],
     collections: ICollection[],

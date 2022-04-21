@@ -7,7 +7,6 @@ import {
 } from '../../../constants'
 
 const StyledPageBase = styled('div')(({ theme }) => ({
-  marginTop: MARGIN_TOP,
   marginBottom: MARGIN_LARGE,
   marginLeft: 0,
   marginRight: 0,

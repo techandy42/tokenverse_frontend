@@ -1,0 +1,15 @@
+--> Navigate to frontend folder on terminal
+
+1) npx hardhat test
+
+--> Split Terminal into 3
+
+2) npx hardhat node
+3) npx hardhat run scripts/deploy.js --network localhost
+
+4) npm run dev 
+// to start front-end and back-end 
+
+--> To access DB
+// C:\Users\techa> psql -U postgres -h localhost
+// \c tokenverse --> connects to the tokenverse database
