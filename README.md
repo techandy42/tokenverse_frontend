@@ -42,6 +42,34 @@ Additional Features:
 
 ---
 
+> Technologies
+
+Authentication:
+
+- MetaMask
+
+Front-end:
+
+- Typescript
+- React
+- Redux
+- Next.js
+- Material UI
+
+Back-end:
+
+- Typescript / Node.js
+- Express
+- PostgresSQL
+- Prisma
+
+Smart Contract:
+
+- Solidity
+- Hardhat
+
+---
+
 > Starting the Project Locally
 
 Front-end:
