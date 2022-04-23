@@ -143,85 +143,86 @@ const NFTCard: React.FC<IProps> = ({
 
   return (
     // Modify the link as needed
-    <>
-      <Card sx={{ cursor: 'pointer' }}>
-        {/* <Link href={`/assets/${NFT.tokenId}`}> */}
-        <CardMedia
-          component='img'
-          image={NFT.image}
-          alt='Image not found'
-          sx={{ height: sizes.cardMediaSize }}
-        />
-        {/* </Link> */}
-        {/* <Link href={`/assets/${NFT.tokenId}`}> */}
-        <CardContent sx={{ height: sizes.cardContentSize }}>
-          <FlexBox
-            sx={{
-              paddingBottom: sizes.linePaddingBottom,
-            }}
-          >
-            <Typography
-              color='text.secondary'
-              sx={{ fontSize: sizes.smallFont }}
-            >
-              {formatPersonalInfoString(NFT.collection, 20)}
-            </Typography>
-            <FlexSpace />
-            <Typography
-              color='text.secondary'
-              sx={{ fontSize: sizes.smallFont }}
-            >
-              {NFT.isOnSale ? 'Price' : null}
-            </Typography>
-          </FlexBox>
-          <FlexBox>
-            <Typography
-              component='div'
-              sx={{
-                fontWeight: sizes.fontWeight,
-                fontSize: sizes.largeFont,
-              }}
-            >
-              {formatPersonalInfoString(NFT.name, 14)}
-            </Typography>
-            <FlexSpace />
-            <Typography
-              component='div'
-              sx={{
-                fontWeight: sizes.fontWeight,
-                fontSize: sizes.largeFont,
-              }}
-            >
-              {NFT.isOnSale ? NFT.price : null}
-            </Typography>
-          </FlexBox>
-          <FlexBox>
-            <FlexSpace />
-            <Typography
-              component='div'
-              sx={{
-                fontWeight: sizes.fontWeight,
-                fontSize: sizes.largeFont,
-              }}
-            ></Typography>
-          </FlexBox>
-        </CardContent>
-        {/* </Link> */}
-        <CardContent sx={{ height: sizes.cardContentSizeSecond }}>
-          <FlexBox>
-            <FlexSpace />
-            <IconButton color='primary' onClick={() => handleLike()}>
-              {liked ? (
-                <FavoriteIcon sx={{ fontSize: sizes.iconFont }} />
-              ) : (
-                <FavoriteBorderIcon sx={{ fontSize: sizes.iconFont }} />
-              )}
-            </IconButton>
-            <Typography>{likes !== null ? likes : '?'}</Typography>
-          </FlexBox>
-        </CardContent>
-      </Card>
-    </>
+    <></>
+    // <>
+    //   <Card style={{ cursor: 'pointer' }}>
+    //     {/* <Link href={`/assets/${NFT.tokenId}`}> */}
+    //     <CardMedia
+    //       component='img'
+    //       image={NFT.image}
+    //       alt='Image not found'
+    //       style={{ height: sizes.cardMediaSize }}
+    //     />
+    //     {/* </Link> */}
+    //     {/* <Link href={`/assets/${NFT.tokenId}`}> */}
+    //     <CardContent style={{ height: sizes.cardContentSize }}>
+    //       <FlexBox
+    //         style={{
+    //           paddingBottom: sizes.linePaddingBottom,
+    //         }}
+    //       >
+    //         <Typography
+    //           color='text.secondary'
+    //           style={{ fontSize: sizes.smallFont }}
+    //         >
+    //           {formatPersonalInfoString(NFT.collection, 20)}
+    //         </Typography>
+    //         <FlexSpace />
+    //         <Typography
+    //           color='text.secondary'
+    //           style={{ fontSize: sizes.smallFont }}
+    //         >
+    //           {NFT.isOnSale ? 'Price' : null}
+    //         </Typography>
+    //       </FlexBox>
+    //       <FlexBox>
+    //         <Typography
+    //           component='div'
+    //           style={{
+    //             fontWeight: sizes.fontWeight,
+    //             fontSize: sizes.largeFont,
+    //           }}
+    //         >
+    //           {formatPersonalInfoString(NFT.name, 14)}
+    //         </Typography>
+    //         <FlexSpace />
+    //         <Typography
+    //           component='div'
+    //           style={{
+    //             fontWeight: sizes.fontWeight,
+    //             fontSize: sizes.largeFont,
+    //           }}
+    //         >
+    //           {NFT.isOnSale ? NFT.price : null}
+    //         </Typography>
+    //       </FlexBox>
+    //       <FlexBox>
+    //         <FlexSpace />
+    //         <Typography
+    //           component='div'
+    //           style={{
+    //             fontWeight: sizes.fontWeight,
+    //             fontSize: sizes.largeFont,
+    //           }}
+    //         ></Typography>
+    //       </FlexBox>
+    //     </CardContent>
+    //     {/* </Link> */}
+    //     <CardContent style={{ height: sizes.cardContentSizeSecond }}>
+    //       <FlexBox>
+    //         <FlexSpace />
+    //         <IconButton color='primary' onClick={() => handleLike()}>
+    //           {liked ? (
+    //             <FavoriteIcon style={{ fontSize: sizes.iconFont }} />
+    //           ) : (
+    //             <FavoriteBorderIcon style={{ fontSize: sizes.iconFont }} />
+    //           )}
+    //         </IconButton>
+    //         <Typography>{likes !== null ? likes : '?'}</Typography>
+    //       </FlexBox>
+    //     </CardContent>
+    //   </Card>
+    // </>
   )
 }
 
