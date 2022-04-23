@@ -65,3 +65,59 @@ echo 'DATABASE_URL="YOUR_POSTGRES_DB_URL"' > .env
 ```
 
 ---
+
+> Deploying the project locally
+
+Front-end:
+
+```bash
+npm run dev
+```
+
+Back-end:
+
+```bash
+npm run dev
+```
+
+---
+
+> Smart Contract:
+
+The smart contract is deployed on Polygon Testnet  
+Import MATIC from [Polygon Website](https://faucet.polygon.technology/) to your MetaMask account to mint NFTs on the Polygon Testnet
+
+---
+
+## Project Achievements
+
+Acceptence into [Eigenspace Start-Up Program](https://eigenspace.com/)
+
+---
+
+## Project Timeline
+
+- Late December - Project planning and front-end coding
+- January - Front-end development / Smart Contract development
+- February - Back-end development / Refractoring
+- March - Refractoring / Eigenspace Start-Up Program Applying + Acceptance
+- April - Wrap Up
+
+---
+
+## Deployment Issues
+
+Local deployment was successful on all three aspects of the app (front-end / back-end / smart contract). However, there were many issues when the app was being deployed to the web.
+
+> Smart Contract
+
+Successfully deployed to Polygon Testnet.  
+Could also be deployed to Polygon Mainnet if desired.
+
+> Front-end / Back-end
+
+Front-end deployment was attempted to Netlify. However, there were too many issues during the deployment in the code. Thus, deployment was cancelled.
+
+Back-end deployment was attemped to Heroku. However, there were internal server issues that prevented the GitHub repo from being connected.
+
+---
