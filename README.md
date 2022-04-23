@@ -1,105 +1,67 @@
 # Tokenverse
 
-Tokenverse is a revoluntary way to design and create your own NFTs
+Tokenverse project consists of two repositories:
 
-<!-- Headings -->
-
-# Heading 1
-
-## Heading 2
-
-### Heading 3
-
-#### Heading 4
-
-##### Heading 5
-
-###### Heading 6
-
-<!-- Italics -->
-
-_This text_ is italic
-
-_This text_ is italic
-
-<!-- Strong -->
-
-**This text** is italic
-
-**This text** is italic
-
-<!-- Strikethrough -->
-
-~~This text~~ is strikethrough
-
-<!-- Horizontal Rule -->
+- frontend repo (tokenverse_frontend)
+- backend repo ([tokenverse_backend](https://github.com/gitHubAndyLee2020/tokenverse_backend))
 
 ---
 
+> Features Implemented on the Backend and Smart Contract
+
+NFT Features (refer to [contract code](https://github.com/gitHubAndyLee2020/tokenverse_frontend/tree/main/contracts)):
+
+- Fetching NFTs based on their tokenId or itemId
+- Minting NFT
+- Editing NFT metadata
+- Putting NFT on the market
+- Buying / Selling NFT
+- Gifting NFT
+- Burning NFT
+
+Additional Features:
+
+- Fetching users and collections
+- Editing user information
+- Editing collection information
+- Creating a review post
+
 ---
 
-<!-- Blockquote -->
+> Features Implemented on the Frontend
 
-> This is a quote
+NFT Features:
 
-<!-- Links -->
+- Fetching and display NFTs
+- Minting NFT
 
-[Traversy Media](http://www.traversymedia.com)
+Additional Features:
 
-[Traversy Media](http://www.traversymedia.com 'Traversy Media')
+- Fetching and displaying users and collections information
+- Editting users and collections information
 
-<!-- UL -->
+---
 
-- Item 1
-- Item 2
-- Item 3
-  - Nested Item 1
-  - Nested Item 2
+> Starting the Project Locally
 
-<!-- OL -->
-
-1. Item 1
-1. Item 2
-1. Item 3
-
-<!-- Inline Code Block -->
-
-`<p>This is a paragraph</p>`
-
-<!-- Images -->
-
-![Markdown Logo](https://markdown-here.com/img/icon256.png)
-
-<!-- Github Markdown -->
-
-<!-- Code Blocks -->
+Front-end:
 
 ```bash
-  npm install
-
-  npm start
+git clone https://github.com/gitHubAndyLee2020/tokenverse_frontend.git
+npm install
+touch .infuraid
+touch .secret
+echo 'YOUR_INFURAID' > .infuraid
+echo 'YOUR_METADATAMASK_PRIVATE_KEY' > .secret
 ```
 
-```javascript
-function add(num1, num2) {
-  return num1 + num2
-}
+Back-end:
+
+```bash
+git clone https://github.com/gitHubAndyLee2020/tokenverse_backend.git
+npm install
+touch .env
+echo 'DATABASE_URL="YOUR_POSTGRES_DB_URL"' > .env
 ```
 
-```python
-  def add(num1, num2):
-    return num1 + num2
-```
-
-<!-- Tables -->
-
-| Name     | Email          |
-| -------- | -------------- |
-| John Doe | john@gmail.com |
-| Jane Doe | jane@gmail.com |
-
-<!-- Task List -->
-
-- [x] Task 1
-- [x] Task 2
-- [ ] Task 3
+---
