@@ -121,3 +121,9 @@ Front-end deployment was attempted to Netlify. However, there were too many issu
 Back-end deployment was attemped to Heroku. However, there were internal server issues that prevented the GitHub repo from being connected.
 
 ---
+
+## Eigenspace Start-Up Program Pitch Presentation
+
+[Presentation Link](https://docs.google.com/presentation/d/16mMqWENgJvZDw1u8j-9AT-RARsnx6XAbOTdliFD-73A/edit?userstoinvite=mayapop@gmail.com)
+
+---
