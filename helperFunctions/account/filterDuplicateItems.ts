@@ -3,7 +3,7 @@ import IItem from '../../interfaces/IItem'
 const filterDuplicateItems = (
   userCreatedItems: IItem[] | null,
   userOwnedItems: IItem[] | null,
-) => {
+): IItem[] | null => {
   if (userCreatedItems === null && userOwnedItems === null) {
     return null
   } else if (userCreatedItems === null) {
@@ -19,7 +19,8 @@ const filterDuplicateItems = (
       ]),
     ) // map of unique items in [tokenId, item] format
     const combination = Array.from(combinationMap)
-    return combination
+    const combinationItems = combination.map((pair) => pair[1]) // extract item from [tokenId, item] format
+    return combinationItems
   }
 }
 
