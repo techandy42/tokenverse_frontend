@@ -321,7 +321,7 @@ export default function PrimarySearchAppBar() {
                   }}
                   className='nav-button'
                 >
-                  <HelpOutlineOutlinedIcon size='large' />
+                  <HelpOutlineOutlinedIcon />
                 </IconButton>
               </Tooltip>
             </Link>
@@ -375,7 +375,7 @@ export default function PrimarySearchAppBar() {
                   }}
                   disableRipple
                 >
-                  <HelpOutlineOutlinedIcon size='large' />
+                  <HelpOutlineOutlinedIcon />
                 </IconButton>
               </Tooltip>
             </Link>
